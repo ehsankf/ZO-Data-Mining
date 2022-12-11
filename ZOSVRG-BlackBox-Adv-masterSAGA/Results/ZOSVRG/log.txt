@@ -1,0 +1,17 @@
+save_path Results/ZOSVRG/
+M 10
+qy 28
+qx 28
+mu 0.01
+lambda2 1e-05
+nFunc 10
+batch_size 5
+optimizer ZOSVRG
+nStage 1000
+const 5
+lambda1 1e-05
+eta 0.03571428571428571
+B_size 1
+target_label 1
+rv_dist CoordSphere
+alpha 1
