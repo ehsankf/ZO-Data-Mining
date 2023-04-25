@@ -1,0 +1,238 @@
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{page}{1}
+\section{Proof of Lemma \ref{lemma1}}\label{append}
+\begin{proof}
+By choosing $\eta < \frac{1}{3L}$ we have,
+
+\begin{gather}
+\label{Eq1-Lemma1}
+\begin{split}
+f(&x_{k+1}^s)  \leq f(x_{k}^s) + \Iprod{\nabla f(x_{k}^s)}{x_{k+1}^s-x_{k}^s}+\frac{L}{2}\norm{x_{k+1}^s-x_{k}^s}^2\\
+&=f(x_{k}^s) + \Iprod{\nabla f(x_{k}^s)}{x_{k+1}^s-x_{k}^s}\\
+&~~~+ {\frac{1 }{2\eta}}\norm{x_{k+1}^s-x_{k}^s}^2-{\theta_{\eta} L}\norm{x_{k+1}^s-x_{k}^s}^2\\
+&\stackrel{a}{=}f(x_{k}^s) + \Iprod{\VRG+\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}{x_{k+1}^s-x_{k}^s}\\
+&~~~+ { \frac{1}{2\eta}}\norm{x_{k+1}^s-x_{k}^s}^2+\Iprod{\nabla f(x_{k-\tau_k}^s)-\VRG}{x_{k+1}^s-x_{k}^s}\\
+&~~~-{\theta_{\eta} L}\norm{x_{k+1}^s-x_{k}^s},
+\end{split}
+\raisetag{15pt}
+\end{gather}
+where the inequality follows from Lipschitz continuous nature of the gradient of function $f$. In $\stackrel{a}{=}$, we add and subtract $\Iprod{\VRG-\nabla f(x_{k-\tau_k}^s)}{x_{k+1}^s-x_{k}^s}$. From Cauchy-Schwarz inequality, we also have,
+\begin{equation}\label{Eq2-Lemma3}
+\begin{split}
+& \E\Iprod{\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}{x_{k+1}^s-x_{k}^s}\\
+&\leq \frac{1}{2 \theta_{\eta} L} \norm{\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}^2+ \frac{L\theta_{\eta}}{2}\norm{x_{k+1}^s-x_{k}^s}^2.
+\end{split}
+\end{equation}
+To bound the last term in equation \eqref{Eq1-Lemma1}, we obtain,
+\begin{equation}\label{Eq2-Lemma1}
+\begin{split}
+&\Iprod{\nabla f(x_{k-\tau_{k}}^s)-\VRG}{x_{k+1}^s-x_{k}^s}\\
+&\stackrel{a}{\leq} \E\left[\frac{1}{2\theta_{\eta} L}\norm{\nabla f(x_{k-\tau_{k}}^s)-\VRG}^2 + \frac{\theta_{\eta} L}{2}\norm{x_{k+1}^s-x_{k}^s}^2\right]\\
+&\stackrel{b}{\leq} \frac{1}{\theta_{\eta}}\left[f(\widetilde{x}^{s-1})-f(x_{k-\tau_k}^s)+\Iprod{\nabla f(x_{k-\tau_k}^s)}{x_{k-\tau_k}^s-\widetilde{x}^{s-1}}\right]\\
+&~~+ \frac{\theta_{\eta} L}{2}\norm{x_{k+1}^{s}-x_{k}^{s}}^2,
+\end{split}
+\end{equation}
+where inequality $\stackrel{a}{\leq}$ follows from the Cauchy-Schwarz inequality, and inequality $\stackrel{b}{\leq}$ follows from Lemma \ref{lemma0}. 
+
+Substituting the inequalities \eqref{Eq2-Lemma3} and \eqref{Eq2-Lemma1} in \eqref{Eq1-Lemma1}, and taking expectation over $i ^s_k$, we obtain,
+\begin{gather}\label{Eq3-Lemma1-1}
+\begin{split}
+&\E \left[ F(x_{k+1}^s) -f(x_{k}^s)\right]\\
+&\leq \E\left[h(x_{k+1}^s)+ \Iprod{\VRG}{x_{k+1}^s-x_{k}^s}+{\frac{1}{2\eta}}\norm{x_{k+1}^s-x_{k}^s}^2\right]\\
+&~~~+\frac{1}{\theta_{\eta}}\E\left[f(\widetilde{x}^{s-1})-f(x_{k-\tau_k}^s)+\Iprod{\nabla f(x_{k-\tau_k}^s)}{x_{k-\tau_k}^s-\widetilde{x}^{s-1}}\right]\\&
+~~~+{\frac{1}{2 \theta_{\eta} L} \norm{\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}^2}\\
+&\stackrel{a}{\leq}\E\left[\Iprod{\beta_s\VRG}{z_{k+1}^s-z_{k}^s}\right]+{\frac{ \beta_s^2}{2\eta}}\norm{z_{k+1}^s-z_{k}^s}^2\\
+&~~~+\E\left[\beta_s h(z_{k+1}^s)+(1-\beta_s) h(\widetilde{x}^{s-1})\right]\\
+&~~~+\frac{1}{\theta_{\eta}}\E\left[f(\widetilde{x}^{s-1})-f(x_{k-\tau_k}^s)+\Iprod{\nabla f(x_{k-\tau_k}^s)}{x_{k-\tau_k}^s-\widetilde{x}^{s-1}}\right]\\
+&~~~+{\frac{1}{2 \theta_{\eta} L} \norm{\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}^2},
+\end{split}
+\raisetag{15pt}
+\end{gather}
+where in inequality $\stackrel{a}{\leq}$ we use the update $x_k^s = \beta_s z_k^s+(1-\beta_s)\widetilde{x}^{s-1}$ and convexity of $h$. Since   $p(\delta) = h(z_k^s+\delta)+\langle\widetilde{\nabla}_k^s,\delta\rangle$ is a convex function, using inequality \eqref{threepoint-convex} with $w=x^*-z_{k}^s$, $\overline{y} = 0$, it follows
+\begin{equation}
+\begin{split}
+h(z_{k+1}^s) &+ \Iprod{\VRG}{z_{k+1}^s-z_{k}^s}+{\frac{\beta_s}{2\eta}}\norm{z_{k+1}^s-z_{k}^s}^2  \\
+&\leq h(x^*)+\Iprod{\VRG}{x^* - z_{k}^s}\\
+&~~~+{\frac{\beta_s}{2\eta}}(\norm{z_{k}^s-x^*}^2-\norm{z_{k+1}^s-x^*}^2).  
+\end{split}
+\end{equation}
+By replacing the above inequality in \eqref{Eq3-Lemma1-1} we have,
+\begin{gather}\label{Eq3-Lemma1I}
+\begin{split}
+&\E\left[F(x_{k+1}^s) -f(x_{k}^s)\right]\\
+&{\leq}\E\left[\Iprod{\beta_s\VRG}{x^* - z_{k}^s}+{\frac{\beta_s^2}{2\eta}}(\norm{z_{k}^s-x^*}^2-\norm{z_{k+1}^s-x^*}^2)\right]\\
+&~~~+\E\left[\beta_s h(x^*)+(1-\beta_s) h(\widetilde{x}^{s-1})\right]\\
+&~~~+\frac{1}{\theta_{\eta}}\E\left[f(\widetilde{x}^{s-1})-f(x_{k-\tau_k}^s)+\Iprod{\nabla f(x_{k-\tau_k}^s)}{x_{k-\tau_k}^s-\widetilde{x}^{s-1}}\right]\\
+&~~~+{\frac{1}{2 \theta_{\eta} L} \E\norm{\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}^2}\\
+& \stackrel{a}{=} \E\left[{\frac{ \beta_s^2}{2\eta}}(\norm{z_{k}^s-x^*}^2-\norm{z_{k+1}^s-x^*}^2)+\beta_sh(x^*)\right]\\
+&~~~+\E\left[\Iprod{\nabla f(x_{k-\tau_k}^s)}{\beta_sx^*+(1-\beta_s)\widetilde{x}^{s-1}-{x}^{s}_{k}}\right]\\
+&~~~+\E\left[\Iprod{-\nabla f_{i_k^s}(\widetilde{x}^{s-1})+\nabla f(\widetilde{x}^{s-1})}{\beta_sx^*+(1-\beta_s)\widetilde{x}^{s-1}-x_{k}^{s}}\right]\\
+&~~~+\E\left[\Iprod{\nabla f(x_{k-\tau_k}^s)}{\theta_{\eta}^{-1}(x_{k-\tau_k}^s-\widetilde{x}^{s-1})}\right]\\
+&~~~+(1-\beta_s) \E[h(\widetilde{x}^{s-1})]+\frac{1}{\theta_{\eta}}\E[f(\widetilde{x}^{s-1})]-\frac{1}{\theta_{\eta}}\E[f({x}^{s}_{k-\tau_k})]\\
+&~~~+{\frac{1}{2 \theta_{\eta} L} \E\norm{\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}^2}.
+\end{split}
+\raisetag{18pt}
+\end{gather}
+The equality $\stackrel{a}{=}$ is obtained by definition of $\VRG$ and rearranging terms. By using    
+\[
+\E\Iprod{-\nabla f_{i_k^s}(\widetilde{x}^{s-1})+\nabla f(\widetilde{x}^{s-1})}{\beta_sx^*+(1-\beta_s)\widetilde{x}^{s-1}-x_{k}^{s}}=0,
+\]
+in \eqref{Eq3-Lemma1I}, we have
+\begin{equation}\label{Eq3-Lemma1}
+\begin{split}
+&\E\left[F(x_{k+1}^s) -f(x_{k}^s)\right]\\
+&\leq\E\left[{\frac{ \beta_s^2}{2\eta}}(\norm{z_{k}^s-x^*}^2-\norm{z_{k+1}^s-x^*}^2)\right]\\
+&~~~+\E\left[\beta_sh(x^*)+(1-\beta_s) h(\widetilde{x}^{s-1})\right]\\
+&~~~+\E\left[\Iprod{\nabla f(x_{k-\tau_k}^s)}{\beta_sx^*+(1-\beta_s)\widetilde{x}^{s-1}-{x}^{s}_{k}}\right]\\
+&~~~+\E\left[\Iprod{\nabla f(x_{k-\tau_k}^s)}{\theta_{\eta}^{-1}(x_{k-\tau_k}^s-\widetilde{x}^{s-1})}\right]\\
+&~~~+\frac{1}{\theta_{\eta}}\E\left[f(\widetilde{x}^{s-1})-f({x}_{k-\tau_k}^{s})\right]\\
+&~~~+{\frac{1}{2 \theta_{\eta} L} \E\norm{\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}^2}.
+\end{split}
+\end{equation}
+Additionally, we have the following,
+\begin{equation}\label{Eq4-Lemma1}
+\begin{split}
+&\Iprod{\nabla f(x_{k-\tau_k}^s)}{\beta_sx^*+(1-\beta_s)\widetilde{x}^{s-1}-{x}^{s}_{k}+\theta_{\eta}^{-1}(x_{k-\tau_k}^s-\widetilde{x}^{s-1})}\\
+&=\Iprod{\nabla f(x_{k-\tau_k}^s)}{\beta_sx^*+(1-\beta_s-\theta_{\eta}^{-1})\widetilde{x}^{s-1}}\\
+&~~~~~+\Iprod{\nabla f(x_{k-\tau_k}^s)}{\theta_{\eta}^{-1}x_{k-\tau_k}^s-x_{k-\tau_k}^s+x_{k-\tau_k}^s-{x}^{s}_{k}}\\
+&\stackrel{a}{\leq} \beta_sf(x^*)+(1-\beta_s-\theta_{\eta}^{-1})f(\widetilde{x}^{s-1})+\theta_{\eta}^{-1}f(x_{k-\tau_k}^s)\\
+&~~~~~-f(x_{k-\tau_k}^s)+\Iprod{\nabla f(x_{k-\tau_k}^s)-\nabla f(x_{k}^s)}{x_{k-\tau_k}^s-{x}^{s}_{k}}\\
+&~~~~~+\Iprod{\nabla f(x_{k}^s)}{x_{k-\tau_k}^s-{x}^{s}_{k}}\\
+&\stackrel{b}{\leq} \beta_sf(x^*)+(1-\beta_s-\theta_{\eta}^{-1})f(\widetilde{x}^{s-1})+\theta_{\eta}^{-1}f(x_{k-\tau_k}^s)\\
+&~~~~~+\Iprod{\nabla f(x_{k-\tau_k}^s)-\nabla f(x_{k}^s)}{x_{k-\tau_k}^s-{x}^{s}_{k}}- f(x_{k}^s),
+\end{split}
+\raisetag{15pt}
+\end{equation}
+where in inequalities $\stackrel{a}{\leq}$ and $\stackrel{b}{\leq}$ we used the convexity of $f$. 
+
+Since $z_{k+1}^s$ is the optimal solution of proximal subproblem in the Algorithm \ref{AsyncVR-Algo}, there exists ${\xi}_{k+1}^s\in\partial h(z_{k+1}^s)$ satisfying
+\begin{equation}\label{prox}
+{\beta_s}(z_{k+1}^s - z_{k}^s) + \eta\VRG + \eta{\xi}_{k+1}^s = 0.
+\end{equation}
+We next bound the term $\E[\norm{\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}^2]$ using the fact that gradient of the function $f$ is Lipschitz continuous in the following manner,
+\begin{equation}\label{Eq5-Lemma1}
+\begin{split}
+\E[&\norm{\nabla f(x_{k}^s)-\nabla f(x_{k-\tau_k}^s)}^2]\\
+&~~~\leq L^2\tau \sum_{i = k-\tau}^{k-1}\E[\norm{x_{i+1}^s-x_{i}^s}^2]\\
+&~~~\stackrel{a}{=} L^2\tau\beta_s^2\sum_{i = k-\tau}^{k-1}\E[\norm{z_{i+1}^s-z_{i}^s}^2] \\
+&~~~\stackrel{b}{=} { L^2\tau\eta^2\sum_{i = k-\tau}^{k-1}\E[\norm{\widetilde{\nabla}_{i}^s+{\xi}_{i+1}^s}^2]},
+\end{split}
+\end{equation}
+and similarly,
+\begin{equation}\label{Eq5p-Lemma1}
+\begin{split}
+&\Iprod{\nabla f(x_{k-\tau_k}^s)-\nabla f(x_{k}^s)}{x_{k-\tau_k}^s-{x}^{s}_{k}}\\
+&~~~~~\leq L\tau \sum_{i = k-\tau}^{k-1}\E[\norm{x_{i+1}^s-x_{i}^s}^2]\\
+&~~~~~\stackrel{c}{=} L\tau\beta_s^2\sum_{i = k-\tau}^{k-1}\E[\norm{z_{i+1}^s-z_{i}^s}^2] \\
+&~~~~~\stackrel{d}{=}  L\tau\eta^2\sum_{i = k-\tau}^{k-1}\E[\norm{\widetilde{\nabla}_{i}^s+{\xi}_{i+1}^s}^2],
+\end{split}
+\end{equation}
+where in equalities $\stackrel{a}{=}$ and  $\stackrel{c}{=}$ we use the definition for the updates of $x_{i+1}^s$ in Async-AcPSVRG and equalities $\stackrel{b}{=}$ and $\stackrel{d}{=}$ follow from \eqref{prox}.
+
+To proceed, we define the following quantities,
+\begin{equation*}
+\begin{split}
+u_k^s &= \nabla f_{i_k^s}(x_{k-\tau_k}^s) - \nabla f_{i_k^s}(\widetilde{x}^{s-1}) + \nabla f(\widetilde{x}^{s-1})+{\xi}_{k+1}^s \\
+&= {\widetilde{\nabla}_{k}^s}+{\xi}_{k+1}^s,\\
+v_k^s &= \nabla f_{i_k^s}(x_{k}^s) - \nabla f_{i_k^s}(\widetilde{x}^{s-1}) + \nabla f(\widetilde{x}^{s-1})+{\xi}_{k+1}^s,
+\end{split}
+\end{equation*}
+where ${\xi}_{k+1}^s\in\partial h(x_{k+1}^s)$. By substituting equation \eqref{Eq5p-Lemma1} in \eqref{Eq4-Lemma1} combined with \eqref{Eq5-Lemma1}, we obtain from \eqref{Eq3-Lemma1}
+\begin{equation}
+\begin{split}
+\E[F(x_{k+1}^s)] \leq &\beta_s F(x^*)+(1-\beta_s)F(\widetilde{x}^{s-1})\\
+&+ {\frac{\beta_s^2}{2\eta}}\E[\norm{z_{k}^s-x^*}^2-\norm{z_{k+1}^s-x^*}^2]\\
+&+(1+\frac{1}{2\theta_{\eta}})L\tau\eta^2\sum_{i = k-\tau}^{k-1}\E[\norm{u_{i}^s}^2]. 
+\end{split}
+\end{equation}
+Equivalently, we have the following
+\begin{equation}\label{main-ine-Lemma1}
+\begin{split}
+\E[F(x_{k+1}^s)-F(x^*)] \leq &(1-\beta_s)[F(\widetilde{x}^{s-1})-F(x^*)] \\
+&+ {\frac{ \beta_s^2}{2\eta}}\E[\norm{z_{k}^s-x^*}^2-\norm{z_{k+1}^s-x^*}^2]\\
+&+(1+\frac{1}{2\theta_{\eta}})L\tau\eta^2\sum_{i = k-\tau}^{k-1}\E[\norm{u_{i}^s}^2]. 
+\end{split}
+\end{equation}
+
+We next bound the term $\E[\norm{u_k^s}^2]$ in terms of $\E[\norm{v_k^s}^2]$ in the following,
+\begin{gather}
+\begin{split}
+\E[&\norm{u^s_k}^2]\leq 2\E[\norm{u^s_k-v^s_k}^2+\norm{v^s_k}^2]\\
+&\leq 2\E\left[\norm{ \nabla f_{i_k^s}(x_{k-\tau_k}^s) - \nabla f_{i_k^s}(x_{k}^s)}^2\right] + 2\E\norm{v^s_k}^2\\
+&\stackrel{a}{\leq} 2 {L}^2\tau \sum_{i=k-\tau+1}^{k-1}\E\norm{x_{i+1}^s-x_{i}^s}^2+ 2\E\norm{v^s_k}^2\\
+&= 2 {L}^2\beta_s^2\tau \sum_{i=k-\tau+1}^{k-1}\E\norm{z_{i+1}^s-z_{i}^s}^2+ 2\E\norm{v^s_k}^2\\
+&= 2 {L}^2\tau \eta^2\sum_{i=k-\tau+1}^{k-1} \E\norm{\widetilde{\nabla}_{i}^s+\xi_{i}^s}^2+ 2\E\norm{v^s_k}^2\\
+&= 2 {L}^2\tau \eta^2\sum_{i=k-\tau+1}^{k-1} \E\norm{u^s_i}^2+ 2\E\norm{v^s_k}^2,
+\end{split}
+\raisetag{20pt}
+\end{gather}
+where in $\stackrel{a}{\leq}$ we use the Lipschitz
+continuity of the gradient. 
+Adding the above inequalities
+from $k=0$ to $m_s-1$, we get
+\begin{gather}
+\begin{split}
+\sum_{k=0}^{m_s-1}\E\big[&\norm{u^s_k}\big]^2\leq \sum_{k=0}^{m_s-1}\left[2L^2 \tau\eta^2\sum_{i=k-\tau+1}^{k-1} \E[\norm{u^s_i}^2]+2\E[\norm{v^s_k}^2]\right]\\
+&\leq 2L^2 \tau^2\eta^2\sum_{k=0}^{m_s-1}\E[\norm{u^s_k}^2]+2\sum_{k=0}^{m_s-1}\E[\norm{v^s_k}^2].
+\end{split}
+\raisetag{20pt}
+\end{gather}
+The last inequality follows from that fact that the delay is at most $\tau$ and in particular for each  $\E[\norm{u^s_i}^2]$, there are at most $\tau$ terms. From the above inequality, we get 
+\begin{equation}\label{Eq6-Lemma1}
+\begin{split}
+\sum_{k=0}^{m_s-1} \E[\norm{u^s_k}]^2&\leq \frac{2}{1-2L^2 \tau^2\eta^2}\sum_{k=0}^{m_s-1}\E[\norm{v^s_k}^2].
+\end{split}
+\end{equation}
+Adding the inequality \eqref{main-ine-Lemma1} from $k=0$ to $k=m_s-1$, we get
+\begin{equation}\label{lemma-finaleq1-1}
+\begin{split}
+\sum_{k=0}^{m_s-1}\E[F(x_{k+1}^s)&-F(x^*)] \leq m_s(1-\beta_s)[F(\widetilde{x}^{s-1})-F(x^*)]\\
+&~~+ {\frac{ \beta_s^2}{2\eta}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m_s}^s-x^*}^2]\\
+&~~+(1+\frac{1}{2\theta_{\eta}})L\tau^2\eta^2\sum_{k=0}^{m_s-1}\E[\norm{u_{k}^s}^2]\\
+&\stackrel{a}{\leq} m_s(1-\beta_s)[F(\widetilde{x}^{s-1})-F(x^*)] \\
+&~~+ {\frac{ \beta_s^2}{2\eta}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m_s}^s-x^*}^2]\\
+&~~+\frac{(2+\theta_{\eta}^{-1})L\tau^2\eta^2}{1-2L^2 \tau^2\eta^2}\sum_{k=0}^{m_s-1}\E[\norm{v^s_k}^2],
+\end{split}
+\end{equation}
+where in inequality $\stackrel{a}{\leq}$ we used \eqref{Eq6-Lemma1}.
+
+
+From Lemma 3 of \cite{Johnson12} (see also \cite{Reddi2015}), we have 
+\[
+\E[\norm{v^s_k}^2] \leq 4L \E[F(x_k^s)-F(x^*)+F(\widetilde{x}^{s-1})-F(x^*)].
+\]
+Substituting the above bound on $\E[\norm{v^s_k}^2]$ in equation \eqref{lemma-finaleq1-1}, we get the following
+\begin{gather}\label{lemma-finaleq1}
+\begin{split}
+(1-&\frac{4(2+\theta_{\eta}^{-1})L^2\tau^2\eta^2}{1-2L^2 \tau^2\eta^2})\sum_{k=0}^{m_s-1}\E[F(x_{k+1}^s)-F(x^*)]\\ 
+\leq &m_s\left((1-\beta_s)+\frac{4(2+\theta_{\eta}^{-1})L^2\tau^2\eta^2}{1-2L^2 \tau^2\eta^2}\right)[F(\widetilde{x}^{s-1})-F(x^*)] \\
+&+ {\frac{ \beta_s^2}{2\eta}}\E[\norm{z_{0}^s-x_*}^2-\norm{z_{m_s}^s-x_*}^2].
+\end{split}
+\raisetag{15pt}
+\end{gather}
+
+From convexity of function $F$ and the definition $\widetilde{x}^s = \frac{1}{m_s}\sum_{k=0}^{m_s-1}x_{k+1}^s$, we get 
+\[
+F(\widetilde{x}^s) = F(\frac{1}{m_s}\sum_{k=0}^{m_s-1} x_{k+1}^s)\leq \frac{1}{m_s}\sum_{k=0}^{m_s-1}F(x_{k+1}^s).
+\]
+From the above inequality and \eqref{lemma-finaleq1}, we get the following
+
+\begin{gather}
+\begin{split}
+\bigg(1-&\frac{4(2+\theta_{\eta}^{-1})L^2\tau^2\eta^2}{1-2L^2 \tau^2\eta^2}\bigg)\E[F(\widetilde{x}^s)-F(x^*)]\\ 
+\leq &\left((1-\beta_s)+\frac{4(2+\theta_{\eta}^{-1})L^2\tau^2\eta^2}{1-2L^2 \tau^2\eta^2}\right)[F(\widetilde{x}^{s-1})-F(x^*)] \\
+&+ {\frac{\beta_s^2}{2\eta m_s}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m_s}^s-x^*}^2].
+\end{split}
+\raisetag{20pt}
+\end{gather}
+\end{proof}
+\begin{thebibliography}{99}
+\bibitem{Johnson12} Johnson, R., and Zhang, T. 2013. Accelerating stochastic
+gradient descent using predictive variance reduction. {\it In Advances in neural information processing systems}, 315--323.
+
+\bibitem{Reddi2015}Reddi, S. J.; Hefny, A.; Sra, S.; Poczos, B.; and Smola, A. J.
+2015. On variance reduction in stochastic gradient descent
+and its asynchronous variants. {\it In Advances in Neural Information Processing Systems}, 2647--2655.
+\end{thebibliography}

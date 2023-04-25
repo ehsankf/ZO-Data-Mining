@@ -1,0 +1,229 @@
+
+    Q1. [Summary] Please summarize the main claims/contributions of the paper in your own words.
+        This paper proposes a zeroth-order proximal stochastic method to solve nonconvex composite problems.
+    Q2. [Relevance] Is this paper relevant to an AI audience?
+        Of limited interest to an AI audience
+    Q3. [Significance] Are the results significant?
+        Moderately significant
+    Q4. [Novelty] Are the problems or approaches novel?
+        Somewhat novel or somewhat incremental
+    Q5. [Soundness] Is the paper technically sound?
+        Has minor errors
+    Q6. [Evaluation] Are claims well-supported by theoretical analysis or experimental results?
+        Somewhat weak
+    Q7. [Clarity] Is the paper well-organized and clearly written?
+        Poor
+    Q8. [Detailed Comments] Please elaborate on your assessments and provide constructive feedback.
+        The paper is not well written since there are many typos and notations used that are not defined. For example, s in equation (4), r in equation (2), m in Alg 1 line 6, I_b in equation (6), I(B<n) is the charachtristic function which is one when B < n and otherwise it is zero. in equation (9), \hat{\nabla}_r f(x_t^s) in Lemma 2.
+
+     2) ZO (gradient-free) methods is very attractive when the gradient is difficult or impossible to compute. We refer the review to the recent review paper [1]
+
+
+    8) s is the index for each epoch, we let \nabla_r denote random gradient of eq (2) and m is the epoch size, I_b is the minibatch set, and I{B < b} id the I(B<n) is the charachtristic function which is one when B < n and otherwise it is zero. These notations were elaborated in Algorithm 1 and Preliminary section. We included more information in the paper. 
+    
+
+    A8.1- 
+
+        When the authors review the previous works in the introduction section, they uses the shorthand without definitions and citations. For example, what is RGF and ZO-SVRG-coord?
+We provided references for these methods in Table 1. We have provided additional discussion and references to recent works in the revised version.  
+
+    A8.2-
+
+        In Theorem 3, x^* should not be the optimal value of F, neither the optimal solution.
+        x^* denotes the optimal solution of the problem (1). 
+
+        We have provided additional discussion and references to recent works 
+        We hope that we have convinced Reviewer 1 that our results are plausible. It has been generally observed experimentally and theoretically, that for nonsmooth nonconvex optimization problems, ZO does not cause significant slowdown due to additonal functions queries.
+
+    A8.3-
+
+        In equation (1), f_i is assumed to be smooth function. Why just using the gradient? I thought the paper should assume the gradient is not accessible.
+
+     The nonsmoothness of problem (1) is due to the term h(x) in problem (1). In the analysis of ZO optimization for this problem, we mainly target to fill the gap between the L1 geometry of ZO-PSVRG and the variance of the ZO gradient estimate in terms of squared L2 norm. It is the same problem considered in similar works, e.g., Gu et al. 2018a.
+
+    A8.4-
+
+        Researchers usually do not consider variance reduction as an acceleration techniques. Instead, acceleration usually means using momentum strategies to obtain better iteration complexity. The authors calling variance reduction an accelerated algorithm in the introduction section really confuses me.
+
+
+     Accelerated because of the better gradient approximations? 
+     Acceleration in this context refers to utilizing reduced variance gradient estimators. Although acceleration is more of use for momentum techniques, due to the additional noise induced by zeroth-order approximation, this variace reduced techniques with regards to its robustness to gradient noise have significant impacts to accelerate convergence, see, e.g., Liu et al. 2018.
+
+    A8.5- We have revised our paper to include relevant references that we overlooked and minor changes that were suggested
+
+    Q9. [QUESTIONS FOR THE AUTHORS] Please provide questions for authors to address during the author feedback period.
+        What is x^* in Theorem 3?
+    
+    A9-
+
+        When does Polyak-Lojasiewicz (pl) condition hold?
+
+        
+Karimi et al. [2016] showed that PL condition is weaker than many conditions (e.g., strong convexity (SC), restricted strong convexity (RSC) and weak strong convexity (WSC) [Necoara et al., 2015]). Also, if
+f is convex, PL condition is equivalent to the error bounds (EB) and quadratic growth (QG) condition. We have included a brief discussion on PL condition. 
+
+We hope that the reviewer  could re-evaluate our work towards a better score. We thanks the reviewer's efforts to review our work.
+    Q10. [OVERALL SCORE]
+        4 - Reject
+We are sorry to learn  that the reviewer feels our work is a relatively straightforward combination of signSGD with existing zero-order techniques. Based on the reviewer’s comments, our paper has been largely improved. 
+We thank the reviewer for their time and consideration of our work. We hope that we can convince the reviewer to increase their score. We believe that our work solves a difficult outstanding problem in the field of ZO optimization, and provides a valuable contribution to AAAI.
+Hopefully, the reviewer agrees with us that our new version has been largely improved, and could re-evaluate our work towards a better score. We thanks the reviewer's efforts to review our work.
+
+Recent Progress in Zeroth Order Optimization and Its Applications to Adversarial Robustness in Data Mining and Machine Learning
+SiGKDD, 2019.
+
+************************************************************************************************************************************
+
+
+    Q1. [Summary] Please summarize the main claims/contributions of the paper in your own words.
+        The authors proposed zero-order proximal gradient methods for solving non-convex non-smooth finite-sum optimization problems. The authors provided convergence results of the proposed algorithms with RandSGE/CoordSGE estimator of stochastic gradient. They also analyzed the convergence under the PL condition. Two experiments are implemented to support the theoretical findings.
+    Q2. [Relevance] Is this paper relevant to an AI audience?
+        Relevant to researchers in subareas only
+    Q3. [Significance] Are the results significant?
+        Moderately significant
+    Q4. [Novelty] Are the problems or approaches novel?
+        Somewhat novel or somewhat incremental
+    Q5. [Soundness] Is the paper technically sound?
+        Has minor errors
+    Q6. [Evaluation] Are claims well-supported by theoretical analysis or experimental results?
+        Sufficient
+    Q7. [Clarity] Is the paper well-organized and clearly written?
+        Poor
+    Q8. [Detailed Comments] Please elaborate on your assessments and provide constructive feedback.
+        The contribution of this paper is limited. Given the results of Ji et al. 2019, it seems this paper gets the same convergence results. Although this paper considers non-smooth convex regularizer, there is no challenge in the analysis by using proximal mapping. So this is only a trivial extension of Ji et al. 2019.
+
+    A8a- We are sorry to learn  that the reviewer feels our work is a relatively straightforward combination of proximal mapping with existing zero-order techniques. The analysis in our work is notably different from that of ZO-ProxSVRG in the literature. We would like to clarify that our analysis *is not SIMILAR*  to any analysis in the litrature in the setting of ZO-optimization. In particulare, we tighten the analysis based on the dependency on problem dimension (d), and weaken the condition on function gradients the step-size further, and change the dependence on minibatch-size and epoch size. 
+In our proof, we directly show that loss decreases by
+ using a different analysis. This is made possible by tightening the inequalities using Young’s inequality and Lemmas 2, 3, 4. Also, our convergence result holds for any minibatch size
+[1, n] unlike ZO-SVRG-Coord-Rand. Moreover, we avoid the computation of the full gradient at the beginning of each epoch,
+i.e., B <= n. This results form our work improve significantly many previous theoretical and experimental results in the ZO optimization setting.
+
+our analysis provide a very clear presentation of parameters, while in Ji et al. 2019 the parameters depend on 
+long and complicated equations. As a result, our paper showed the potential impact of ZO-SVRG on addressing practical ML problems.
+The improvements in Ji et al. are obtained trivially by assuming very large minibatch size dependent on d and very large epoch size, while their analysis show no advantages for single batch sizes. Based on very effcient analysis we have shown that if combining random coordinate descent and SVRG, the d times more function queries could be reduced to 1. We refer reviewer to our detailed analysis and explanations in Remarks, 1,2,3.
+This also leads to a less counterintuitive condition on the step-size. This realization was essential to obtaining a state-of-the-art ZO algorithm, and led to a massive acceleration. Our analysis carefully answer the open question in previous analysis if the dependence on 
+d in the previous analysis is optimal. 
+    
+First, beyond signSGD, our established results apply to the case of mini-batch sampling without replacement. And thus, ZO-signGD can be treated as a special case in our analysis.
+
+
+
+
+
+First, it is not trivial to overcome the second technical challenge, since we need to carefully investigate the effect of two mini-batch sampling schemes as well as the effect of random direction sampling on the variance of ZO gradient estimates (see Proposition 2). In particular, the use of mini-batch samples without replacement removes the assumption of i.i.d. samples. This challenge does not go away immediately even if we replace f by f_mu.
+     
+Our work extends these theoretical and experimental results to the accelerated case.
+
+es, the large mini-batch size of b = O(T) indeed improves the convergence rate of ZO-signSGD. As b = O(T), the convergence rate given in (9) becomes O(\sqrt{d}/\sqrt{T} + \alpha_b \sqrt{d}/\sqrt{T} + d/\sqrt{Tq}), where the last error term O(d/\sqrt{Tq}) is induced by ZO gradient estimation error. In order to further improve the rate to O(\sqrt{d}/\sqrt{T}), it is required to make the number of random direction samples  proportional to . Similar to other ZO methods (Liu et al. 2018; Hajinezhad et al. 2017), the large q helps to reduce the variance of ZO gradient estimates.
+
+Yes, we believe it is extremely likely that it is possible to extend our work in this direction. 
+
+Last but not the least, our goal is not to 'combine' ZO and signSGD. As a matter of fact, ZO-signSGD has been well motivated in the design of black-box adversarial examples (Ilyas et al., 2018a). However, the formal connection between optimization theory and adversarial ML was not fully established. Our work provides a comprehensive study on ZO-signSGD from multiple perspectives including convergence analysis, gradient estimator, and applications. We really hope that the reviewer can recognize the contributions of this work in both theory and practice. 
+
+On the other hand,  the assumption of b = O(T) might not be necessary if n < O(T), where n is the total number of individual cost functions. Suppose that b = n and we use mini-batch sampling without replacement, then ZO-signSGD becomes ZO-signGD. This leads to the convergence rate O(\sqrt{d}/\sqrt{T} + d/\sqrt{nq}). In this case, we can improve the rate to recover O(\sqrt{d}/\sqrt{T}) by only setting the number of random direction vectors induced by ZO gradient estimation, . It is worth mentioning that such an improvement  cannot be achieved by ZO-signSGD using mini-batch with replacement even if b = n with the same setting of q. We refer reviewer to our detailed analysis in the last paragraph of Sec. 4.
+We hope that we have convinced Reviewer 1 that our results are plausible in both theory and practice and sincerely ask the reviewer to reevaluate our work. 
+
+
+    Q8b) The paper is very hard to read, and the writing of this paper needs to be improved. For example, what is "b" in Table 1? It is not easy to understand when readers read the summarized results in Table 1 without any explanation of "b". I would like to suggest the authors write the "b" and "s_n" in terms of "n" and "\epsilon". In Theorem 3, what is $g_\eta$? Is it gradient mapping?
+
+First, beyond signSGD, our established results apply to the case of mini-batch sampling without replacement. And thus, ZO-signGD can be treated as a special case in our analysis.
+
+We thank the reviewer for pointing out the errors and typos. Throughout the paper, we have tried our best to address reviewers’ comments and to make our presentation as clear as possible.
+
+
+
+
+   
+       
+ 
+
+
+
+ 
+
+        Does the objective function in (21) satisfy the problem setting of (1)? I am also wondering if the loss function in (21) is smooth?
+   The target black-box model is commonly used for ZO nonconvex machine learning (e.g., Liu et al. 2018) based on pre-trained DNN on the MNIST dataset 
+(Carlin et. al. 2017). Given the network is optimized using back propagation and by the boundedness of the sigmoid function, the smoothness assumption is indeed satisfied the smoothness for the proposed target loss. We have clarified this point in revised paper.
+
+The least squared formulation is commonly used for nonconvex machine learning (Xue et al. 2017), given the fact that the standard logistic regression yields a convex problem. Since we study ZO-signSGD in the nonconvex setting, we choose to solve the least squared binary classification problem in order to make empirical studies consistent with theory. And Assumption A2 is indeed satisfied for the proposed problem. This is not difficult to prove by the boundedness of the sigmoid function. We have clarified this point in Sec. 6.
+
+
+    Q9. [QUESTIONS FOR THE AUTHORS] Please provide questions for authors to address during the author feedback period.
+        please see the Detailed Comments.
+    Q10. [OVERALL SCORE]
+        5 - Marginally below threshold
+
+************************************************************************************************************************************
+
+
+
+    Q1. [Summary] Please summarize the main claims/contributions of the paper in your own words.
+        In this paper, the authors propose a novel proximal algorithm for the stochastic non-convex non-smooth optimization problems (ZO-PSVRG+) and provide an inproved analysis for a few ZO-SVRG type algorithms. This paper and algorithms are well-supported theoretically and practically and yield better convergence rates than the existing methods in this area (designed earlier by Nesterov, Ghadimi, Lan, and others). The theoretical part seems to be correct, while I have checked all the technical details of the proofs. The authors demonstrated the practical efficiency of their algorithm over an example of adversarial attacks on black-box DNNs, where it shows better performance than the state-of-the-art methods. I should also note that the paper is well-written and structured.
+
+        I regard this contribution as very valuable and have only a few minor suggestions. 
+    Q2. [Relevance] Is this paper relevant to an AI audience?
+        Likely to be of interest to a large proportion of the community
+    Q3. [Significance] Are the results significant?
+        Significant
+    Q4. [Novelty] Are the problems or approaches novel?
+        Novel
+    Q5. [Soundness] Is the paper technically sound?
+        Technically sound
+    Q6. [Evaluation] Are claims well-supported by theoretical analysis or experimental results?
+        Sufficient
+    Q7. [Clarity] Is the paper well-organized and clearly written?
+        Good
+    Q8. [Detailed Comments] Please elaborate on your assessments and provide constructive feedback.
+        In this paper, the authors proposed a novel optimization method and an improved analysis of zero-order stochastic variance reduced methods, that outperforms state-of-the-art results in this area. The paper has sufficient theoretical and empirical support, and the reviewer has some minor concerns/questions to the authors. 
+    Q9. [QUESTIONS FOR THE AUTHORS] Please provide questions for authors to address during the author feedback period.
+        Technical questions:
+        1. Table 1. Is there any analysis regarding the lower complexity bounds of this class of methods?
+        2. Figure 1 vs Figure 2.: If I understand correctly the behavior of RandSGE and ZO-ProxSVRG is very different for different test cases. If so, could you please explain where this difference is coming from?
+
+         
+       A9-1- We thank R3 for the positive comments on our paper and careful review of our work. 
+     The reviewer brings up a very interesting point of discussion. In the previos convergence analysis of ZO-optimization setting, it remained as an open question if the dependency on dimension problem (d) is optimal. Our theoritical result provides a convergence result without dependency on (d) compared to the previous analysis (Gu et al. 2018a). Our proofs can be considered as road-map for future research on improving the complexity of ZO machine learning algorithms. Given this, it makes sense that some dependency on the problem dimension is tolerable from a complexity standpoint, and that it is only a question of how much. 
+
+
+A9-2- The variance operation could mitigate the negative effect of gradient noise of large variance. Recall that the ZO gradient estimate is a biased approximation to the true gradient, and thus, could suffer larger noise variance than (first-order) stochastic gradients. In this context, one could benefit from variance reduction due to its robustness to gradient noise.
+In Figurs 1 and 2, we show that variance reduced gradient estimation via ZO oracle indeed encounters gradient noise of large variance. 
+
+
+both our empirical results and theoretical results confirm that ZO-signSGD converge faster than ZO-SGD to moderate accuracy. In theory,  the convergence rate of ZO-signSGD is measured through the L2 norm | \nabla f(x_R) |_2  rather than its squared counterpart | \nabla f(x_R) |_2^2, where the latter was used to evaluate the convergence of ZO-SGD. We recall from (Ghadimi & Lan, 2013, Theorem 3.2 & Corollary 3.3) that ZO-SGD yields the convergence error E [ | \nabla f(x_R) |_2^2 ] \leq O(\sqrt{d}/\sqrt{T}).
+
+Second, in the last technical challenge, we aimed to emphasize that both the sign operation and the ZO random gradient estimation are biased approximations to the true gradient. Note that the sign-based descent algorithm measures the convergence in L1 geometry, which introduces a mismatch with the squared L2  norm used in bounding the variance of ZO gradient estimates. In addition to relating f_mu with f, we need to translate the gradient norm from L1 to L2 and use the probabilistic convergence method to derive the eventual convergence error bound (see Theorem 1).
+
+
+ . 
+
+       A9-2- 
+
+        Typos and minor comments:
+        1. Figure 1, b -- should not "comparison on"be removed?
+        2. A few typos like: "methods obtains" -> "methods obtain"; "global linear convergence rate", "restart" should come with an article, etc.
+
+        Other than that, the paper looks good for me. Thank you for your contribution. 
+    Q10. [OVERALL SCORE]
+        8 - Accept (Top 50% accepted papers (est.))
+
+
+************************************************************************************************************************************
+
+We are confident that from the technical viewpoint, our work has solved longstanding and challenging problems in ZO optimization. The impact and the significance of our results are evident from the section of Main Contributions and Table 1 in the paper. 
+We believe that the comments from the first reviewer show that they are not expert in the subject area of our paper and technically they failed to provide any relevant comment. For example, in the paper we let \nabla_r denote the random gradient optimization, and the reviewer asked for the relevance of "r in equation (2)". Their other comments are similarly unrelevant and indicate significant misunderstanding of the topic. In light of our responses to the reviewers' comments and the significance of our contributions, we sincerely ask the area chair to assign our paper to another reviewer and we invite the reviewers' comments on anything that technically would help improve our paper and its impact on the ML community. Regards, Authors
+
+Area Chair
+
+We are confident that from the technical viewpoint, our work has solved longstanding and challenging problems in ZO optimization. 
+The impact and the significance of our results are evident from the section of Main Contributions and Table 1 in the paper. 
+In addition, our novel proofs of convergence for ZO optimization setting in the paper can be seen as a roadmap to prove convergence for other ZO algorithm implementations. We believe that the comments from the first reviewer show that they are not expert in the subject area of our paper and technically they failed to provide any relevant comment. For example, in the paper we let \nabla_r denote the random gradient optimization, and the reviewer asked for the relevance of "r in equation (2)". Their other comments are similary unrelevant and indicate significant misunderstanding of the topic. In light of our responses to the reviewers' comments and the significance of our contributions, we scincerely ask the area chair to assign our paper to another reviewer and we invite the reviewers' comments on anything that technically would help improve our paper and its impact on the ML community. 
+Sincerely,
+Authors
+
+
+In light of our responses to the reviewers' comments and our contributions, we hope that you will reconsider our current scores. 
+We thank the reviewer for their time and consideration of our work. We hope that we can convince the reviewer to increase their score. We believe that our work solves a difficult outstanding problem in the field of asynchronous optimization, and provides a valuable contribution to ICLR.
+ Throughout the paper, we have tried our best to address reviewers’ comments and to make our presentation as clear as possible.
+
+We invite the reviewers' comments on anything else that would help improve our paper and its impact on the ML community. It would be a great honor to present our work at ICML 2019. Sincerely,
+

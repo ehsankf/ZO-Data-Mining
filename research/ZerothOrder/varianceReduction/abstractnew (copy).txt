@@ -1,0 +1,105 @@
+{what has been done}
+
+ Our theoretical investigation on ZO-SPGD provides a general framework to study the convergence rate of zeroth-order algorithms.
+
+
+
+{proximal methods}
+
+In this paper we consider the composite problems which are given by the summation of a differentiable (possibly nonconvex) component, together
+with a possibly non-differentiable but convex component.
+Proximal gradient method has been playing an important role
+to these non-smooth problems.
+
+
+
+{zeroth-order methods}
+
+ However, in some machine learning problems
+ such as the bandit model and the black-box learning
+problem, proximal gradient method could fail because the explicit gradients of these problems are difficult or infeasible to
+obtain. The gradient-free (zeroth-order) method can address
+these problems because only the objective function values are
+required in the optimization.
+
+However, there are some machine learning problems that cannot be described
+ by analytical forms but can provide function evaluations, such as measurements from physical  environments  or  predictions  from  deployed  machine learning  models.  These  types  of  problems  fall  into  zeroth-order (gradient-free) optimization with respect to black-box models and such settings necessitate the use of methods for derivative-free, or zeroth-order, optimization.
+For example, The goal of a decision-based adversarial attack on a trained model is to generate adversarial examples based solely on observing output labels returned by the targeted model.
+
+The gradient-free (zeroth-order) method can address
+these problems because only the objective function values are
+required in the optimization.
+
+Several types of proximal zeroth-order stochastic algorithms have recently been designed for nonconvex optimization 
+based on the first-order techniques of stochastic variance reducion. 
+
+The existing studies suggest that ZO algorithms typically  agree  with  the  iteration  complexity  of  first-order  algorithms  up  to  a  small-degree  polynomial  of  the  problem  size.
+
+{what is the problem with existing methods}
+
+However, all existing SVRG-type zeroth-order algorithms suffer from worse function query 
+complexities than either zeroth-order gradient descent (ZO-GD) or stochastic gradient 
+descent (ZO-SGD).
+
+ Recently, the first zeroth-order
+proximal stochastic algorithm was proposed to solve the non-
+convex nonsmooth problems. However, its convergence rate
+is $O(\frac{1}{\sqrt{T}})$ for the nonconvex problems, which is significantly
+slower than the best convergence rate $O(\frac{1}{T})$ of the zeroth-
+order stochastic algorithm, where $T$ is the iteration number.
+
+To fill this gap, in the paper, we propose a class of faster
+zeroth-order proximal stochastic methods with the variance
+reduction techniques of SVRG and SAGA, which are denoted
+as ZO-ProxSVRG and ZO-ProxSAGA, respectively.
+
+
+{what we want to do}
+In this paper,  on  the  theory  side,  we  will  elaborate on  ZO  gradient  estimation  
+and  the  convergence  rate  of  various ZO algorithms.
+
+In addtion, We analyze a new zeroth-order stochastic gradient algorithms for optimizing nonconvex, nonsmooth finite-sum problems.
+We propose a proximal stochastic gradient algorithm based
+on variance reduction, called ZO-ProxSVRG+. In addition, we also analyze the effects of different types of gradient estimators on the convergence of ZO-PVRG+, and propose two variants of ZO-PVRG+ that  at least  achieve $O(\sqrt{d}/\sqrt{T})$ convergence rate, where $d$ is the number of optimization variables, and $T$ is the number of iterations. 
+The analysis of ProxSVRG+ recovers several
+existing convergence results and improves/generalizes them (in terms of the number of stochastic gradient oracle
+calls and proximal oracle calls). In particular, ZO-PSVRG+ generalizes the best results given by the SCSG algorithm,
+recently proposed by [Lei et al., 2017] for only smooth nonconvex case. Our study  shows that ZO-ProxSVRG requires 
+$\sqrt{d}$ times less iterations than ZO-SCSG. ProxSVRG+ is also more straightforward than
+SCSG and yields simpler analysis. Moreover, ProxSVRG+ outperforms the deterministic proximal gradient descent
+(ProxGD) for a wide range of minibatch sizes, which partially solves an open problem proposed in [Reddi et al.,
+2016b].  We develop a new analysis for an existing ZO-ProxSVRG algorithm and we show that under our new analysis, ZO-ProxSVRG outperforms 
+other exiting SVRG-type zeroth-order methods as well as ZO-GD and ZO-SGD. In particulare, we address the main challenge that bounded
+gradient does not hold in the zeroth-order case, which was required in previous theoretical analysis
+of both SVRG and SAGA. Also, ProxSVRG+ uses much less proximal oracle calls than ProxSVRG [Reddi et al., 2016b].
+
+We then discuss developments in randomized methods, methods that assume some additional structure about the objective (Polyak-Łojasiewicz condition), and  we prove that ProxSVRG+ achieves a global linear
+convergence rate without restart unlike ProxSVRG with improved  zeroth-order convergence rate and query complexity compared to ZO-SCSG and generalizes the results of ZO-SCSG in this case for a wide range of minibatch sizes.
+
+
+{Advantages}
+
+
+
+
+
+
+{experimental results}
+Finally, we conduct
+several experiments and the experimental results are consistent with the theoretical results.
+
+Finally, the experimental results verify
+that our algorithms have a faster convergence rate than the
+existing zeroth-order proximal stochastic algorithm.
+
+Our empirical studies on the black-box binary classification and black-box adversarial attack problem
+validate  that  the studied algorithms under improved analysis  can  achieve  superior performance with  a  lower  query complexity.
+
+Finally, we conduct the experiments of black-box binary classification and structured adversarial attack on black-box deep neural network to validate the efficiency of our algorithms.
+
+.On  the  application  side,  we  will  delve  into  applications  of  ZOalgorithms  on  studying  the  robustness  of  deep  neural  networksagainst adversarial perturbations. In particular, we will illustratehow to formulate the design of black-box adversarial attacks as aZO optimization problem and how adversarial attacks can benefitfrom  advanced  ZO  optimization  techniques,  such  as  providingquery-efficient  approaches  to  generating  adversarial  examplesfrom  a  black-box  image  classifier.
+
+On the application side we explore the connection between ZO-signSGD and  black-box adversarial attacks in robust deep learning.  Our empirical evaluations on image classification datasets MNIST and CIFAR-10 demonstrate the superior performance of ZO-signSGD on the generation of   adversarial examples from black-box neural networks.
+
+
+

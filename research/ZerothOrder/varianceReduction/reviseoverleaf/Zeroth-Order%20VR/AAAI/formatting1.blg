@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: formatting1.aux
+The style file: aaai.bst
+Database file #1: GTA.bib
+You've used 29 entries,
+            2568 wiz_defined-function locations,
+            731 strings with 10049 characters,
+and the built_in function-call counts, 14269 in all, are:
+= -- 1562
+> -- 537
+< -- 17
++ -- 188
+- -- 182
+* -- 1062
+:= -- 2152
+add.period$ -- 148
+call.type$ -- 29
+change.case$ -- 205
+chr.to.int$ -- 27
+cite$ -- 29
+duplicate$ -- 602
+empty$ -- 1033
+format.name$ -- 225
+if$ -- 3088
+int.to.chr$ -- 3
+int.to.str$ -- 0
+missing$ -- 31
+newline$ -- 180
+num.names$ -- 87
+pop$ -- 204
+preamble$ -- 1
+purify$ -- 236
+quote$ -- 0
+skip$ -- 514
+stack$ -- 0
+substring$ -- 905
+swap$ -- 221
+text.length$ -- 17
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 224
+warning$ -- 0
+while$ -- 120
+width$ -- 31
+write$ -- 409

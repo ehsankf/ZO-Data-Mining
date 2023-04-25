@@ -1,0 +1,17 @@
+optimizer ZOSAGA
+rv_dist CoordSphere
+target_label 1
+nFunc 10
+lambda2 1e-05
+lambda1 1e-05
+qx 28
+eta 0.017857142857142856
+qy 28
+B_size 1
+mu 0.001
+const 5
+nStage 3000
+save_path Results/ZOSAGA/
+batch_size 5
+alpha 0.5
+M 10

@@ -1,0 +1,281 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{johnson2013accelerating,reddi2016stochastic,nitanda2016accelerated,allen2016improved,lei2017non}
+\citation{beck2009fast}
+\citation{li2015accelerated}
+\citation{bertsekas2011incremental,xiao2014proximal}
+\citation{nesterov2013gradient}
+\citation{xiao2014proximal,defazio2014saga,lan2017optimal,allen2017katyusha}
+\citation{xiao2014proximal}
+\citation{johnson2013accelerating}
+\citation{ghadimi2016accelerated,reddi2016proximal}
+\citation{li2018simple}
+\citation{reddi2016proximal}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}what we want to do}{1}{subsection.1.1}}
+\newlabel{problem}{{1.1}{1}{what we want to do}{subsection.1.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Background in research}{1}{subsection.1.2}}
+\citation{wibisono2012finite}
+\citation{sokolov2016stochastic}
+\citation{shamir2017optimal}
+\citation{chen2017zoo}
+\citation{nesterov2017random}
+\citation{brent2013algorithms,spall2005introduction}
+\citation{papernot2017practical,madry2017towards,chen2017zoo}
+\citation{conn2009introduction}
+\citation{chen2019bandit,liu2017zeroth}
+\citation{fu2002optimization,lian2016comprehensive}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Reason to use zeroth--order techniques}{2}{subsection.1.3}}
+\citation{liu2017zeroth,flaxman2005online,shamir2013complexity,agarwal2010optimal,nesterov2017random,duchi2015optimal,shamir2017optimal,dvurechensky2018accelerated,wang2017stochastic}
+\citation{ghadimi2016accelerated}
+\citation{huang2019faster}
+\citation{ghadimi2016accelerated}
+\citation{liu2018zeroth}
+\citation{huang2019faster}
+\citation{ghadimi2013stochastic}
+\citation{gu2016zeroth}
+\citation{liu2018zeroth}
+\citation{huang2019faster}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Problem with existing methods}{3}{subsection.1.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5}Compare with other methods}{3}{subsection.1.5}}
+\citation{ghadimi2016accelerated,huang2019faster}
+\citation{liu2018zeroth}
+\citation{huang2019faster}
+\citation{ghadimi2016accelerated}
+\citation{huang2019faster}
+\citation{liu2018zeroth}
+\citation{liu2018zeroth}
+\citation{liu2018zeroth}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Main Challenge}{4}{section.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Main contributions}{4}{section.3}}
+\citation{}
+\citation{liu2018zeroth}
+\citation{polyak1963gradient}
+\citation{duchi2015optimal}
+\citation{flaxman2005online,shamir2013complexity}
+\citation{agarwal2010optimal,nesterov2017random}
+\citation{nesterov2017random}
+\citation{duchi2015optimal}
+\citation{liu2017zeroth,duchi2015optimal,shamir2017optimal,dvurechensky2018accelerated,wang2017stochastic}
+\citation{duchi2015optimal}
+\citation{shamir2017optimal}
+\citation{liu2017zeroth}
+\citation{yu2018generic,dvurechensky2018accelerated}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Related Works}{5}{section.4}}
+\citation{chen2017zoo,liu2018zeroth}
+\citation{lian2016comprehensive,nesterov2017random,ghadimi2013stochastic,hajinezhad2017zeroth,gu2016zeroth,kazemi2018proximal}
+\citation{ghadimi2013stochastic}
+\citation{liu2018stochastic,liu2018zeroth}
+\citation{huang2019faster}
+\citation{reddi2016proximal}
+\citation{ghadimi2013stochastic}
+\citation{gu2018inexact,lian2016comprehensive,gu2018faster}
+\citation{lian2016comprehensive}
+\citation{ghadimi2016accelerated}
+\citation{huang2019faster}
+\citation{liu2018zeroth}
+\citation{nesterov2017random}
+\citation{ghadimi2016accelerated}
+\citation{duchi2015optimal}
+\citation{liu2018zeroth}
+\citation{gu2018faster}
+\citation{gu2018faster}
+\citation{nesterov2017random,gao2018information}
+\citation{flaxman2005online,shamir2017optimal,gao2018information}
+\citation{lian2016comprehensive}
+\newlabel{table-compare}{{4}{7}{Related Works}{subsection.4.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Summary of convergence rate and function query complexity of SZO algorithms. NC: Nonconvex, C: Convex, SC: Strong Convexity, and PL: Polyak-\IeC {\L }ojasiewicz Condition.}}{7}{table.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Motivation at the end of related works}{7}{subsection.4.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Zeroth-order (ZO) gradient estimators}{7}{subsection.4.2}}
+\newlabel{gradestrand}{{2}{7}{Zeroth-order (ZO) gradient estimators}{equation.4.2}{}}
+\citation{gu2018inexact,gu2018faster,liu2018zeroth}
+\citation{liu2018zeroth}
+\citation{kazemi2018proximal}
+\citation{chen2017zoo}
+\citation{nesterov2017random,liu2018zeroth}
+\citation{xiao2014proximal,reddi2016proximal,li2018simple}
+\citation{huang2019faster}
+\citation{liu2018zeroth}
+\newlabel{gradestcoord}{{3}{8}{Zeroth-order (ZO) gradient estimators}{equation.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Accelerated Proximal Gradient Method}{8}{subsection.4.3}}
+\newlabel{po-operator}{{5}{8}{Accelerated Proximal Gradient Method}{equation.4.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Accelerated Proximal Gradient Method}{8}{section.5}}
+\citation{johnson2013accelerating,reddi2016stochastic,li2018simple}
+\citation{reddi2016proximal,li2018simple}
+\newlabel{APGnonconvex-Algo}{{5}{9}{Accelerated Proximal Gradient Method}{section.5}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces ZO-PSVRG+}}{9}{algorithm.1}}
+\newlabel{grad-fo}{{6}{9}{Accelerated Proximal Gradient Method}{equation.5.6}{}}
+\newlabel{zo-grad-fo}{{7}{9}{Accelerated Proximal Gradient Method}{equation.5.7}{}}
+\citation{ghadimi2016accelerated}
+\citation{ghadimi2016accelerated,nesterov2017random,liu2018zeroth}
+\citation{lian2016comprehensive,liu2018stochastic,liu2018zeroth,hajinezhad2017zeroth}
+\citation{duchi2015optimal,ghadimi2013stochastic,huang2019faster}
+\citation{liu2017zeroth,hajinezhad2017zeroth}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}reason to avoid full gradient calculation}{10}{subsection.5.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Convergence Analysis}{10}{section.6}}
+\newlabel{Lip-Zoo}{{6.1}{10}{}{theorem.6.1}{}}
+\newlabel{Var-Zoo}{{6.2}{10}{}{theorem.6.2}{}}
+\newlabel{var-estimate-lem}{{6.3}{11}{}{theorem.6.3}{}}
+\newlabel{var-estimate-lem-1}{{9}{11}{Convergence Analysis}{equation.6.9}{}}
+\newlabel{var-estimate-lem-2}{{10}{11}{Convergence Analysis}{equation.6.10}{}}
+\newlabel{var-estimate-lem-3}{{11}{11}{Convergence Analysis}{equation.6.11}{}}
+\newlabel{var-estimate-lem-4}{{12}{12}{Convergence Analysis}{equation.6.12}{}}
+\newlabel{var-estimate-lem-5}{{13}{12}{Convergence Analysis}{equation.6.13}{}}
+\newlabel{var-estimate-lem-6}{{14}{12}{Convergence Analysis}{equation.6.14}{}}
+\newlabel{var-estimate-lem-7}{{15}{12}{Convergence Analysis}{equation.6.15}{}}
+\newlabel{var-estimate-lem-4}{{16}{12}{Convergence Analysis}{equation.6.16}{}}
+\newlabel{var-estimate-lem-5}{{17}{12}{Convergence Analysis}{equation.6.17}{}}
+\newlabel{var-estimate-lem-6}{{18}{12}{Convergence Analysis}{equation.6.18}{}}
+\newlabel{var-estimate-lem-7}{{20}{12}{Convergence Analysis}{equation.6.20}{}}
+\citation{ghadimi2013stochastic,reddi2016stochastic,lei2017non,liu2018zeroth}
+\citation{ghadimi2016accelerated,reddi2016proximal,huang2019faster}
+\citation{ghadimi2016accelerated,reddi2016proximal,parikh2014proximal}
+\newlabel{young}{{23}{13}{Convergence Analysis}{equation.6.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Gradient Mapping}{13}{subsection.6.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Convergence}{14}{subsection.6.2}}
+\newlabel{noncon-zoo}{{6.5}{14}{}{theorem.6.5}{}}
+\newlabel{noncon-zoo-main}{{25}{14}{}{equation.6.25}{}}
+\newlabel{eq16}{{26}{14}{Convergence}{equation.6.26}{}}
+\newlabel{eq17}{{27}{14}{Convergence}{equation.6.27}{}}
+\newlabel{eq18}{{28}{15}{Convergence}{equation.6.28}{}}
+\newlabel{eq19}{{29}{15}{Convergence}{equation.6.29}{}}
+\newlabel{eq25}{{30}{15}{Convergence}{equation.6.30}{}}
+\newlabel{theor1-31}{{31}{15}{Convergence}{equation.6.31}{}}
+\newlabel{theor1-32}{{32}{15}{Convergence}{equation.6.32}{}}
+\newlabel{theor1-34}{{33}{16}{Convergence}{equation.6.33}{}}
+\newlabel{theor1-35}{{34}{16}{Convergence}{equation.6.34}{}}
+\citation{reddi2016proximal}
+\newlabel{theor1-eq36}{{35}{17}{Convergence}{equation.6.35}{}}
+\newlabel{corr11}{{6.6}{17}{}{theorem.6.6}{}}
+\newlabel{SZO-call-nocon}{{36}{17}{}{equation.6.36}{}}
+\newlabel{SZO-call-par-nocon}{{37}{17}{}{equation.6.37}{}}
+\citation{f}
+\citation{polyak1963gradient}
+\newlabel{theor1-eq37}{{38}{18}{Convergence}{equation.6.38}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Convergence Under PL Condition}{18}{section.7}}
+\citation{karimi2016linear}
+\citation{luo1993error,anitescu2000degenerate}
+\citation{li2018simple}
+\newlabel{zo-pl-cond}{{40}{19}{Convergence Under PL Condition}{equation.7.40}{}}
+\newlabel{PL-Zoo}{{7.1}{19}{}{theorem.7.1}{}}
+\newlabel{PL-eq-error}{{41}{19}{}{equation.7.41}{}}
+\newlabel{theo2-eq44}{{42}{19}{Convergence Under PL Condition}{equation.7.42}{}}
+\newlabel{theo2-eq46}{{45}{20}{Convergence Under PL Condition}{equation.7.45}{}}
+\newlabel{theo2-eq47}{{46}{20}{Convergence Under PL Condition}{equation.7.46}{}}
+\newlabel{eq48}{{47}{21}{Convergence Under PL Condition}{equation.7.47}{}}
+\newlabel{eq50}{{48}{21}{Convergence Under PL Condition}{equation.7.48}{}}
+\newlabel{eq51}{{49}{21}{Convergence Under PL Condition}{equation.7.49}{}}
+\newlabel{eq52}{{50}{21}{Convergence Under PL Condition}{equation.7.50}{}}
+\citation{duchi2015optimal,nesterov2017random,liu2018zeroth}
+\newlabel{PL-Zo-Cor}{{7.2}{22}{}{theorem.7.2}{}}
+\citation{reddi2016proximal}
+\citation{Johnson12}
+\citation{pedregosa2017breaking}
+\citation{huang2019faster}
+\newlabel{eq54}{{52}{23}{}{equation.7.52}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Experimental results}{23}{section.8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Black-Box Binary Classification}{23}{subsection.8.1}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Summary of training datasets.}}{24}{table.2}}
+\newlabel{metadata}{{2}{24}{Summary of training datasets}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Convergence performance of SVRG, SAGA, Katyusha, and AcPSVRG with single worker.}}{25}{figure.1}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {comparison on ijcnn}}}{25}{figure.1}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {comparison on covtype}}}{25}{figure.1}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {comparison on real-sim}}}{25}{figure.1}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {comparison on rcv1}}}{25}{figure.1}}
+\newlabel{fig:AcPSVRG_seq}{{1}{25}{Convergence performance of SVRG, SAGA, Katyusha, and AcPSVRG with single worker}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Training loss residual $f(x) - f(x^*)$ versus iteration (top) and time (bottom) plot of Async-SVRG, ProxASAGA, Async-Katyusha, and Async-AcPSVRG. }}{25}{figure.2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {comparison on ijcnn}}}{25}{figure.2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {comparison on covtype}}}{25}{figure.2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {comparison on real-sim}}}{25}{figure.2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {comparison on rcv1}}}{25}{figure.2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(e)}{\ignorespaces {comparison on ijcnn}}}{25}{figure.2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(f)}{\ignorespaces {comparison on covtype}}}{25}{figure.2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(g)}{\ignorespaces {comparison on real-sim}}}{25}{figure.2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(h)}{\ignorespaces {comparison on rcv1}}}{25}{figure.2}}
+\newlabel{fig:algo_comp}{{2}{25}{Training loss residual $f(x) - f(x^*)$ versus iteration (top) and time (bottom) plot of Async-SVRG, ProxASAGA, Async-Katyusha, and Async-AcPSVRG}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Adversarial Attacks on Black-Box DNNs}{25}{subsection.8.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Appendix}{26}{section.9}}
+\newlabel{CooSGE}{{9.2}{27}{}{theorem.9.2}{}}
+\newlabel{lemma1}{{9.3}{27}{}{theorem.9.3}{}}
+\newlabel{eq10}{{59}{27}{}{equation.9.59}{}}
+\newlabel{eq11}{{60}{27}{Appendix}{equation.9.60}{}}
+\newlabel{eq12}{{61}{27}{Appendix}{equation.9.61}{}}
+\bibstyle{plainnat}
+\bibdata{GTA}
+\bibcite{agarwal2010optimal}{{1}{2010}{{Agarwal et~al.}}{{Agarwal, Dekel, and Xiao}}}
+\bibcite{allen2017katyusha}{{2}{2017}{{Allen-Zhu}}{{}}}
+\bibcite{allen2016improved}{{3}{2016}{{Allen-Zhu and Yuan}}{{}}}
+\bibcite{anitescu2000degenerate}{{4}{2000}{{Anitescu}}{{}}}
+\newlabel{eq14}{{62}{28}{Appendix}{equation.9.62}{}}
+\newlabel{eq15}{{63}{28}{Appendix}{equation.9.63}{}}
+\newlabel{lemm-est-grad}{{9.4}{28}{}{theorem.9.4}{}}
+\newlabel{lemm-est-grad-1}{{64}{28}{Appendix}{equation.9.64}{}}
+\newlabel{lemm-est-grad-2}{{65}{28}{Appendix}{equation.9.65}{}}
+\newlabel{lemm-est-grad-3}{{66}{28}{Appendix}{equation.9.66}{}}
+\newlabel{lemm-est-grad-4}{{67}{28}{Appendix}{equation.9.67}{}}
+\bibcite{beck2009fast}{{5}{2009}{{Beck and Teboulle}}{{}}}
+\bibcite{bertsekas2011incremental}{{6}{2011}{{Bertsekas}}{{}}}
+\bibcite{brent2013algorithms}{{7}{2013}{{Brent}}{{}}}
+\bibcite{chen2017zoo}{{8}{2017}{{Chen et~al.}}{{Chen, Zhang, Sharma, Yi, and Hsieh}}}
+\bibcite{chen2019bandit}{{9}{2019}{{Chen and Giannakis}}{{}}}
+\bibcite{conn2009introduction}{{10}{2009}{{Conn et~al.}}{{Conn, Scheinberg, and Vicente}}}
+\bibcite{defazio2014saga}{{11}{2014}{{Defazio et~al.}}{{Defazio, Bach, and Lacoste-Julien}}}
+\bibcite{duchi2015optimal}{{12}{2015}{{Duchi et~al.}}{{Duchi, Jordan, Wainwright, and Wibisono}}}
+\bibcite{dvurechensky2018accelerated}{{13}{2018}{{Dvurechensky et~al.}}{{Dvurechensky, Gasnikov, and Gorbunov}}}
+\bibcite{flaxman2005online}{{14}{2005}{{Flaxman et~al.}}{{Flaxman, Kalai, and McMahan}}}
+\bibcite{fu2002optimization}{{15}{2002}{{Fu}}{{}}}
+\bibcite{gao2018information}{{16}{2018}{{Gao et~al.}}{{Gao, Jiang, and Zhang}}}
+\bibcite{ghadimi2013stochastic}{{17}{2013}{{Ghadimi and Lan}}{{}}}
+\bibcite{ghadimi2016accelerated}{{18}{2016}{{Ghadimi and Lan}}{{}}}
+\bibcite{gu2016zeroth}{{19}{2016}{{Gu et~al.}}{{Gu, Huo, and Huang}}}
+\bibcite{gu2018faster}{{20}{2018{a}}{{Gu et~al.}}{{Gu, Huo, Deng, and Huang}}}
+\bibcite{gu2018inexact}{{21}{2018{b}}{{Gu et~al.}}{{Gu, Wang, Huo, and Huang}}}
+\bibcite{hajinezhad2017zeroth}{{22}{2017}{{Hajinezhad et~al.}}{{Hajinezhad, Hong, and Garcia}}}
+\bibcite{huang2019faster}{{23}{2019}{{Huang et~al.}}{{Huang, Gu, Huo, Chen, and Huang}}}
+\bibcite{johnson2013accelerating}{{24}{2013}{{Johnson and Zhang}}{{}}}
+\bibcite{karimi2016linear}{{25}{2016}{{Karimi et~al.}}{{Karimi, Nutini, and Schmidt}}}
+\bibcite{kazemi2018proximal}{{26}{2018}{{Kazemi and Wang}}{{}}}
+\bibcite{lan2017optimal}{{27}{2017}{{Lan and Zhou}}{{}}}
+\bibcite{lei2017non}{{28}{2017}{{Lei et~al.}}{{Lei, Ju, Chen, and Jordan}}}
+\bibcite{li2015accelerated}{{29}{2015}{{Li and Lin}}{{}}}
+\bibcite{li2018simple}{{30}{2018}{{Li and Li}}{{}}}
+\bibcite{lian2016comprehensive}{{31}{2016}{{Lian et~al.}}{{Lian, Zhang, Hsieh, Huang, and Liu}}}
+\bibcite{liu2018stochastic}{{32}{2018{a}}{{Liu et~al.}}{{Liu, Cheng, Hsieh, and Tao}}}
+\bibcite{liu2017zeroth}{{33}{2017}{{Liu et~al.}}{{Liu, Chen, Chen, and Hero}}}
+\bibcite{liu2018zeroth}{{34}{2018{b}}{{Liu et~al.}}{{Liu, Kailkhura, Chen, Ting, Chang, and Amini}}}
+\bibcite{luo1993error}{{35}{1993}{{Luo and Tseng}}{{}}}
+\bibcite{madry2017towards}{{36}{2017}{{Madry et~al.}}{{Madry, Makelov, Schmidt, Tsipras, and Vladu}}}
+\bibcite{nesterov2013gradient}{{37}{2013}{{Nesterov}}{{}}}
+\bibcite{nesterov2017random}{{38}{2017}{{Nesterov and Spokoiny}}{{}}}
+\bibcite{nitanda2016accelerated}{{39}{2016}{{Nitanda}}{{}}}
+\bibcite{papernot2017practical}{{40}{2017}{{Papernot et~al.}}{{Papernot, McDaniel, Goodfellow, Jha, Celik, and Swami}}}
+\bibcite{parikh2014proximal}{{41}{2014}{{Parikh et~al.}}{{Parikh, Boyd, et~al.}}}
+\bibcite{polyak1963gradient}{{42}{1963}{{Polyak}}{{}}}
+\bibcite{reddi2016stochastic}{{43}{2016{a}}{{Reddi et~al.}}{{Reddi, Hefny, Sra, Poczos, and Smola}}}
+\bibcite{reddi2016proximal}{{44}{2016{b}}{{Reddi et~al.}}{{Reddi, Sra, P{\'o}czos, and Smola}}}
+\bibcite{shamir2013complexity}{{45}{2013}{{Shamir}}{{}}}
+\bibcite{shamir2017optimal}{{46}{2017}{{Shamir}}{{}}}
+\bibcite{sokolov2016stochastic}{{47}{2016}{{Sokolov et~al.}}{{Sokolov, Kreutzer, Riezler, and Lo}}}
+\bibcite{sokolov2018sparse}{{48}{2018}{{Sokolov et~al.}}{{Sokolov, Hitschler, and Riezler}}}
+\bibcite{spall2005introduction}{{49}{2005}{{Spall}}{{}}}
+\bibcite{wainwright2008graphical}{{50}{2008}{{Wainwright et~al.}}{{Wainwright, Jordan, et~al.}}}
+\bibcite{wang2017stochastic}{{51}{2017}{{Wang et~al.}}{{Wang, Du, Balakrishnan, and Singh}}}
+\bibcite{wibisono2012finite}{{52}{2012}{{Wibisono et~al.}}{{Wibisono, Wainwright, Jordan, and Duchi}}}
+\bibcite{xiao2014proximal}{{53}{2014}{{Xiao and Zhang}}{{}}}
+\bibcite{yu2018generic}{{54}{2018}{{Yu et~al.}}{{Yu, King, Lyu, and Yang}}}

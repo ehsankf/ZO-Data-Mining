@@ -1,0 +1,82 @@
+{what has been done}
+
+ Our theoretical investigation on ZO-SPGD provides a general framework to study the convergence rate of zeroth-order algorithms.
+
+
+
+{proximal methods}
+
+In this paper we consider the composite problems which are given by the summation of a differentiable (possibly nonconvex) component, together
+with a possibly non-smooth but convex component.
+Proximal gradient method has been playing an important role
+to these non-smooth problems.
+
+
+
+{zeroth-order methods}
+
+ However, in some machine learning problems
+ such as the bandit model and the black-box learning
+problem, proximal gradient method could fail because the explicit gradients of these problems are difficult or infeasible to
+obtain. The gradient-free (zeroth-order) method can address
+these problems because only the objective function values are
+required in the optimization.
+
+These  types  of  problems  fall  into  zeroth-order (gradient-free) optimization with respect to black-box models and such settings necessitate the use of methods for derivative-free, or zeroth-order, optimization.
+For example, The goal of a decision-based adversarial attack on a trained model is to generate adversarial examples based solely on observing output labels returned by the targeted model.
+
+The gradient-free (zeroth-order) method can address
+these problems because only the objective function values are
+required in the optimization.
+
+Several types of proximal zeroth-order stochastic algorithms have recently been designed for nonconvex optimization 
+based on the first-order techniques of stochastic variance reducion, e.g., ZO-ProxSVRG and ZO-ProxSAGA \cite{}. 
+
+The existing studies suggest that ZO algorithms typically  agree  with  the  iteration  complexity  of  first-order  algorithms  up  to  a  small-degree  polynomial  of  the  problem  size.
+
+
+{what is the problem with existing methods}
+
+However, all existing SVRG-type zeroth-order algorithms suffer from worse function query 
+complexities than either zeroth-order gradient descent (ZO-GD) or stochastic gradient 
+descent (ZO-SGD).
+
+
+
+
+
+
+{what we want to do}
+To fill this gap, in this paper,  on  the  theory  side,  we  will  elaborate on  ZO  gradient  estimation  
+and  the  convergence  rate  of  various ZO algorithms.
+
+To this end, we analyze a new zeroth-order stochastic gradient algorithms for optimizing nonconvex, nonsmooth finite-sum problems, called ZO-PSVRG+. We analyze the effects of different types of gradient estimators on the convergence of ZO-PSVRG+, and propose two variants of ZO-PVRG+ that  at least  achieve $O(\sqrt{d}/\sqrt{T})$ convergence rate, where $d$ is the number of optimization variables, and $T$ is the number of iterations. 
+The analysis of ProxSVRG+ recovers several
+existing convergence results and improves/generalizes them (in terms of the number of stochastic gradient oracle
+calls and proximal oracle calls). In particular, ZO-PSVRG+ generalizes the best results given by SCSG algorithm for nonconvex 
+but only smooth case [Lei et al., 2017]. Our study  shows that ZO-ProxSVRG requires 
+$\sqrt{d}$ times less iterations than ZO-SCSG. ZO-ProxSVRG+ is also more straightforward than
+SCSG and yields simpler analysis. Moreover, ProxSVRG+ outperforms the deterministic proximal gradient descent
+(ProxGD) for a wide range of minibatch sizes, while the improvement for ZO-SCSG is only acheived for large minibatch sizes.  In addition, we develop a new analysis for an existing ZO-ProxSVRG algorithm and we show that under our new analysis, ZO-ProxSVRG outperforms 
+other exiting proximal SVRG-type zeroth-order methods. We further address the main challenge that bounded
+gradient does not hold, which was required in previous theoretical analysis of both ZO-ProxSVRG and ZO-ProxSAGA. Also, ProxSVRG+ uses much less proximal oracle calls than ZO-ProxSVRG.
+
+We then discuss developments in randomized methods that assume some additional structure about the objective (Polyak-Łojasiewicz condition), and  we prove that ZO-ProxSVRG+ achieves a global linear convergence rate without restart unlike ProxSVRG with improved  zeroth-order convergence rate and query complexity compared to ZO-SCSG. This analysis also generalizes the results of ZO-SCSG in this case for a wide range of minibatch sizes for nonsmooth objectives.
+
+
+{Advantages}
+
+
+
+
+
+
+{experimental results}
+
+Our empirical studies on the black-box binary classification and black-box adversarial attack problem
+validate  that  the studied algorithms under improved analysis  can  achieve  superior performance with  a  lower  query complexity.
+
+
+
+
+

@@ -1,0 +1,17 @@
+optimizer ZOSAGA
+qx 1
+qy 1
+alpha 0.2
+M 10
+nStage 3000
+const 5
+lambda2 1e-05
+lambda1 1e-05
+nFunc 10
+B_size 1
+batch_size 5
+mu 0.001
+rv_dist UnitSphere
+target_label 1
+save_path Results/ZOSAGA/
+eta 0.0071428571428571435

@@ -1,0 +1,77 @@
+\def\year{2019}\relax
+%File: formatting-instruction.tex
+\documentclass[letterpaper]{article} %DO NOT CHANGE THIS
+\usepackage{aaai19}  %Required
+\usepackage{times}  %Required
+\usepackage{helvet}  %Required
+\usepackage{courier}  %Required
+\usepackage{url}  %Required
+\usepackage{graphicx}  %Required
+\frenchspacing  %Required
+\setlength{\pdfpagewidth}{8.5in}  %Required
+\setlength{\pdfpageheight}{11in}  %Required
+%PDF Info Is Required:
+  \pdfinfo{
+/Title (2019 Formatting Instructions for Authors Using LaTeX)
+/Author (AAAI Press Staff)}
+\usepackage{algorithm,amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{mathtools}
+\usepackage{newtxtext,newtxmath}
+ 
+\usepackage[tight,footnotesize]{subfigure}
+\let\openbox\relax
+\usepackage{amsthm}
+\usepackage[dvipsnames]{xcolor}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\Po}{\text{Prox}}
+\newcommand*{\Am}{\text{argmin}}
+\newcommand*{\E}{\mathbb{E}}
+\newcommand*{\VRG}{\,\tilde{\nabla}_k^s}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\Iprod}[2]{\left\langle #1,#2\right\rangle}
+\newcommand\myeq[2]{\mathrel{\stackrel{{{#1}}}{#2}}}
+
+\renewcommand{\algorithmicrequire}{
+\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\Initialize}{\textbf{Initialize:}{\,}}
+\newcommand{\Input}{\textbf{Input:}{\,}}
+\newcommand{\Output}{\textbf{Output:}{\,}}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{corollary}{Corollary} 
+\newtheorem{definition}{Definition}
+\newtheorem{statement}[theorem]{Statement}
+\newtheorem{notation}[theorem]{Notation} 
+\newtheorem{remark}{Remark}
+\newtheorem{Assumption}{Assumption}
+\setcounter{secnumdepth}{0}  
+\includeonly{supplement}
+%Remove this for aaai reference
+%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[numbers]{natbib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ \begin{document}
+% The file aaai.sty is the style file for AAAI Press 
+% proceedings, working notes, and technical reports.
+%
+%\title{Distributed Accelerated Proximal Optimization Algorithms with Variance Reduction
+%}
+%\maketitle
+
+\include{main1}
+\include{supplement}
+
+%\bibliography{GTA}
+%\bibliography{VarianceReductionAAAI}
+%\bibliographystyle{aaai}
+
+\end{document}

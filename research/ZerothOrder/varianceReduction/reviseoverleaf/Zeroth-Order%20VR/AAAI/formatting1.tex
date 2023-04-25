@@ -1,0 +1,105 @@
+\def\year{2020}\relax
+%File: formatting-instruction.tex
+\documentclass[letterpaper]{article} %DO NOT CHANGE THIS
+\usepackage{aaai20}  %Required
+\usepackage{times}  %Required
+\usepackage{helvet}  %Required
+\usepackage{courier}  %Required
+\usepackage[hyphens]{url}  %Required
+\usepackage{graphicx}  %Required
+\frenchspacing  %Required
+\setlength{\pdfpagewidth}{8.5in}  %Required
+\setlength{\pdfpageheight}{11in}  %Required
+%PDF Info Is Required:
+  \pdfinfo{
+/Title (2019 Formatting Instructions for Authors Using LaTeX)
+/Author (AAAI Press Staff)}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm,amsmath}
+\usepackage{mathtools}
+\usepackage{newtxtext,newtxmath}
+\let\openbox\relax
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage[utf8]{inputenc}
+\usepackage{subfig}
+\usepackage[dvipsnames]{xcolor}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\Po}{\text{Prox}}
+\newcommand*{\Am}{\text{argmin}}
+\newcommand*{\E}{\mathbb{E}}
+\newcommand*{\VRG}{\,\tilde{\nabla}_k^s}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\Iprod}[2]{\left\langle #1,#2\right\rangle}
+\newcommand\myeq[2]{\mathrel{\stackrel{{{#1}}}{#2}}}
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\renewcommand{\algorithmicrequire}{
+\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\Initialize}{\textbf{Initialize:}{\,}}
+\newcommand{\Input}{\textbf{Input:}{\,}}
+\newcommand{\Output}{\textbf{Output:}{\,}}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{corollary}[theorem]{Corollary} 
+\newtheorem{definition}{Definition}
+\newtheorem{statement}[theorem]{Statement}
+\newtheorem{notation}[theorem]{Notation} 
+\newtheorem{remark}{Remark}
+\newtheorem{assumption}{Assumption}
+\setcounter{secnumdepth}{0}  
+\newcommand{\keepcomment}{1}% Remove comment
+\AtBeginDocument{\ifnum\keepcomment=1
+  \excludecomment{comment}
+\else
+  \includecomment{comment}
+\fi}
+\allowdisplaybreaks
+\includeonly{sub1}
+\begin{document}
+% The file aaai.sty is the style file for AAAI Press 
+% proceedings, working notes, and technical reports.
+%
+\title{Efficient Derivative-Free Proximal Stochastic Methods and Analysis for Nonconvex Nonsmooth Optimization}
+\author{
+Paper ID: 5869
+}
+% \author{
+% Ehsan Kazemi, Deliang Fan, and Liqiang Wang\\
+% Department of Computer Science,
+% University of Central Florida\\
+% %ehsan$\underline{~~}$kazemy@knights.ucf.edu, lwang@cs.ucf.edu\\
+% }
+%\iffalse
+\maketitle
+\begin{abstract}
+Proximal gradient method has an important role
+in solving nonsmooth composite optimization problems. However, in some machine learning problems  proximal gradient method could not be leveraged because the explicit gradients of these problems are not accessible. Associated with black-box models, these  types  of  problems fall  into  zeroth-order (ZO) optimization. Several varieties of proximal zeroth-order variance reduced stochastic algorithms  for nonconvex optimization have recently been introduced  based on the first-order techniques of stochastic variance reduction. 
+However, all existing ZO-SVRG type  algorithms suffer from function query complexities up  to a small-degree  polynomial  of  the  problem  size. To fill this gap, we design a new zeroth-order stochastic gradient algorithm for optimizing nonconvex, nonsmooth finite-sum problems, called ZO-PSVRG+. The analysis of ZO-PSVRG+ recovers several
+existing convergence results and improves their ZO oracle calls and proximal oracle calls. In particular, ZO-PSVRG+ yields simpler analysis  for a wide range of minibatch sizes, while the improved analysis of ZO-SVRG for smooth functions in \cite{ji2019improved} is only achieved for large minibatch sizes based on an involved parameter selection. We further prove that ZO-PSVRG+ under Polyak-Łojasiewicz condition in contrast to the existent ZO-SVRG type methods obtains a global linear convergence for a wide range of minibatch sizes. Our empirical experiments on black-box binary classification and black-box adversarial attack problem
+validate  that  the studied algorithms under our new analysis  can  achieve  superior performance with a lower  query complexity. 
+\end{abstract}
+%\fi
+\noindent 
+
+\input{sub}
+%\section{Acknowledgements}
+%This work is partially supported by NSF IIS-1741431 award. 
+\fontsize{9pt}{10.8pt} \selectfont
+\bibliographystyle{aaai}
+\bibliography{GTA}
+
+\onecolumn % <==========================================================
+%\renewcommand\theequation{A-\arabic{equation}}
+%\renewcommand{\theequation}{S\arabic{equation}}
+%\input{sub1}
+%\bibliography{GTAsupp}
+
+\end{document}

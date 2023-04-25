@@ -1,0 +1,350 @@
+In this section, we present the complete proofs of the above lemmas and theorems. In the beginning, we give some useful properties of CoordSGE and RandSGE, respectively.
+\begin{lemma}[\cite{liu2018zeroth}]\label{CooSGE}
+Suppose that the function $f(x)$ is $L$-smooth. Let $\hat{\nabla} f(x)$ denote the estimated gradient defined by CoordSGE. Define $f_{\mu} = \E_{u\sim U[-\mu, \mu]} f(x+ue_j)$, where $U[-\mu,\mu]$ denotes the uniform distribution on the interval $[-\mu, \mu]$. Then for any $x \in \R^d$ we have 
+\begin{enumerate}
+\item $f_{\mu}$ is $L$-smooth, and 
+$\hat{\nabla} f(x) = \sum_{j=1}^d \frac{\partial f_{\mu}(x)}{\partial x_j}e_j$.
+
+\item $\abs{f_{\mu}(x) - f(x)} \leq \frac{L\mu^2}{2}$ and $\abs{\frac{\partial f_{\mu}(x)}{\partial x_j}} \leq \frac{L\mu^2}{2}$.
+ 
+\item $\norm{\hat{\nabla} f(x) - {\nabla} f(x)} ^2 \leq \frac{L^2 d^2 \mu^2}{4}$.
+\end{enumerate}  
+\end{lemma}
+\begin{lemma}\label{SGERand-approx}
+Assume that the function $f(x)$ is $L$-smooth. Let $\hat{\nabla}_r f(x)$ denote the estimated gradient defined by RandSGE. Define $f_{\mu} = \E_{u\sim U_S}[f(x+\mu u)]$, where $U$ is uniform distribution over a $d$-dimensional unit ball $S$. Then, we have 
+\begin{enumerate}
+\item For any $x \in \R^d$, $\nabla f_{\mu}(x) = \E_u[\hat{\nabla}_r f(x,u)]$.\\
+\item $\abs{f_{\mu}(x) - f(x)} \leq \frac{\mu^2 L}{2}$ and 
+$\norm{f_{\mu}(x) - f(x)} \leq \frac{\mu L d}{2}$ for any $x \in \R^d$.\\
+\item $\E_{u}\norm{\hat{\nabla}_r f(x,u) - \hat{\nabla}_r f(y,u)}^2 \leq 3dL^2\norm{x-y}^2 + \frac{3L^2d^2\mu^2}{2}$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+The proof of items $1$ and $2$ can be found in \cite{gao2018information}. Item 3 is due to Lemma 5 in \cite{ji2019improved}.  
+\end{proof}
+\begin{lemma}\label{lemma1}
+For a given $x \in \R^d$, let $\overline{x} = \Po_{\eta h}(x-\eta v)$, then we have for all $w\in \R^d$
+\begin{equation}\label{eq10}
+\begin{split}
+F(\overline{x}) \leq F(w) &+ \Iprod{\nabla f(x)-v}{\overline{x}-w}-\frac{1}{\eta} \Iprod{\overline{x}-x}{\overline{x}-w}\\
+&+\frac{L}{2}\norm{\overline{x}-x}^2+\frac{L}{2}\norm{w-x}^2 
+\end{split}
+\end{equation}
+\end{lemma}
+\begin{proof}
+First, we recall the proximal operator 
+\begin{equation}\label{eq11}
+\Po_{\eta h}(x-\eta v) := \text{arg}\,\,\min_{y\in\R^d}\left(h(y)+\frac{1}{2\eta}\norm{y-x}^2+\Iprod{v}{y}\right)
+\end{equation}
+For the nonsmooth function $h(x)$, for all $w\in\R^d$ we have 
+\begin{equation}\label{eq12}
+\begin{split}
+h(\overline{x}) &\leq h(w) + \Iprod{p}{\overline{x}-w}\\
+&= h(w) - \Iprod{v+\frac{1}{\eta}(\overline{x}-x)}{\overline{x}-w}
+\end{split}
+\end{equation}
+where $p\in \partial h(\overline{x})$ such that $p+\frac{1}{\eta}(\overline{x}-x)+v = 0$ according to the optimality condition of \eqref{eq11}, and \eqref{eq12} due to the convexity of $h$. In addition, since since $f(x)$ is $L$-Lipschitz continuous, we have
+\begin{equation}\label{eq14}
+f(\overline{x}) \leq f(x)+\Iprod{\nabla f(x)}{\overline{x}-x}+\frac{L}{2}\norm{\overline{x}-x}^2
+\end{equation}
+and
+\begin{equation}\label{eq15}
+f(x) \leq f(w)+\Iprod{\nabla f(x)}{x-w}+\frac{L}{2}\norm{w-x}^2
+\end{equation}
+ This lemma is obtained by adding \eqref{eq12}, \eqref{eq14}, \eqref{eq15}, and using $F(x) = f(x)+h(x)$. 
+\end{proof}
+\begin{lemma}\label{lemm-est-grad}
+Let  $x_{t}^s= \Po_{\eta h}(x_{t-1}^s - \eta \hat{v}_{t-1}^s)$ and $\overline{x}_{t}^s$ be the proximal projection using full true gradient, i.e., $\overline{x}_{t}^s= \Po_{\eta h}(x_{t-1}^s - \eta \nabla f(x_{t-1}^s))$. Then the following inequality holds
+\[
+\Iprod{\nabla f(x_{t-1}^s) -\hat{v}_{t-1}^s}{x_t^s -\overline{x}_t^s} \leq \eta\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}^2
+\]
+\end{lemma}
+\begin{proof}
+Based on inequality \eqref{eq12} we obtain
+\begin{align}
+h(x_t^s)&\leq h(\overline{x}_t^s) - \Iprod{\hat{v}_{t-1}^s+\frac{1}{\eta}(x_t^s-x_{t-1}^s)}{x_t^s-\overline{x}_t^s}\label{lemm-est-grad-1}
+\end{align}
+\begin{align}
+h(\overline{x}_t^s)&\leq h({x}_t^s) - \Iprod{\nabla f(x_{t-1}^s)+\frac{1}{\eta}(\overline{x}_t^s-x_{t-1}^s)}{\overline{x}_t^s-x_t^s}\label{lemm-est-grad-2}
+\end{align}
+By summing \eqref{lemm-est-grad-1} and \eqref{lemm-est-grad-2}, we have 
+\begin{align}
+\frac{1}{\eta}\Iprod{x_t^s -\overline{x}_t^s}{x_t^s -\overline{x}_t^s} &\leq \Iprod{\nabla f(x_{t-1}^s) -\hat{v}_{t-1}^s}{x_t^s -\overline{x}_t^s}\notag\\
+\frac{1}{\eta}\norm{x_t^s -\overline{x}_t^s}^2 &\leq \norm{\nabla f(x_{t-1}^s) -\hat{v}_{t-1}^s}\norm{x_t^s -\overline{x}_t^s}\label{lemm-est-grad-3}
+\end{align}
+where \eqref{lemm-est-grad-3} holds by Cauchy-Schwarz inequality. 
+Thus, we obtain
+\begin{align}
+\norm{x_t^s -\overline{x}_t^s} &\leq \eta\norm{\nabla f(x_{t-1}^s) -\hat{v}_{t-1}^s}\label{lemm-est-grad-4}
+\end{align}
+Now the proof is complete using Cauchy-Schwarz inequality and \eqref{lemm-est-grad-4}.
+\end{proof}
+\noindent\subsection{Proof of Lemma \ref{var-estimate-lem}}
+\begin{proof}
+We have
+\begin{align}
+  \E&\left[\eta\norm{\nabla f(x_{t-1}^s)-{\hat{v}_{t-1}^s}}^2\right]\notag\\
+   =&\E\left[\eta\norm{\frac{1}{b}\sum_{i\in I_b}\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\tilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s)-\hat{g}^s\right)}^2\right]\notag\\
+   =&\E\left[\eta\norm{\frac{1}{b}\sum_{i\in I_b}\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\tilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s)-\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\hat{\nabla} f_j(\tilde{x}^{s-1})\right)}^2\right]\notag\\
+   =&\notag\E\left[\eta\norm{\frac{1}{b}\sum_{i\in I_b}\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\tilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)+ \left(\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\\
+   =&\notag\eta\E\left[\norm{\frac{1}{b}\sum_{i\in I_b}\left(\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\tilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)+ \frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\\
+   \leq &\notag2\eta\E\left[\norm{\frac{1}{b}\sum_{i\in I_b}\left(\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\tilde{x}^{s-1})\right) - \left(\hat{\nabla} f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)+ \frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\\
+   &\,\, + 2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\label{var-estimate-lem-1}\\
+    = &\notag 2 \eta\E\left[\norm{\frac{1}{b}\sum_{i\in I_b}\left(\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\tilde{x}^{s-1})\right) - \left(\hat{\nabla} f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)}^2\right]\\
+   &\,\, +2 \eta \E \left[ \norm{\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]+ 2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\label{var-estimate-lem-2}\\
+   = &\notag\frac{2\eta}{b^2}\E\left[\sum_{i\in I_b}\norm{\left(\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\tilde{x}^{s-1})\right) - \left({\hat{\nabla}} f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)}^2\right]\\
+   &\,\, \label{var-estimate-lem-3}+ 2\eta \E \left[ \norm{\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+   \leq &\notag\frac{2\eta}{b^2}\E\left[\sum_{i\in I_b}\norm{\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\tilde{x}^{s-1}) }^2\right]\\
+   &\,\, \label{var-estimate-lem-3p}+ 2\eta \E \left[ \norm{\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+   \leq  &\frac{3 \eta L^2 d^2 \mu^2}{b} + \frac{6\eta L^2}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]+ 2\eta \E \left[ \norm{\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\notag\\
+   &\,\,\label{var-estimate-lem-5}+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+   \leq  &\frac{6\eta L^2}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]+ 2\frac{I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\notag\\
+   & \label{var-estimate-lem-6}+ \frac{3 \eta L^2 d^2 \mu^2}{b}\\
+   \leq  &\label{var-estimate-lem-7}\frac{6\eta L^2}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]+ 2\frac{I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}\notag\\
+   & +\eta \frac{L^2d^2\mu^2}{2}+ \frac{3 \eta L^2 d^2 \mu^2}{b}\\
+   \leq  &\frac{6\eta L^2}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]+ 2\frac{I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7L^2 d^2 \mu^2}{2} 
+ \end{align}
+ where, recalling that a deterministic gradient estimator is employed and the expectations are taking with respect to $I_b$ and $I_{\mathcal{B}}$. The inequality \eqref{var-estimate-lem-1} holds by the Jensen’s inequality. \eqref{var-estimate-lem-2} and \eqref{var-estimate-lem-3} are due to $\E[\norm{x_1+x_2+\ldots+x_k}^2] = \sum_{i=1}^k \E[\norm{x_i}^2]$ if $x_1,x_2,\ldots,x_k$ are independent and of mean zero. Recall that $I_b$ and $I_{\mathcal{B}}$ are also independent. \eqref{var-estimate-lem-3p} applies the fact that for any random variable $z$, $\E[\norm{z-\E[z]}^2] \leq \E[\norm{z}^2]$. \eqref{var-estimate-lem-5} employs following inequality  
+  \begin{equation}
+ \begin{split}
+ \E \norm{\hat{\nabla} f_i(x_{t}^s)-\hat{\nabla} f_i(\tilde{x}^s)}^2 &= \E \norm{ \hat{\nabla} f_i(x_{t}^s)-{\nabla} f_i(x_{t}^s) + {\nabla} f_i(x_{t}^s)-\hat{\nabla} f_i(\tilde{x}^s)+{\nabla} f_i(\tilde{x}^s)-{\nabla} f_i(\tilde{x}^s)}^2\\
+ &\leq 3 \E \norm{ \hat{\nabla} f_i(x_{t}^s)-{\nabla} f_i(x_{t}^s)}^2 + 3\norm{\hat{\nabla} f_i(\tilde{x}^s) - {\nabla} f_i(\tilde{x}^s)}^2\\
+ &+ 3\norm{{\nabla} f_i(x_{t}^s) - {\nabla} f_i(\tilde{x}^s)}^2\\
+ &\leq \frac{3 L^2 d^2 \mu^2}{2} + 3L^2 \norm{x_{t}^s-\tilde{x}^s}^2\\
+ \end{split}
+ \end{equation}
+  where the last inequality used the fact that $f_{i,\mu_j}$ is $L$-smooth. \eqref{var-estimate-lem-6} is by Assumption \ref{Var-Zoo} and \eqref{var-estimate-lem-7} uses Lemma \ref{CooSGE}. The proof is now complete.
+\end{proof}
+\noindent\subsection{Proof of Lemma \ref{RandSGE-var-estimate-lem}}
+\begin{proof}
+We have
+\begin{align}
+  \E&\left[\eta\norm{\nabla f(x_{t-1}^s)-{\tilde{v}_{t-1}^s}}^2\right]\notag\\
+   =&\E\left[\eta\norm{\frac{1}{b}\sum_{i\in I_b}\left(\hat{\nabla}_r f_i(x_{t-1}^s)-\hat{\nabla}_r f_i(\tilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s)-\hat{g}^s\right)}^2\right]\notag\\
+   =&\E\left[\eta\norm{\frac{1}{b}\sum_{i\in I_b}\left(\hat{\nabla}_r f_i(x_{t-1}^s)-\hat{\nabla}_r f_i(\tilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s)-\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\hat{\nabla} f_j(\tilde{x}^{s-1})\right)}^2\right]\notag\\
+   =&\notag\E\left[\eta\norm{\frac{1}{b}\sum_{i\in I_b}\left(\hat{\nabla}_r f_i(x_{t-1}^s)-\hat{\nabla}_r f_i(\tilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)+ \left(\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\\
+   =&\notag\eta\E\left[\norm{\frac{1}{b}\sum_{i\in I_b}\left(\left(\hat{\nabla}_r f_i(x_{t-1}^s)-\hat{\nabla}_r f_i(\tilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)+ \frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\\
+   \leq &\notag2\eta\E\left[\norm{\frac{1}{b}\sum_{i\in I_b}\left(\left(\hat{\nabla}_r f_i(x_{t-1}^s)-\hat{\nabla}_r f_i(\tilde{x}^{s-1})\right) - \left(\hat{\nabla} f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)+ \frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\\
+   &\,\, + 2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\label{RandSGE-var-estimate-lem-1}\\
+    = &\notag 2 \eta\E\left[\norm{\frac{1}{b}\sum_{i\in I_b}\left(\left(\hat{\nabla}_r f_i(x_{t-1}^s)-\hat{\nabla}_r f_i(\tilde{x}^{s-1})\right) - \left(\hat{\nabla} f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)}^2\right]\\
+   &\,\, +2 \eta \E \left[ \norm{\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]+ 2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\label{RandSGE-var-estimate-lem-2}\\
+   = &\notag\frac{2\eta}{b^2}\E\left[\sum_{i\in I_b}\norm{\left(\left(\hat{\nabla}_r f_i(x_{t-1}^s)-\hat{\nabla}_r f_i(\tilde{x}^{s-1})\right) - \left({\hat{\nabla}} f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)}^2\right]\\
+   &\,\, \label{RandSGE-var-estimate-lem-3}+ 2\eta \E \left[ \norm{\frac{1}{\mathcal{B}}\sum_{j\in I_\mathcal{B}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+   \leq  &\frac{2\eta}{b^2}\E\left[\sum_{i\in I_b}\norm{\hat{\nabla}_r f_i(x_{t-1}^s)-\hat{\nabla}_r f_i(\tilde{x}^{s-1})}^2\right]+ 2\eta \E \left[ \norm{\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\notag\\
+   &\,\,\label{RandSGE-var-estimate-lem-4}+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+    \leq  &\frac{3 \eta L^2 d^2 \mu^2}{b} + \frac{6\eta L^2 d}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]+ 2\eta \E \left[ \norm{\frac{1}{\mathcal{B}}\sum_{j\in I_{\mathcal{B}}}\left(\hat{\nabla} f_j(\tilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\notag\\
+   &\,\,\label{RandSGE-var-estimate-lem-5}+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+   \leq  &\label{RandSGE-var-estimate-lem-6p}\frac{6\eta L^2d}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]+ 2\frac{I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\notag\\
+   & + \frac{3 \eta L^2 d^2 \mu^2}{b}\\
+   \leq  &\frac{6\eta L^2 d}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]+ 2\frac{I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}\notag\\
+   &\label{RandSGE-var-estimate-lem-6} +\eta \frac{L^2d^2\mu^2}{2}+ \frac{3 \eta L^2 d^2 \mu^2}{b}\\
+   \leq  &\label{RandSGE-var-estimate-lem-7}\frac{6\eta L^2 d}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]+ 2\frac{I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7L^2 d^2 \mu^2}{2} 
+ \end{align}
+ where, the expectations are taking with respect to $I_b$ and $I_{\mathcal{B}}$ and random directions $\{u_i\}$ in \eqref{gradestrand}. The inequality \eqref{RandSGE-var-estimate-lem-1} holds by the Jensen’s inequality. \eqref{RandSGE-var-estimate-lem-2} and \eqref{RandSGE-var-estimate-lem-3} are based on $\E[\norm{x_1+x_2+\ldots+x_k}^2] = \sum_{i=1}^k \E[\norm{x_i}^2]$ if $x_1,x_2,\ldots,x_k$ are independent and of mean zero. Note that $I_b$ and $I_{\mathcal{B}}$ are also independent. \eqref{RandSGE-var-estimate-lem-4} uses the fact that $\E[\norm{x-\E[x]}^2] \leq \E[\norm{x}^2]$, for any random variable $x$. \eqref{RandSGE-var-estimate-lem-5} holds due to Lemma \ref{SGERand-approx}. \eqref{RandSGE-var-estimate-lem-6p} is by Assumption \ref{Var-Zoo} and  \eqref{RandSGE-var-estimate-lem-6} is by Lemma \ref{CooSGE}. \eqref{RandSGE-var-estimate-lem-7} uses $b\geq 1$. The proof is now complete.
+\end{proof}
+In the sequel we frequently use the following inequality
+\begin{equation}\label{young}
+\norm{x-z}^2 \leq (1+\frac{1}{\beta})\norm{x-y}^2 + (1+\beta) \norm{{y-z}}^2, \forall \beta> 0
+\end{equation}
+\noindent\subsection{Proof of Theorem \ref{noncon-zoo-coord}}
+\begin{proof}
+Now, we apply Lemma \ref{lemma1} to prove Theorem \ref{noncon-zoo-coord}. Let $x_t^s = \Po_{\eta h} (x_{t-1}^s - \eta \hat{v}_{t-1}^s)$ and $\overline{x}_t^s = \Po_{\eta h} (x_{t-1}^s - \eta \nabla f(x_{t-1}^s))$. By letting $x^+ = x_t^s$, $x = x_{t-1}^s$, $v = \hat{v}_{t-1}^s$ and $z = \overline{x}_t^s$ in \eqref{eq10}, we have
+\begin{align}
+F(x^s_t) \leq& F(\overline{x}_t^s) + \Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s-\overline{x}_t^s}-\frac{1}{\eta} \Iprod{x_t^s-x_{t-1}^s}{x_t^s-\overline{x}_t^s}\notag\\
+&+\frac{L}{2}\norm{x_t^s-x_{t-1}^s}^2+\frac{L}{2}\norm{\overline{x}_t^s-x_{t-1}^s}^2.\label{eq16}
+\end{align}
+Besides, by letting $x^+ = \overline{x}_t^s$, $x = x_{t-1}^s$, $v = \nabla f(x_{t-1}^s)$ and $z = x = {x}_{t-1}^s$ in \eqref{eq10}, we have
+\begin{align}
+F(\overline{x}_t^s) \leq& F({x}_{t-1}^s) - \frac{1}{\eta}\Iprod{\overline{x}_t^s-x_{t-1}^s}{\overline{x}_t^s - x_{t-1}^s}+\frac{L}{2}\norm{\overline{x}_t^s-x_{t-1}^s}^2\notag\\
+ =& F({x}_{t-1}^s) -(\frac{1}{\eta}-\frac{L}{2})\norm{\overline{x}_t^s-x_{t-1}^s}^2.\label{eq17} 
+\end{align}
+Combining \eqref{eq16} and \eqref{eq17} we have 
+ \begin{align}
+ F({x}_t^s) \leq& F({x}_{t-1}^s) +\frac{L}{2}\norm{{x}_t^s-x_{t-1}^s}^2 - \left(\frac{1}{\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+ & -\frac{1}{\eta} \Iprod{x_t^s-x_{t-1}^s}{x_t^s-\overline{x}_{t}^s}\notag\\
+  =& F({x}_{t-1}^s)  +\frac{L}{2}\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+ &-\frac{1}{2\eta} \left(\norm{x_t^s-x_{t-1}^s}^2+ \norm{x_t^s-\overline{x}_{t}^s}^2-\norm{\overline{x}_{t}^s-x_{t-1}^s}^2\right)\notag\\
+   =& F({x}_{t-1}^s)  -(\frac{1}{2\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{2\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+ & -\frac{1}{2\eta} \norm{x_t^s-\overline{x}_{t}^s}^2\notag\\
+ \leq & F({x}_{t-1}^s)  -(\frac{1}{2\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{2\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+ & -\frac{1}{8\eta} \norm{x_t^s-{x}_{t-1}^s}^2 + \frac{1}{6\eta} \norm{\overline{x}_{t}^s-{x}_{t-1}^s}^2\label{eq18}\\
+  = &  F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{3\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+  \leq & F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{3\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\eta \norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}^2\label{eq19}
+ \end{align}
+ where the second inequality uses \eqref{young} with $\beta = 3$ and the last inequality holds due to the Lemma \ref{lemm-est-grad}.
+ 
+Note that $x_t^s = \Po_{\eta h}(x_{t-1}^s - \eta \hat{v}_{t-1}^s)$ is the iterated form in our algorithm.  By taking the expectation with respect to all random variables in \eqref{eq19} we obtain
+ \begin{equation}\label{eq25}
+ \begin{split} 
+\E[F({x}_{t}^s)] \leq \E\left[F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{3\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\eta \norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}^2\right]\\
+ \end{split}
+ \end{equation}
+In \eqref{eq25}, we further bound $\eta \norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}^2$ using Lemma \ref{var-estimate-lem} to obtain
+ \begin{align} 
+\E&[F({x}_{t}^s)] \notag
+\notag
+\\ \leq& \E\left[F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{3\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2\right]\notag\\
+&+ \frac{6\eta L^2}{b}\E\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2 + \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7 L^2 d^2 \mu^2}{2}\notag
+\\ =& \E\left[F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{\eta}{3}-L\eta^2\right)\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag
+\\&+\frac{6\eta L^2}{b}\E\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2+ \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7L^2 d^2 \mu^2}{2}\label{theor1-31}
+\\ \leq& \E\left[F({x}_{t-1}^s)  -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2- \left(\frac{\eta}{3}-L\eta^2\right)\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+(\frac{6\eta L^2}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2
++ \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7 L^2 d^2 \mu^2}{2}\label{theor1-32}
+ \end{align}
+where recalling $\overline{x}_t^s := \Po_{\eta h}(x_{t-1}^s - \eta \nabla f(x_{t-1}^s))$, \eqref{theor1-31}  is based on the definition of gradient mapping $g_{\eta}(x_{t-1}^s)$. \eqref{theor1-32} uses \eqref{young} by choosing $\beta = 2t-1$.
+ 
+Taking a telescopic sum for $t = 1, 2, \ldots, m$ in epoch $s$ from \eqref{theor1-32} and recalling that $x_m^s = \tilde{x}^s$ and $x_0^s = \tilde{x}^{s-1}$, we obtain
+ \begin{align} 
+\E&[F(\tilde{x}^s)] \notag
+\\ \leq& \E\left[F(\tilde{x}^{s-1})  -\sum_{t=1}^m\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2- \left(\frac{\eta}{3}-L\eta^2\right)\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+\sum_{t=1}^m(\frac{6\eta L^2}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\notag\\
+&+ \sum_{t=1}^m \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\sum_{t=1}^m \eta \frac{7L^2 d^2 \mu^2}{2}\notag\\
+\leq& \E\left[F(\tilde{x}^{s-1})  -\sum_{t=1}^{m-1}\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2- \left(\frac{\eta}{3}-L\eta^2\right)\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+\sum_{t=2}^m(\frac{6\eta L^2}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\notag\\
+&+ \sum_{t=1}^m \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\sum_{t=1}^m \eta \frac{7L^2 d^2 \mu^2}{2}\label{theor1-34}
+\\
+=& \E\left[F(\tilde{x}^{s-1}) - \left(\frac{\eta}{3}-L\eta^2\right)\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&-\sum_{t=1}^{m-1}\left((\frac{1}{2t} - \frac{1}{2t+1})(\frac{5}{8\eta} - \frac{L}{2})-\frac{6\eta L^2 }{b})\right)\E\norm{x_{t}^s-\tilde{x}^{s-1}}^2\notag\\
+&+ \sum_{t=1}^m \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\sum_{t=1}^m \eta \frac{7 L^2 d^2 \mu^2}{2}\notag\\
+\leq& \E\left[F(\tilde{x}^{s-1}) - \left(\frac{\eta}{3}-L\eta^2\right)\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&-\sum_{t=1}^{m-1}\left(\frac{1}{6t^2}(\frac{5}{8\eta} - \frac{L}{2})-\frac{6\eta L^2 }{b})\right)\E\norm{x_{t}^s-\tilde{x}^{s-1}}^2\notag\\
+&+ \sum_{t=1}^m \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\sum_{t=1}^m \eta \frac{7 L^2 d^2 \mu^2}{2}\notag\\
+\leq& \E\left[F(\tilde{x}^{s-1}) - \frac{\eta}{6}\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]+ \sum_{t=1}^m \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\sum_{t=1}^m \eta \frac{7 L^2 d^2 \mu^2}{2}\label{theor1-35}
+ \end{align}
+ where \eqref{theor1-34} holds since norm is always non-negative and $x_0^s = \tilde{x}^{s-1}$. In \eqref{theor1-35} we have used the fact that $(\frac{1}{6t^2}(\frac{5}{8\eta} - \frac{L}{2})-\frac{6\eta L^2 }{b})\geq 0$ for all $1\leq t \leq m$ and $\frac{\eta}{6} \leq \frac{\eta}{3}-L\eta^2$ since $\eta = \min\{\frac{1}{8L}, \frac{\sqrt{b}}{12 mL}\}$. 
+ Telescoping the sum for $s = 1, 2, \ldots, S$ in \eqref{theor1-35}, we obtain
+ \begin{equation*}
+\begin{split} 
+0 &\leq \E[F(\tilde{x}^S) - F({x}^*)] \\
+&\leq \E\left[F(\tilde{x}^{0}) - F({x}^*) - \sum_{s=1}^S\sum_{t=1}^m\frac{\eta}{6}\norm{g_{\eta}(x_{t-1}^s)}^2 + \sum_{s=1}^S\sum_{t=1}^m(\frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7 L^2 d^2 \mu^2}{2})\right]
+ \end{split}
+ \end{equation*}
+ Thus, we have
+  \begin{align}
+\E[\norm{g_{\eta}(\hat{x})}^2] & \leq \frac{6\left(F(x_0) - F({x}^*)\right)}{\eta Sm} + \frac{I\{\mathcal{B} < n\}12\sigma ^2}{\mathcal{B}}+21{L^2 d^2 \mu^2}\label{theor1-eq36}
+ \end{align}
+ where \eqref{theor1-eq36} holds since we choose  $\hat{x}$ uniformly randomly from $\{x_{t-1}^s\}_{t\in [m], s\in [S]}$. 
+\end{proof} 
+\noindent\subsection{Proof of Corollary \ref{corr11}}
+\begin{proof}
+Using Theorem \ref{noncon-zoo-coord}, we have $\eta = \min\{\frac{1}{8L}, \frac{\sqrt{b}}{12mL}\}$
+\begin{align}
+\E[\norm{g_{\eta}(\hat{x})}^2] & \leq \frac{6\left(F(x_0) - F({x}^*)\right)}{\eta Sm}\notag\\
+& + \frac{I\{\mathcal{B} < n\}12 \sigma ^2}{\mathcal{B}}+21{L^2 d^2 \mu^2} = 3\epsilon\label{theor1-eq37}
+ \end{align} 
+ Now we derive the total number of iterations   $T = Sm = \frac{6\left(F(x_0) - F({x}^*)\right)}{\epsilon\eta}$. Since $\mu \leq \frac{\sqrt{\epsilon}}{5{dL}}$, and for $\mathcal{B} = n$, the second term in the bound \eqref{theor1-eq37} is $0$, the proof is completed as the number of SZO call equals to $Sn+Smb = 6 \left(F(x_0) - F({x}^*)\right) (\frac{n}{\epsilon\eta m}+\frac{b}{\epsilon\eta})$. If  $\mathcal{B} < n$ the number of SZO calls equal to  $d(S\mathcal{B}+Smb) = 6d \left(F(x_0) - F({x}^*)\right) (\frac{\mathcal{\mathcal{B}}}{\epsilon\eta m}+\frac{b}{\epsilon\eta})$ by noting that $\frac{I\{\mathcal{B} < n\}12\sigma^2}{\mathcal{B}} \leq \epsilon$ due to $\mathcal{B} \geq 12\sigma^2 /\epsilon$. The second part of corollary is obtained by setting $m = \sqrt{b}$ in the first part.
+\end{proof}
+
+\begin{corollary}\label{corr11-rand}
+We set the batch size $\mathcal{B} = \min\{12\sigma^2/\epsilon, n\}$ and the smoothing parameter $\mu \leq \frac{\sqrt{\epsilon}}{5{dL}}$. Suppose $\hat{x}$ returned by Algorithm \ref{APGnonconvex-Algo}  is an $\epsilon$-accurate solution for problem \eqref{problem}. Recalling that CoordSGE and RandSGE require $O(d)$ and $O(1)$ function queries respectively, the number of SZO calls is at most 
+\begin{align}
+(dS\mathcal{B}+Smb) & = 6 \left(F(x_0) - F({x}^*)\right) (\frac{\mathcal{B}d}{\epsilon\eta m}+\frac{b}{\epsilon\eta})\notag\\
+& = O\left(\frac{\mathcal{B}d}{\epsilon\eta m}+\frac{b}{\epsilon\eta}\right)\label{SZO-call-nocon-rand}
+\end{align} 
+and the number of PO calls is equal to $T = Sm = \frac{6\left(F(x_0) - F({x}^*)\right)}{\epsilon\eta} = O\left(\frac{1}{\epsilon\eta}\right)$. In particular, by setting $m=\sqrt{b}$ and $\eta = \frac{1}{12L\sqrt{d}}$, the number of ZO calls is at most 
+\begin{align}
+72 &L (F(x_0)-F(x^*))\left(\frac{\mathcal{B}d\sqrt{d}}{\epsilon\sqrt{b}}+\frac{b\sqrt{d}}{\epsilon}\right)\notag\\
+& = O\left(s_n\frac{d\sqrt{d}}{\epsilon \sqrt{b}}+\frac{b\sqrt{d}}{\epsilon}\right)\label{SZO-call-par-nocon-rand}
+\end{align}
+where $s_n = \min\{n,\frac{1}{\epsilon}\}$ and the number of PO queries is equal to $T = Sm = S\sqrt{b} = \frac{72 L \sqrt{d}\left(F(x_0) - F({x}^*)\right)}{\epsilon} = O\left(\frac{\sqrt{d}}{\epsilon}\right)$. 
+\end{corollary}
+\noindent\subsection{Proof of Theorem \ref{PL-Zoo}}
+\begin{proof}
+We start by recalling inequality \eqref{theor1-31} from the proof of Theorem \ref{noncon-zoo-coord}, i.e.,
+
+\begin{align} 
+\E&[F({x}_{t}^s)] \notag
+\\ \leq& \E\left[F({x}_{t-1}^s)  -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2- \left(\frac{\eta}{3}-L\eta^2\right)\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2
++ \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{L^2 d^2 \mu^2}{2}\notag
+\\ \leq& \E\left[F({x}_{t-1}^s)  -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2- \frac{\eta}{6}\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+(\frac{6\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2
++ \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7 L^2 d^2 \mu^2}{2}\label{theo2-eq44}
+ \end{align}
+ where in \eqref{theo2-eq44} inequality we applied $\eta L \leq \frac{1}{6}$.
+Moreover, substituting PL inequality, i.e., 
+\begin{equation}
+\norm{g_{\eta}(x)}^2 \geq 2\lambda (F(x) - F^*)
+\end{equation}
+into \eqref{theo2-eq44}, we obtain
+
+\begin{align} 
+\E&[F({x}_{t}^s)] \notag
+\\ \leq& \E\left[F({x}_{t-1}^s)  -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2- \lambda\frac{\eta}{3}(F({x}_{t-1}^s) - F^*) \right]\notag\\
+&+(\frac{6\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2
++ \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7 L^2 d^2 \mu^2}{2}
+ \end{align}
+Thus, we have
+\begin{align} 
+\E&[F({x}_{t}^s)] \notag
+\\ \leq& \E\left[ (1-\lambda\frac{\eta}{3})(F({x}_{t-1}^s) - F^*)   -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2\right]\notag\\
+&+(\frac{6 \eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2
++ \frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7 L^2 d^2 \mu^2}{2}\label{theo2-eq46}
+ \end{align}
+Let $\alpha := 1 - \lambda\frac{\eta}{3}$ and $\Psi_t^s := \frac{\E[F({x}_{t}^s)-F^*]}{\alpha^t}$. Combining these definitions with \eqref{theo2-eq46}, we have  
+
+\begin{align} 
+\Psi_t^s \notag
+\\ \leq& \Psi_{t-1}^s - \frac{1}{\alpha^t}\E\left[ \frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2-(\frac{6\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]\notag\\
+&+ \frac{1}{\alpha^t}\frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\frac{1}{\alpha^t}\eta \frac{7 L^2 d^2 \mu^2}{2}\label{theo2-eq47}
+ \end{align}
+Similar to the proof of Theorem \ref{noncon-zoo-coord}, summing \eqref{theo2-eq47} for $t=1, 2, \ldots, m$ in epoch $s$ and remembering that $x_m^s = \tilde{x}^s$ and $x_0^s = \tilde{x}^{s-1}$, we have 
+\begin{align}
+\E&[F(\tilde{x}^s)-F^*]\notag\\
+\leq\alpha^m\E&\left[(F(\tilde{x}^{s-1}) - F^*)\right] +\alpha^m\sum_{t=1}^m \frac{1}{\alpha^t}\frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\alpha^m\sum_{t=1}^m \frac{1}{\alpha^t}\eta \frac{7 L^2 d^2 \mu^2}{2}\notag
+\\-\alpha^m\E&\left[\sum_{t=1}^m\frac{1}{2t\alpha^t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2-\sum_{t=1}^m\frac{1}{\alpha^t}(\frac{6 \eta L^2 }{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2})) \norm{x_{t-1}^s-\tilde{x}^{s-1}}^2 \right]\notag\\
+\leq\alpha^m\E&\left[(F(\tilde{x}^{s-1}) - F^*)\right] + \frac{1-\alpha^m}{1-\alpha}\frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\frac{1-\alpha^m}{1-\alpha} \frac{7 \eta L^2 d^2 \mu^2}{2}\notag
+\\-\alpha^m\E&\left[\sum_{t=1}^m\frac{1}{2t\alpha^t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2-\sum_{t=1}^m\frac{1}{\alpha^t}(\frac{6\eta L^2 }{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2})) \norm{x_{t-1}^s-\tilde{x}^{s-1}}^2 \right]\notag\\
+\leq\alpha^m\E&\left[(F(\tilde{x}^{s-1}) - F^*)\right] + \frac{1-\alpha^m}{1-\alpha}\frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\frac{1-\alpha^m}{1-\alpha}\frac{7 \eta L^2 d^2 \mu^2}{2}\notag
+\\-\alpha^m\E&\left[\sum_{t=1}^{m-1}\frac{1}{2t\alpha^t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2\right]\notag\\
++\alpha^m\E&\left[\sum_{t=2}^m\frac{1}{\alpha^t}(\frac{6\eta L^2}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2})) \norm{x_{t-1}^s-\tilde{x}^{s-1}}^2 \right]\label{eq48}\\
+\leq\alpha^m\E&\left[(F(\tilde{x}^{s-1}) - F^*)\right] + \frac{1-\alpha^m}{1-\alpha}\frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\frac{1-\alpha^m}{1-\alpha}\frac{7 \eta L^2 d^2 \mu^2}{2}\notag
+\\-\alpha^m\E&\left[\sum_{t=1}^{m-1}\frac{1}{\alpha^{t+1}}\left((\frac{\alpha}{2t} - \frac{1}{2t+1})(\frac{5}{8\eta} - \frac{L}{2})-\frac{6 \eta L^2}{b})\right) \norm{x_{t}^s-\tilde{x}^{s-1}}^2 \right]\notag\\
+\leq\alpha^m\E&\left[(F(\tilde{x}^{s-1}) - F^*)\right] + \frac{1-\alpha^m}{1-\alpha}\frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+\frac{1-\alpha^m}{1-\alpha}\frac{7 \eta L^2 d^2 \mu^2}{2}\label{eq50}
+\end{align}
+where \eqref{eq48} since $\norm{.}^2$ always is non-negative and $x_0^s=\tilde{x}^{s-1}$. \eqref{eq50} holds since it is sufficient to show $(\frac{\alpha}{2t} - \frac{1}{2t+1})(\frac{5}{8\eta} - \frac{L}{2})- \frac{6\eta L^2}{b} \geq 0$, for all $t=1, 2,\ldots, m$. 
+It is easy to see that this inequality is valid due to $\eta \leq \min\{\frac{1}{8L}, \frac{\sqrt{\gamma b}}{12 m L }\}$, where $\gamma = 1-\frac{2\lambda\eta}{3} m-\frac{\lambda\eta}{3} > 0$. Similarly, let  $\tilde{\alpha} = \alpha^m$ and $\tilde{\Psi}^s = \frac{\E[F(\tilde{x}^{s})-F^*]}{\tilde{\alpha}^s}$. Substituting these definitions into \eqref{eq50}, we have
+\begin{equation}\label{eq51}
+\tilde{\Psi}^s \leq \tilde{\Psi}^{s-1} + \frac{1}{\tilde{\alpha}^s} \frac{1-\tilde{\alpha}}{1-{\alpha}}\frac{2 I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+ \frac{1}{\tilde{\alpha}^s} \frac{1-\tilde{\alpha}}{1-{\alpha}}\frac{7\eta L^2 d^2 \mu^2}{2}
+\end{equation}
+Taking a telescopic sum from \eqref{eq51} for all epochs $1 \leq s \leq S$, we obtain
+\begin{align}
+\E[F(\tilde{x}^S) - {F}^*] & \leq \tilde{\alpha}^{S} \E[F(\tilde{x}^0) - {F}^*] + \tilde{\alpha}^{S} \sum_{s=1}^S \frac{1}{\tilde{\alpha}^s}\frac{1-\tilde{\alpha}}{1-{\alpha}}\frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}} + \tilde{\alpha}^{S} \sum_{s=1}^S \frac{1}{\tilde{\alpha}^s}\frac{1-\tilde{\alpha}}{1-{\alpha}}\frac{7 \eta L^2 d^2 \mu^2}{2}\notag\\
+& = {\alpha}^{Sm} \E[F(\tilde{x}^0) - {F}^*] + \frac{1-\tilde{\alpha}^S}{1-\tilde{\alpha}}\frac{1-\tilde{\alpha}}{1-{\alpha}}\frac{2I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+ \frac{1-\tilde{\alpha}^S}{1-\tilde{\alpha}}\frac{1-\tilde{\alpha}}{1-{\alpha}}\frac{7 \eta L^2 d^2 \mu^2}{2}\notag\\
+& \leq {\alpha}^{Sm} \E[F(\tilde{x}^0) - {F}^*] + \frac{1}{1-{\alpha}}\frac{2 I\{\mathcal{B} < n\}\eta \sigma ^2}{\mathcal{B}}+ \frac{1}{1-{\alpha}}\frac{7 \eta L^2 d^2 \mu^2}{2}\notag\\
+& = \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[F(\tilde{x}^0) - {F}^*] + \frac{6I\{\mathcal{B} < n\} \sigma ^2}{\lambda\mathcal{B}}+\frac{21 L^2 d^2 \mu^2}{2\lambda}\label{eq52}
+\end{align}
+where in \eqref{eq52} we recall that $\alpha = 1-\frac{\lambda\eta}{3}$.
+\end{proof}
+\noindent\subsection{Proof of Corollary \ref{PL-Zo-Cor}}
+\begin{proof}
+From Theorem \ref{PL-Zoo}, we have
+\begin{align}
+\E[F(\tilde{x}^S) - {F}^*] & \leq   \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[F(\tilde{x}^0) - {F}^*] \notag\\
+&+ \frac{6I\{\mathcal{B} < n\} \sigma ^2}{\lambda\mathcal{B}}+\frac{21 L^2 d^2 \mu^2}{2\lambda}= 3 \epsilon\notag
+\end{align}
+which gives the total number of iterations $T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})$ and is equal to the number of PO calls. Since $\mu \leq \frac{\sqrt{\lambda\epsilon}}{4 L d}$, we have $\frac{21 L^2 d^2 \mu^2}{2\lambda} \leq \epsilon$. The number of SZO calls is equal to $d(S\mathcal{B}+Smb) = O(\frac{\mathcal{B}d}{\lambda\eta m}\log\frac{1}{\epsilon}+\frac{bd}{\lambda\eta}\log\frac{1}{\epsilon})$.  Note that if $\mathcal{B} < n$ then $\frac{6I\{\mathcal{B} < n\} \sigma ^2}{\lambda\mathcal{B}} \leq \epsilon$ since $\mathcal{B} \geq 6 {\sigma ^2}/{\lambda \epsilon}$. With $m=\sqrt{b}$ and $\eta = \frac{\sqrt{\gamma}}{12 L}$, the number of PO  queries to $T = Sm = O(\frac{1}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$ and the number of SZO calls is equal to $d(S\mathcal{B}+Smb) = O(\frac{\mathcal{B}d}{\lambda\sqrt{\gamma} m}\log\frac{1}{\epsilon}+\frac{bd}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$.
+\end{proof}
+
+\noindent\subsection{Corollary \ref{PL-Zo-Cor-rand}}
+\begin{corollary}\label{PL-Zo-Cor-rand}
+Suppose the final iteration point $\tilde{x}^S$ in Algorithm \ref{APGnonconvex-Algo} satisfies $\E[F(\tilde{x}^S) - F^*]\leq \epsilon$ under PL condition. Under Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo}, we set batch size $\mathcal{B} = \min\{\frac{6\sigma^2}{\lambda\epsilon},n\}$ and the smoothing parameter $\mu \leq \frac{\sqrt{\lambda\epsilon}}{4 L d}$. The number of SZO calls is bounded by
+\[
+(S\mathcal{B}d+Smb) = O(\frac{s_n d}{\lambda\eta m}\log\frac{1}{\epsilon}+\frac{b }{\lambda\eta}\log\frac{1}{\epsilon})
+\]
+where $s_n = \min \{n,\frac{1}{\lambda \epsilon}\}$.
+The number of PO calls is equal to the total number of iterations $T$ which is given by
+\[
+T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})
+\]
+In particular, given the setting  $m=\sqrt{b}$ and $\eta = \frac{\sqrt{\gamma}}{12 L\sqrt{d}}$, the number of SZO calls  simplifies to 
+$(S\mathcal{B}d+Smb) = O(\frac{\mathcal{B}d\sqrt{d}}{\lambda\sqrt{\gamma} m}\log\frac{1}{\epsilon}+\frac{b\sqrt{d}}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$.
+\end{corollary}
+\begin{proof}
+From Theorem \ref{PL-Zoo}, we have
+\begin{align}
+\E[F(\tilde{x}^S) - {F}^*] & \leq   \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[F(\tilde{x}^0) - {F}^*]\notag\\
+& + \frac{6I\{\mathcal{B} < n\} \sigma ^2}{\lambda\mathcal{\mathcal{B}}}+\frac{21 L^2 d^2 \mu^2}{2\lambda}= 3 \epsilon
+\end{align}
+which gives the total number of iterations $T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})$ and equals to the number of PO calls. Since $\mu \leq \frac{\sqrt{\lambda\epsilon}}{4 L d}$, we have $\frac{21 L^2 d^2 \mu^2}{2\lambda} \leq \epsilon$. The number of SZO calls equals to $(S\mathcal{B}d+Smb) = O(\frac{\mathcal{B}d}{\lambda\eta m}\log\frac{1}{\epsilon}+\frac{b}{\lambda\eta}\log\frac{1}{\epsilon})$.  Note that if $\mathcal{B} < n$ then $\frac{6I\{\mathcal{B} < n\} \sigma ^2}{\lambda\mathcal{B}} \leq \epsilon$ since $\mathcal{B} \geq 6 {\sigma ^2}/{\lambda \epsilon}$. With $m=\sqrt{b}$ and $\eta = \frac{\sqrt{\gamma}}{12 L\sqrt{d}}$, the number of PO calls equals to $T = Sm = O(\frac{\sqrt{d}}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$ and the number of SZO calls equals to $(S\mathcal{B}d+Smb) = O(\frac{\mathcal{B}d\sqrt{d}}{\lambda\sqrt{\gamma} m}\log\frac{1}{\epsilon}+\frac{b\sqrt{d}}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$.
+\end{proof}

@@ -1,0 +1,1441 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tgtermes}
+\usepackage{mathptmx}  
+\usepackage[scaled=.92]{helvet}
+\usepackage{amsthm,amsmath,amssymb}
+\usepackage{mathrsfs}
+\usepackage[numbers]{natbib}  
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}  %%check
+\usepackage[dvipsnames]{xcolor}
+%%%Algorithms
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm,amsmath}
+\usepackage{mathtools}
+\usepackage{newtxtext,newtxmath}
+
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\G}{\mathcal{G}}
+\newcommand*{\Po}{\text{Prox}}
+\newcommand*{\Am}{\text{argmin}}
+\newcommand*{\E}{\mathbb{E}}
+\newcommand*{\VRG}{\,\tilde{\nabla}_k^s}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\Iprod}[2]{\left\langle #1,#2\right\rangle}
+\newcommand\myeq[2]{\mathrel{\stackrel{\makebox[0pt]{\mbox{#1}}}{#2}}}
+
+\renewcommand{\algorithmicrequire}{
+\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\Initialize}{\textbf{Initialize:}{\,}}
+\newcommand{\Input}{\textbf{Input:}{\,}}
+\newcommand{\Output}{\textbf{Output:}{\,}}
+
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{corollary}[theorem]{Corollary} 
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{statement}[theorem]{Statement}
+\newtheorem{notation}[theorem]{Notation} 
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{assumption}[theorem]{Assumption}
+\allowdisplaybreaks
+
+\title{Proximal Gradient Algorithm for Nonconvex Problems}
+\date{March 2018}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\section{introduction to the problem}
+{\color{Green}
+Proximal gradient (PG) methods (Mine and Fukushima,
+1981; Nesterov, 2004; Parikh, Boyd, and others, 2014) are a
+class of powerful optimization tools in artificial intelligence
+and machine learning. In general, it considers the following
+nonsmooth optimization problem:
+\begin{equation}
+\min_{x\in\R^d} f(x) + h(x)
+\end{equation}
+where $f(x)$ usually is the loss function such as hinge loss and logistic loss, and $h(x)$ is the nonsmooth structure regularizer such as $l_1$-norm regularization. 
+}
+\subsection{Background in research}
+{\color{Green}
+In recent research,
+Beck and  proposed the accelerate PG methods to solve convex problems by using the Nesterov’s accelerated technique. After that, Li and Lin (2015) presented a class of accelerated PG methods for non-convex optimization.  To solve the big data problems, the incremental or stochastic PG methods (Bertsekas, 2011; Xiaoand Zhang, 2014) were developed for large-scale convex optimization. 
+}
+{\color{Violet}
+There has been extensive research when $f(x)$ is convex (see e.g., {\color{green} Teboulle (2009); Nesterov (2013)}, [Xiao and Zhang, 2014, Defazio et al., 2014, Lan and Zhou,
+2015, Allen-Zhu, 2017a]). In particular, if $f_i$ s are strongly-convex, {\color{green} toi solve large-scale problems} Xiao and Zhang [2014] proposed the Prox-SVRG algorithm, which achieves a linear convergence rate, based on the well-known variance reduction technique SVRG
+developed in [Johnson and Zhang, 2013]. 
+In recent years, due to the increasing popularity of deep learning, the non-convex case has attracted significant attention.
+{\color{Green} Correspondingly, Ghadimi, Lan, and Zhang (2016); Reddi et al. (2016) proposed the stochastic PG methods for large-scale nonconvex optimization.}
+Very recently, Zhou et al. [2018] proposed an algorithm with stochastic gradient complexity $\widetilde{O}(\min\{\frac{1}{\epsilon^{3/2}},\frac{n^{1/2}}{\epsilon}\})$, improving the previous results
+$O(\frac{1}{\epsilon^{5/3}})$ [Lei et al., 2017] and $O(\frac{n^{2/3}}{\epsilon})$ [Allen-Zhu and Hazan, 2016]. For the more general nonsmooth nonconvex case, the research is still somewhat limited. {\color{green} More recently, Gu, Huo, and Huang (2018) introduced inexact PG methods for nonconvex nonsmooth optimization.}
+}
+\subsection{Reason to use zeroth--order techniques}
+{\color{Green}
+However, in many machine learning problems, the explicit expressions of gradients are difficult or infeasible to
+obtain. 
+{\color{RubineRed}
+However, there exist situations where the first-order gradient information is computationally infeasible, expensive, or impossible,
+while the zeroth-order functional information can be easily obtained
+}
+For example, in some complex graphical model inference (Wainwright, Jordan, and others, 2008) and structure prediction problems (Sokolov, Hitschler, and Riezler,
+2018), it is difficult to compute the explicit gradients of
+the objective functions. Even worse, in bandit (Shamir, 2017) and black-box learning (Chen et al., 2017) problems, only the objective function values are available (the explicit gradients cannot be calculated). 
+{\color{RubineRed}
+ For example, in online auctions and advertisement
+selections, only function values are revealed as feedbacks for algorithms [Wibisono et al., 2012]. In stochastic structured predictions, explicit differentiations may be difficult to per-
+form while the functional evaluations of predicted structures are easily obtained [Sokolov et al., 2016]. }
+
+Clearly, the above
+PG methods will fail in dealing with these scenarios. 
+{\color{RubineRed} The optimization problem of Eq. (1) in such situations is referred to SZCO.}
+{\color{Brown} ZO algorithms achieve gradient-free optimization by approximating the full gradient via gradient estimators based on only the function values [8, 9].} The gradient-free (zeroth-order) optimization method (Nesterov
+and Spokoiny, 2017) is a promising choice to address these problems because it only uses the function values in optimization process. Thus, the gradient-free optimization methods have been increasingly embraced for solving many ma-
+chine learning problems.
+}
+{\color{Brown}
+Hence, Zeroth-order (gradient-free) optimization is increasingly embraced for solving machine learning
+problems where explicit expressions of the gradients are difficult or infeasible to obtain. Recent examples have shown zeroth-order (ZO) based generation of prediction-evasive, black-box adversarial attacks on deep neural networks (DNNs) as effective as state-of-the-art white-box attacks, despite leveraging only the inputs and outputs of the targeted DNN [1–3] {\color{Green} (Conn, Scheinberg, and Vicente, 2009)}. Additional classes of applications include network control and management with time-varying constraints and limited computation capacity [4, 5], and parameter inference of black-box systems [6, 7]. 
+}
+
+{\color{DarkOrchid}
+The main issue for those accelerated algorithms is that most of their algorithm designs (e.g., (Allen-Zhu, 2017)
+and (Hien et al., 2017)) involve tracking at least two highly
+correlated coupling vectors 2 (in the inner loop). This kind
+of algorithm structure prevents us from deriving efficient
+(lock-free) asynchronous sparse variants for those algorithms.
+}
+\subsection{Problem with existing methods}
+{\color{Brown}
+Although many ZO algorithms have recently been developed and analyzed [5, 10–18], they often
+suffer from the high variances of ZO gradient estimates, and in turn, hampered convergence rates.
+{\color{RubineRed}
+A useful technique to accelerate the convergence of SZCO is by leveraging variance reduction method.
+}
+
+ In addition, these algorithms are mainly designed for convex settings, which limits their applicability in a wide range of (non-convex) machine learning problems.
+}
+
+{\color{RubineRed}
+A key concern in the development of iterative stochastic zeroth-oder algorithms for solving Eq. (1) is the order of the necessary number of functional evaluations in the form of
+$f(x,\xi)$, which is termed as sample complexity or iteration complexity.
+}
+
+
+\subsection{Compare with other methods}
+{\color{Brown}
+In Table 1, we summarize the convergence rates
+and the function query complexities of ZO-SVRG and its two variants, which we call ZO-PSVRG-Ave
+and ZO-SVRG-Coord, respectively. For comparison, we also present the results of ZO-SGD [24] and
+ZO-SVRC [26], where the later updates J coordinates per iteration within an epoch. Table 1 shows
+that ZO-SGD has the lowest query complexity but has the worst convergence rate. ZO-SVRG-coord
+yields the best convergence rate in the cost of high query complexity. By contrast, ZO-SVRG (with
+an appropriate mini-batch size) and ZO-SVRG-Ave could achieve better trade-offs between the
+convergence rate and the query complexity.
+}
+{\color{Brown}
+RSG \cite{} do not provide the complexity of non-smooth function.
+}
+\subsection{what we want to do}
+{\color{Green}\label{problem}
+In this paper, thus, we propose a class of faster gradient-free proximal stochastic methods for solving the nonconvex nonsmooth problem as follows:
+{\color{Violet}
+In this paper, we consider nonsmooth nonconvex finite-sum optimization problems of the form
+}
+\begin{equation}
+\min_{x\in\R^d} F(x) =  f(x) + h(x),\,\,\,f(x):=\frac{1}{n}\sum_{i=1}^n f_i(x)
+\end{equation}
+where each $f_i(x)$ is {\color{Violet} possibly} nonconvex and smooth loss function, and $h(x)$ is a convex and nonsmooth regularization term.}
+{\color{Brown}
+The generic form \eqref{} encompasses
+many machine learning problems, ranging from generalized linear models to neural networks. 
+{\color{Violet} This above optimization problem is fundamental to many machine learning problems, ranging from convex optimization such as Lasso, SVM to highly nonconvex problem such as optimizing deep neural networks.}
+We
+next elaborate on assumptions of problem (1), and provide a background on ZO gradient estimators.
+
+We will study the design and analysis of variance reduced and faster converging ZO optimization methods for \eqref{}. To reduce the variance accelerate ZO optimization, one can draw
+motivations from similar ideas in the first-order regime. The stochastic variance reduced gradient
+(SVRG) is a commonly-used, effective first-order approach to reduce the variance [19–23]. Due to
+the variance
+reduction, it improves the convergence rate of stochastic gradient descent (SGD) from
+$O(1/\sqrt{T})$ to $O(1/{T})$, where $T$ is the total number of iterations.
+
+
+}
+
+\section{Main Challenge}
+{\color{Brown}
+Although SVRG has shown a great promise, applying similar ideas to ZO optimization is not a trivial
+task. The main challenge arises due to the fact that SVRG relies upon the assumption that a stochastic gradient is an unbiased estimate of the true batch/full gradient, which unfortunately does not hold in the ZO case. Therefore, it is an open question whether the ZO stochastic variance reduced gradient could enable faster convergence of ZO algorithms. In this paper, we attempt to fill the gap between
+ZO optimization and SVRG.
+}
+\section{existing works}
+{\color{Green}  Until now, there are few zeroth-order stochastic methods
+for solving the problem \eqref{problem} except a recent attempt proposed in (Ghadimi, Lan, and Zhang, 2016). Specifically, Ghadimi, Lan, and Zhang (2016) have proposed a randomized stochastic projected gradient-free method (RSPGF),
+i.e., a zeroth-order proximal stochastic gradient method. However, due to the large variance of zeroth-order estimated gradient generated from randomly selecting the sample and the direction of derivative, the RSPGE only has a conver-
+gence rate $O(\frac{1}{\sqrt{T}})$, which is significantly slower than $O(\frac{1}{{T}})$,
+the best convergence rate of the zeroth-order stochastic algorithm. To accelerate the RSPGF algorithm, we use the variance reduction strategies in the first-order methods, i.e.,
+SVRG (Xiao and Zhang, 2014) and SAGA (Defazio, Bach, and Lacoste-Julien, 2014), to reduce the variance of estimated stochastic gradient.
+}
+\section{Main contributions}
+{\color{Green}
+Although SVRG and SAGA have shown good performances, applying these strategies to the zeroth-order method is not a trivial task. The main challenge arises due to that both SVRG and SAGA rely on the assumption that a
+stochastic gradient is an unbiased estimate of the true full gradient. However, it does not hold in the zeroth-order algorithms. 
+{\color{Brown}We propose and evaluate a novel ZO algorithm for nonconvex stochastic optimization,
+ZO-SVRG, which integrates SVRG with ZO gradient estimators. We show that compared to
+SVRG, ZO-SVRG achieves a similar convergence rate that decays linearly with $O(1/T)$ but up
+to an additional error correction term of order $1/b$, where $b$ is the mini-batch size.
+
+Our work offers a comprehensive study on how ZO gradient estimators affect SVRG on both iteration
+complexity (i.e., convergence rate) and function query complexity. Compared to the existing ZO
+algorithms, our methods can strike a balance between iteration complexity and function query
+complexity.}
+{\color{Violet}
+Our main technical contribution lies in the new convergence analysis of ProxSVRG+,
+which has notable difference from that of ProxSVRG [Reddi et al., 2016b]. We list our results in Table 1–3 and Figure 1–2. Our convergence results are stated in terms of the number of stochastic first-order oracle (SFO) calls and proximal
+oracle (PO) calls (see Definition 2). We would like to highlight the following results yielded by our new analysis:
+}
+
+In the paper, thus, we will fill this gap between
+zeroth-order proximal stochastic method and the classic variance reduction approaches (SVRG and SAGA).
+
+Moreover, we provide the theoretical analysis on the convergence properties of both new ZO-ProxSVRG and ZO-ProxSAGA methods. Table 1 shows the specifical convergence rates of the proposed algorithms and other related
+ones. In particular, our algorithms have faster convergence rate $O(\frac{1}{{T}})$ than $O(\frac{1}{\sqrt{T}})$ of the RSPGF (Ghadimi,
+Lan, and Zhang, 2016) (the existing stochastic PG algorithm for solving nonconvex nonsmoothing problems). 
+
+{\color{RubineRed}The expectational results R-I and R-II have better dependence on
+d compared to the high probability result R-III.}
+
+{\color{Violet}
+1) ProxSVRG+ is $b$ (resp. $\sqrt{b}\epsilon n$) times faster than ProxGD in terms of $\# SFO$ when $b\leq n^{2/3}$ (resp. $b\leq 1/\epsilon^{2/3}$ ), and $n/b$ times faster than ProxGD when $b > n^{2/3}$ (resp. $b > 1/\epsilon^{2/3}$ ). Note that $\# PO = O(1/\epsilon)$ for both ProxSVRG+
+and ProxGD. Obviously, for any super constant $b$, ProxSVRG+ is strictly better than ProxGD. Hence, we partially answer the open question (i.e. developing stochastic methods with provably better performance than ProxGD with constant minibatch size $b$) proposed in [Reddi et al., 2016b]. ProxSVRG+ also matches the best result achieved by
+ProxSVRG at $b = n^{2/3}$ , and it is strictly better for smaller $b$ (using less PO calls). See Figure 1 for an overview.
+}
+
+{\color{Violet} 2) Assuming that the variance of the stochastic gradient is bounded (see Assumption 1), i.e. online/stochastic setting,
+ProvSVRG+ generalizes the best result achieved by SCSG, recently proposed by [Lei et al., 2017] for the smooth
+nonconvex case, i.e., $h(x) = 0$ in form (1) (see Table 1, the 5th row). ProxSVRG+ is more straightforward than
+SCSG and yields simpler proof. Our results also match the results of Natasha1.5 proposed by [Allen-Zhu, 2017b]
+very recently, in terms of $\# SFO$, if there is no additional assumption (see Footnote 2 for details). In terms of $\# PO$,
+our algorithm outperforms Natasha1.5.
+}
+
+
+Extensive experimental results and theoretical analysis demonstrate the effectiveness of our algorithms.
+{\color{Brown}
+ To demonstrate the flexibility of our approach in managing this trade-off, we conduct an
+empirical evaluation of our proposed algorithms and other state-of-the-art algorithms on two diverse
+applications: black-box chemical material classification and generation of universal adversarial
+perturbations from black-box deep neural network models. Extensive experimental results and
+theoretical analysis validate the effectiveness of our approaches.
+}
+
+
+{\color{Brown}
+ Without a
+careful treatment, this correction term (e.g., when b is small) could be a critical factor affecting
+the optimization performance. To mitigate this error term, we propose two accelerated ZO-SVRG
+variants, utilizing reduced variance gradient estimators. These yield a faster convergence rate towards $O(\sqrt{d}/T )$, the best known iteration complexity bound for ZO stochastic optimization.
+}
+}
+{\color{Violet}
+In this paper, we propose a very straightforward algorithm called ProxSVRG+ to solve the nons-
+mooth nonconvex problem (1). 
+{\color{RubineRed} Depending on the local
+error bound (LEB) condition, the improvement over existing results is up to a factor of $\frac{1}{\sqrt{d}}$.}
+
+
+
+We also note that SCSG [Lei et al., 2017] and ProxSVRG [Reddi et al., 2016b] achieved their best convergence
+results with $b = 1$ and $b = n^{2/3}$ respectively, while ProxSVRG+ achieves the best result with $b = 1/\epsilon^{2/3}$ (see
+Figure 1), which is a moderate minibatch size (which is not too small for parallelism/vectorization and not too
+large for better generalization). In our experiments, the best $b$ for ProxSVRG and ProxSVRG+ in the MNIST
+experiments is 4096 and 256, respectively (see the second row of Figure 4).
+
+3) For the nonconvex functions satisfying Polyak-Łojasiewicz condition [Polyak, 1963], we prove that ProxSVRG+
+achieves a global linear convergence rate without restart, while Reddi et al. [2016b] used PL-SVRG to restart
+ProxSVRG many times to obtain the linear convergence rate. Thus, ProxSVRG+ can automatically switch to
+the faster linear convergence in some regions. ProxSVRG+ also improves ProxGD and ProxSVRG/SAGA, and
+generalizes the results of SCSG in this case (see Table 3). Also see the remarks after Theorem 2 for more details. {\color{RubineRed}
+To the best of
+our knowledge, this is the first paper that leverages the LP condition for improving the convergence of SZCO.
+}
+}
+
+{\color{DarkOrchid}
+Among them, accelerated
+methods enjoy improved convergence rates but
+have complex coupling structures, which makes
+them hard to be extended to more settings (e.g.,
+sparse and asynchronous) due to the existence of
+perturbation. In this paper, we introduce a sim-
+ple stochastic variance reduced algorithm (MiG),
+which enjoys the best-known convergence rates
+for both strongly convex and non-strongly con-
+vex problems. Moreover, we also present its efficient gradient-free variants, and theoretically analyze its convergence rates in these
+settings.
+
+More accurately, these methods achieve an improved oracle complexity $?$ versus $?$ for improved accelerated methods.
+
+We prove that FSVRG achieves linear convergence for
+strongly convex problems.
+
+We design a new momentum accelerating update rule,
+and present two selecting schemes of momentum weights for Cases 1 and 2, respectively.
+
+We prove that FSVRG attains linear convergence.
+}
+
+{\color{RubineRed}
+
+
+
+
+
+It is also notable that the best upper bound achieved in this paper can be as good as $?$.
+However, we note that our result does not contradict to the lower bound in [Duchi et al., 2015] because either their considered random functions do
+not necessarily have bounded gradients as assumed in this paper or their considered problem does not satisfy the LEB condition that yields our best result.
+
+}
+\section{Related Works}
+{\color{Green}
+Gradient-free (zeroth-order) methods have been effectively used to solve many machine learning problems, where the explicit gradient is difficult or infeasible to obtain, and have also been widely studied. 
+{\color{Brown}
+In ZO algorithms, a full gradient is typically approximated using either a one-point or a two-point gradient estimator, where the former acquires a gradient estimate $\hat{\nabla} f(x)$ by querying $f$ at a single random location close to $x$ [10, 11], and the latter computes a finite difference using two random function queries [12, 12+1]. In this paper, we focus on the two-point gradient estimator since it has a lower variance and thus improves the complexity bounds of ZO algorithms.
+}
+
+For example, Nesterov and Spokoiny (2017) proposed several random gradient-free
+methods by using Gaussian smoothing technique. Duchi et al. (2015) proposed a zeroth-order mirror descent algorithm. More recently, Yu et al. (2018); Dvurechensky, Gasnikov, and Gorbunov (2018) presented the accelerated zeroth-order methods for the convex optimization. To solve
+the nonsmooth problems, the zeroth-order online or stochastic ADMM methods (Liu et al., 2018b; Gao, Jiang, and Zhang, 2018) have been introduced.
+
+The above zeroth-order methods mainly focus on the
+(strongly) convex problems. In fact, there exist many non-convex machine learning tasks, whose explicit gradients are not available, such as the nonconvex black-box learning problems (Chen et al., 2017; Liu et al., 2018c). Thus, several recent works have begun to study the zeroth-order
+stochastic methods for the nonconvex optimization. For example, Ghadimi and Lan (2013) proposed the randomized stochastic gradient-free (RSGF) method, i.e., a zeroth-order stochastic gradient method. To accelerate optimization, more recently, Liu et al. (2018c,a) proposed the zeroth-order stochastic variance reduction gradient (ZO-SVRG)
+methods. Moreover, to solve the large-scale machine learning problems, some asynchronous parallel stochastic zeroth-order algorithms have been proposed in (Gu, Huo, and Huang, 2016; Lian et al., 2016; Gu et al., 2018).
+{\color{Brown}
+
+
+Despite the meteoric rise of two-point based ZO algorithms, most of the work is restricted to convex problems [5, 14–18]. For example, a ZO mirror descent algorithm proposed by [14] has an exact rate $O(\sqrt{d}/ \sqrt{T})$, where $d$ is the number of optimization variables. The same rate is obtained by bandit convex optimization [15] and ZO online alternating direction method of multipliers [5]. Current studies suggested that ZO algorithms typically agree with the iteration complexity of first-order
+algorithms up to a small-degree polynomial of the problem size $d$.
+
+In contrast to the convex setting, non-convex ZO algorithms are comparatively under-studied except
+a few recent attempts [7, 13, 24–26]. Different from convex optimization, the stationary condition
+is used to measure the convergence of nonconvex methods. In [12+1], the ZO gradient descent (ZO-
+GD) algorithm was proposed for deterministic nonconvex programming, which yields $O(d/T)$
+convergence rate. A stochastic version of ZO-GD (namely, ZO-SGD) studied in [24] achieves the
+rate of $O(\sqrt{d}/\sqrt{T})$. In [25], a ZO distributed algorithm was developed for multi-agent optimization, leading to $O(1/T + d/q)$ convergence rate. Here $q$ is the number of random directions used to construct a gradient estimate. In [7], an asynchronous ZO stochastic coordinate
+descent (ZO-SCD) was derived for parallel optimization and achieved the rate of $O(\sqrt{d}/\sqrt{T})$. In [26], a variant of
+ZO-SCD, known as ZO stochastic
+ variance reduced coordinate (ZO-SVRC) descent, improved the
+convergence rate from $O(\sqrt{d}/\sqrt{T})$ to $O(d/T )$ under the same parameter setting for the gradient estimation. Although the authors in [26] considered the stochastic variance reduced technique, only a
+coordinate descent algorithm using a coordinate-wise (deterministic) gradient estimator was studied. This motivates our study on a more general framework ZO-SVRG under different gradient estimators.
+}
+{\color{Violet}
+Recently, for the nonsmooth nonconvex case, Reddi et al. [2016b] provided two algorithms called ProxSVRG and ProxSAGA, which are based on the well-known variance reduction techniques SVRG and SAGA [Johnson and Zhang, 2013, Defazio et al., 2014]. Also, we would like to mention that Aravkin and Davis [2016] considered the case when
+h can be nonconvex in a more general context of robust optimization. Before that, Ghadimi et al. [2016] analyzed the
+deterministic proximal gradient method (i.e., computing the full-gradient in every iteration) for nonconvex nonsmooth
+problems. Here we denote it as ProxGD. Ghadimi et al. [2016] also considered the stochastic case (here we denote
+it as ProxSGD). However, ProxSGD requires the batch sizes being a large number (i.e., $\Omega(1/\epsilon)$) or increasing with
+the iteration number $t$. Note that ProxSGD may reduce to deterministic ProxGD after some iterations due to the
+increasing batch sizes. Note that from the perspectives of both computational efficiency and statistical generalization,
+always computing full-gradient (GD or ProxGD) may not be desirable for large-scale machine learning problems. A reasonable minibatch size is also desirable in practice, since the computation of minibatch stochastic gradients can be
+implemented in parallel. In fact, practitioners typically use moderate minibatch sizes, often ranging from something
+like 16 or 32 to a few hundreds (sometimes to a few thousands, see e.g., [Goyal et al., 2017]). 1 Hence, it is important
+to study the convergence in moderate and constant minibatch size regime.
+
+Reddi et al. [2016b] provided the first non-asymptotic convergence rates for ProxSVRG with minibatch size at most $O(n^{2/3})$, for the nonsmooth nonconvex problems. However, their convergence bounds (using constant or moderate
+size minibatches) are worse than the deterministic ProxGD in terms of the number of proximal oracle calls. Note that their algorithms (i.e., ProxSVRG/SAGA) outperform the ProxGD only if they use quite large minibatch size
+$b = O(n^{2/3})$. Note that in a typical application, the number of training data is $n = 10^6 \sim 10^9$ , and $n^{2/3} = 10^4 \sim 10^6$.
+Hence, $O(n^{2/3})$ is a quite large minibatch size. Finally, they presented an important open problem of developing
+stochastic methods with provably better performance than ProxGD with constant minibatch size
+}
+\subsection{Motivation at the end of related works}
+Although the above zeroth-order stochastic methods can effectively solve the nonconvex optimization, there are few zeroth-order stochastic methods for the nonconvex nonsmooth composite optimization except the RSPGF method presented in (Ghadimi, Lan, and Zhang, 2016). In addition, Liu et al. (2018a) have also studied the zeroth-order algorithm for solving the nonconvex nonsmooth problem, which is different from problem \eqref{problem}.
+}
+\begin{table}\label{table-compare}
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| } 
+ \hline
+ Method & Problem & Stepsize& Convergence rate & SZO complexity\\ 
+ \hline
+  
+ ZO-SGD \cite{24liunips} &S(NC) & $O\left(\min\{\frac{1}{d},\frac{1}{\sqrt{dT}}\}\right)$ & $O\left(\frac{d}{\epsilon^2}\right)$ & $O\left(\frac{nd}{\epsilon^2}b\right)$\\ 
+ RGF\cite{nestrov} & NS(C) & $O\left(\frac{1}{\sqrt{dT}}\right)$ & $O\left(\frac{d^2}{\epsilon^2}\right)$ &$O\left(\frac{nd^2}{\epsilon^2}b\right)$\\ 
+ MD \cite{duchi} & S(SC) & $\frac{1}{\sqrt{dT}}$  & $O\left(\frac{d}{\epsilon^2}\right)$ & $O\left(\frac{nd}{\epsilon^2}{\color{red}b}\right)$\\ 
+ ZO-SVRG-Coord \cite{liunips} & S(NC)& $O\left(\frac{1}{{d}}\right)$ & $O\left(\frac{d}{\epsilon}\right)$ & $O(\frac{nd^2}{\epsilon}+\frac{d^2b}{\epsilon})$\\
+  ZO-ProxSVRG\cite{Gu} & S(NC)+NS(C) & $O\left(\frac{1}{{d}}\right)$ & $O\left(\frac{d}{\epsilon}\right)$ & $O(\frac{nd^2}{\sqrt{b}\epsilon}+\frac{d^2\sqrt{b}}{\epsilon})$\\
+   ZO-ProxSAGA\cite{Gu} & S(NC)+NS(C)& $O\left(\frac{1}{{d}}\right)$ & $O\left(\frac{d}{\epsilon}\right)$ & $O(\frac{nd^2}{\epsilon\sqrt{b}})$\\
+   Ours & S(NC)+NS(C) & $O\left(\frac{1}{{\sqrt{d}}}\right)$ & $O\left(\frac{d}{\epsilon}\right)$ & $O\left(\min\{n,\frac{1}{\epsilon}\}\frac{d\sqrt{d}}{\epsilon\sqrt{b}}+\frac{d\sqrt{db}}{\epsilon}\right)$\\
+   Ours & S(PL)+NS(C) & $O\left(\frac{1}{{\sqrt{d}}}\right)$ & $O\left(\frac{d}{\epsilon}\right)$ & {\scriptsize$O(\min\{n,\frac{1}{\epsilon}\}\frac{d\sqrt{d}}{\sqrt{b}}\log\frac{1}{\epsilon}+{d\sqrt{db}}\log\frac{1}{\epsilon})$}\\
+   Ours & S(SC)+NS(C) & $O\left(\frac{1}{{\sqrt{d}}}\right)$ & $O\left(\frac{d}{\epsilon}\right)$ & {\scriptsize$O(\min\{n,\frac{1}{\epsilon}\}\frac{d\sqrt{d}}{b^{3/4}}\log\frac{1}{\epsilon}+{d\sqrt{d}b^{3/4}}\log\frac{1}{\epsilon})$}\\
+ \hline
+\end{tabular}\caption{Summary of convergence rate and function query complexity of SZO algorithms. NC: Nonconvex, C: Convex, SC: Strong Convexity, and PL: Polyak-Łojasiewicz Condition.}
+\end{center}
+\end{table}
+
+\subsection{Zeroth-order (ZO) gradient estimators}
+
+{\color{Brown}
+Given an individual cost function $f_i$, a two-point random stochastic gradient estimator (RandSGE) $\hat{\nabla} f_i(x)$ is defined [12+1,16]
+\begin{equation}\label{gradestrand}
+\hat{\nabla} f_i(x) = \frac{d(f_i(x+\mu u_i) - f_i(x))}{\mu}u_i,\qquad i\in [n],
+\end{equation}
+where recall that $d$ is the number of optimization variables, $\mu > 0$ is a smoothing parameter, and
+$\{u_i\}$ are i.i.d. random directions drawn from a uniform distribution over a unit sphere [10, 15, 16]. In general, RandSGE is a biased approximation to the true gradient $\nabla f_i(x)$, and its bias reduces as $\mu$ approaches zero. However, in a practical system, if $\mu$ is too small, then the function difference
+could be dominated by the system noise and fails to represent the function differential [7].}
+{\color{Green}
+To obtain a better estimated gradient, we
+can use the coordinate gradient estimator
+(CoordSGE) (Gu, Huo, and Huang, 2016; Gu et al., 2018; Liu et al., 2018c) to estimate the gradients as follows:
+\begin{equation}\label{gradestcoord}
+\hat{\nabla} f_i(x) = \sum_{j=1}^d \frac{f_i(x+\mu_je_j) - f_i(x-\mu_je_j)}{2\mu_j}e_j,\qquad i\in [n],
+\end{equation}
+where $\mu_j$ is a coordinate-wise smoothing parameter, and $e_j$ is a standard basis vector with $1$ at its $j$-th coordinate,
+and $0$ otherwise. 
+}
+{\color{Brown}
+Compared to RandSGE, CoordSGE is deterministic and requires $d$ times more function queries. 
+However, it is evident that it yields an improved  convergence rate and iteration complexity \cite{}. More details on ZO gradient estimation can be found in \cite{}.
+}
+ 
+
+Although CoordSGE results in faster convergence rate than RandSGE, it needs $d$ times more function queries than RandSGE in
+gradient estimation. {\color{red} In this work we only consider CoordSGE and the extension to RandSGE is straightforward.}
+
+\subsection{Accelerated Proximal Gradient Method}
+{\color{Green}
+Because proximal gradient method \cite{} needs to compute
+the gradient at each iteration, it cannot be applied to solve the problems, where the explicit gradient of function $f(x)$ is
+not available. For example, in the black-box machine learning model, only function values (e.g., prediction results) are
+available Chen et al. (2017). To avoid computing explicit gradient, we use the zeroth-order gradient estimators (Nesterov and Spokoiny, 2017; Liu et al., 2018c) to estimate the
+gradient only by function values.
+Based on the estimated gradients \eqref{gradestcoord}, we give a zeroth-order proximal gradient descent method, which performs  iterations similar to:
+\begin{equation}
+x_{t}^s= \Po_{\eta h}(x_{t-1}^s - \eta \hat{\nabla} f(x_{t-1}^s)),\qquad t=1, 2, \ldots
+\end{equation}
+where $\hat{\nabla} f=\frac{1}{n}\sum_{i=1}^n \hat{\nabla} f_i(x)$ and 
+\begin{equation}\label{po-operator}
+\Po_{\eta h}(x) := \text{arg}\,\,\min_{y\in\R^d}\left(h(y)+\frac{1}{2\eta}\norm{y-x}^2\right)
+\end{equation}
+}
+{\color{Green}
+
+
+{\color{Violet}
+We also assume that the
+nonsmooth convex function $h(x)$ in \eqref{problem} is well structured, i.e., the proximal operator \eqref{po-operator} on $h$ can be computed efficiently.
+
+}
+}
+\section{Accelerated Proximal Gradient Method}
+
+
+\begin{algorithm}\label{APGnonconvex-Algo}
+\caption{Nonconvex ProxZOSVRG+}
+\begin{algorithmic}[1]
+\State\Input initial point $x_0$, batch size $B$, minibatch size $b$, epoch length $m$, step size $\eta$
+\State\Initialize $\tilde{x}^0 = x_0$
+\For{ $s=1,2,\ldots, S$ }
+\State $x_0^s = \widetilde{x}^{s-1}$
+\State $\hat{g}^s = \frac{1}{B} \sum_{j\in I_B} \hat{\nabla} f_j (\widetilde{x}^{s-1})$
+\For{ $t=1,2,\ldots, m$ }
+\State ${\hat{v}}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left(\hat{\nabla} f_{i}(x_{t-1}^s)-\hat{\nabla} f_{i}(\tilde{x}^{s-1})\right)+\hat{g}^s$
+\State $x_{t}^s= \Po_{\eta h}(x_{t-1}^s - \eta \hat{v}_{t-1}^s)$
+\EndFor
+\State $\widetilde{x}^{s} = x_m^s$
+ \EndFor
+ \State\Output $\hat{x}$ chosen uniformly from $\{x_{t-1}^s\}_{t\in [m], s\in [S]}$
+\end{algorithmic}
+\end{algorithm}
+{\color{Violet}
+In this section, we propose a proximal stochastic gradient algorithm called ZO-PSVRG+, by using VR technique of PSVRG in \cite{xiao2014proximal,reddi2016proximal,li2018simple}.
+(similar to nonconvex ZO-ProxSVRG \cite{} and convex ZO-SVRG-Coord \cite{}). The details
+are described in Algorithm \ref{APGnonconvex-Algo}.
+{\color{Brown}
+Our algorithm has two kinds of random procedure. That is, in outer iteration,
+we compute the gradient include $B$ samples. In inner iteration, we randomly select a mini-batch of samples $b$ to estimate the gradient.}
+ We call $B$ the batch size and $b$ the minibatch size.
+
+Compared with ZO-SVRG-Coord, ZO-ProxSVRG analyzed the nonconvex nonsmooth functions while ZO-SVRG-Coord only analyzed the smooth functions. The major difference of our ZO-PSVRG+ is that
+we avoid the computation of the full gradient at the beginning of each epoch, i.e., $B$ may not equal to $n$ (see Line 5 of Algorithm \ref{APGnonconvex-Algo}) while ZO-SVRG-Coord and ZO-ProxSVRG used $B = n$. Note that even if we choose $B = n$, our analysis is
+stronger than ZO-SVRG-Coord and ZO-ProxSVRG. As a result, our straightforward ZO-PSVRG+ generalizes these variance-reduced methods to a more general nonsmooth nonconvex zeroth-order case and yields simpler analysis.
+}
+{\color{Green}
+ {\color{Brown}It has been shown in [19, 20] that the first-order PSVRG achieves the convergence rate $O(1/T )$, yielding $O(\sqrt{T})$ less iterations than the ordinary SGD for solving finite sum problems.}
+{\color{Green}
+{\color{Brown} The key step of corresponding variance-reduced algorithmic framework is to generate an auxiliary sequence $\hat{x}$ at which the full gradient is used as a reference in building a modified stochastic gradient estimate 
+\begin{equation}\label{grad-fo}
+{{v}}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left({\nabla} f_{i}(x_{t-1}^s)-{\nabla} f_{i}(\tilde{x}^{s-1})\right)+{g}^s
+\end{equation}
+where ${{v}}_{t-1}^s$ denotes the gradient estimate at $x$. The key property of \eqref{grad-fo} is that ${{v}}_{t-1}^s$ is an unbiased gradient estimate of $\nabla f(x_{t-1}^s)$. In the ZO setting, the gradient blending \eqref{grad-fo} is approximated using only function values,
+\begin{equation}\label{zo-grad-fo}
+{\hat{v}}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left(\hat{\nabla} f_{i}(x_{t-1}^s)-\hat{\nabla} f_{i}(\tilde{x}^{s-1})\right)+\hat{g}^s
+\end{equation}
+where $\hat{g}^s= \frac{1}{B}\sum_{i\in I_B}\hat{\nabla} f_{i}(\tilde{x}^{s-1})$ and $\hat{\nabla} f_{i}$ is a ZO gradient estimate specified by CoordSGE.  Replacing \eqref{grad-fo} with \eqref{zo-grad-fo} in PSVRG leads to a new ZO
+algorithm, which we call ZO-PSVRG+ (Algorithm \ref{APGnonconvex-Algo}). We also avoid the computation of the full gradient at the beginning of each epoch, i.e., $B \neq n$.
+}
+Note that, $\E_{I_b}[\hat{v}_{t-1}^s] = \hat{\nabla} f(x_{t-1}^s) \neq {\nabla} f(x_{t-1}^s)$, i.e., this stochastic gradient is a biased estimate of the true full gradient.
+{\color{Brown} That is, the unbiased assumption on gradient estimates used in PSVRG \cite{reddi2016proximal,li2018simple} no longer holds. We highlight that although ZO-PSVRG is similar
+to PSVRG except the use of ZO gradient estimators to estimate batch, mini-batch, as well as blended
+gradients, this seemingly minor difference yields an essential difficulty in the analysis of ZO-PSVRG+.
+}
+Thus, adapting the similar ideas of PSVRG to zeroth-order algorithm \ref{APGnonconvex-Algo} is not a trivial task {\color{Brown} and a careful analysis of ZO-PSVRG+ is much needed.} To address this issue, we analyze the upper bound for the variance of the estimated gradient $\hat{v}_t^s$, and choose the appropriate step size $\eta$ and smoothing parameter $\mu$ to control
+this variance, which will be in detail discussed in the below theorems.
+}
+}
+
+\subsection{reason to avoid full gradient calculation}
+{\color{Green}
+Since ZO-ProxGD needs to estimate full gradient
+$\hat{\nabla}=\frac{1}{n}\sum_{i=1}^n f_i(x)$ when $n$ is large in the problem \eqref{problem}, its high cost per iteration is prohibitive. As a result, Ghadimi, Lan, and Zhang (2016) proposed the RSPGF with calculating the gradient on the mini-batch $\mathcal{I}_t$
+}
+
+\section{Convergence Analysis}
+{\color{Green}
+First, we give some
+mild assumptions regarding problem \eqref{problem} as follows:
+}
+\begin{assumption}\label{Lip-Zoo}
+For $\forall i\in{1,2,\ldots,n}$, gradient of the function $f_i$ is Lipschitz continuous with a Lipschitz constant $L > 0$, such that 
+\[
+\norm{\nabla f_i(x) - \nabla f_i(y)}\leq L \norm{x-y},\,\,\forall x,y\in\R^d.
+\]
+\end{assumption}
+
+\begin{assumption}\label{Var-Zoo}
+For $\forall x$, $\E\left[\norm{\hat{\nabla} f_i(x) - \hat{\nabla} f(x)}^2\right] \leq \sigma^2$, where $\sigma > 0$ is a constant and $\hat{\nabla} f_i(x)$ is a CoordSGE gradient estimator of $\nabla f_i(x)$.
+\end{assumption}
+{\color{Green}
+{\color{Brown}
+Both Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo} are the standard assumptions used in nonconvex optimization literature [7, 13, 23–
+26].}
+The first assumption is used for the convergence analysis of the zeroth-order algorithms (Ghadimi, Lan, and Zhang, 2016; Nesterov and Spokoiny, 2017; Liu et al., 2018c).}
+
+{\color{Green} The second assumption gives the bounded variance of zeroth-order gradient estimates and are used in first-order optimization literature (Lian et al., 2016; Liu et al., 2018c,a). {\color{Brown}
+Note that assumption \ref{Var-Zoo} is milder than the assumption of bounded gradients [5, 25].}
+{\color{Green}Due to this assumption we need to analyze more complex problem \eqref{problem} including a non-smooth part and drive faster convergence rates.} {\color{Violet}Such an assumption is necessary if one wants the convergence result to be independent of $n$.
+}
+{\color{Green}
+We start by deriving an upper bounds for the variance of estimated gradient $\hat{v}_{t-1}^s$ based on the CoordSGE.}
+}
+\begin{lemma}\label{var-estimate-lem}
+Using CoordSGE given the mixture estimated gradient $\hat{v}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left(\hat{\nabla} f_{i}(x_{t-1}^s)-\hat{\nabla} f_{i}(\tilde{x}^{s-1})\right)+\hat{g}^s$ with $\hat{g}^s = \frac{1}{B} \sum_{j\in I_B} \hat{\nabla} f_j (\widetilde{x}^{s-1})$, then the following inequality holds. 
+\begin{equation}
+\begin{split}
+\E\left[\eta\norm{\nabla f(x_{t-1}^s)-{\hat{v}_{t-1}^s}}^2\right] \leq&  \frac{2\eta L^2 d}{b}\E\left[\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\right]\\
+&+ 2\frac{I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}
+\end{split}
+\end{equation}
+\end{lemma}
+\begin{proof}
+We have
+\begin{align}
+  \E&\left[\eta\norm{\nabla f(x_{t-1}^s)-{\hat{v}_{t-1}^s}}^2\right]\notag\\
+   =&\E\left[\eta\norm{\frac{1}{b}\sum_{i\in I_b}\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\widetilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s)-\hat{g}^s\right)}^2\right]\notag\\
+   =&\E\left[\eta\norm{\frac{1}{b}\sum_{i\in I_b}\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\widetilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s)-\frac{1}{B}\sum_{j\in I_B}\hat{\nabla} f_j(\widetilde{x}^{s-1})\right)}^2\right]\notag\\
+   =&\notag\E\left[\eta\norm{\frac{1}{b}\sum_{i\in I_b}\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\widetilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)+ \left(\frac{1}{B}\sum_{j\in I_B}\hat{\nabla} f_j(\widetilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\\
+   =&\notag\eta\E\left[\norm{\frac{1}{b}\sum_{i\in I_b}\left(\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\widetilde{x}^{s-1})\right) - \left(\nabla f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)+ \frac{1}{B}\sum_{j\in I_B}\left(\hat{\nabla} f_j(\widetilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\\
+   \leq &\notag2\eta\E\left[\norm{\frac{1}{b}\sum_{i\in I_b}\left(\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\widetilde{x}^{s-1})\right) - \left(\hat{\nabla} f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)+ \frac{1}{B}\sum_{j\in I_B}\left(\hat{\nabla} f_j(\widetilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\\
+   &\,\, + 2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\label{var-estimate-lem-1}\\
+    = &\notag 2 \eta\E\left[\norm{\frac{1}{b}\sum_{i\in I_b}\left(\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\widetilde{x}^{s-1})\right) - \left(\hat{\nabla} f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)}^2\right]\\
+   &\,\, +2 \eta \E \left[ \norm{\frac{1}{B}\sum_{j\in I_B}\left(\hat{\nabla} f_j(\widetilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]+ 2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\label{var-estimate-lem-2}\\
+   = &\notag\frac{2\eta}{b^2}\E\left[\sum_{i\in I_b}\norm{\left(\left(\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\widetilde{x}^{s-1})\right) - \left({\hat{\nabla}} f(x_{t-1}^s) - \hat{\nabla} f(\tilde{x}^{s-1}) \right)\right)}^2\right]\\
+   &\,\, \label{var-estimate-lem-3}+ 2\eta \E \left[ \norm{\frac{1}{B}\sum_{j\in I_B}\left(\hat{\nabla} f_j(\widetilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+   \leq  &\frac{2\eta}{b^2}\E\left[\sum_{i\in I_b}\norm{\hat{\nabla} f_i(x_{t-1}^s)-\hat{\nabla} f_i(\widetilde{x}^{s-1})}^2\right]+ 2\eta \E \left[ \norm{\frac{1}{B}\sum_{j\in I_B}\left(\hat{\nabla} f_j(\widetilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\notag\\
+   &\,\,\label{var-estimate-lem-4}+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+    \leq  &\frac{2\eta L^2 d}{b}\E\left[\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\right]+ 2\eta \E \left[ \norm{\frac{1}{B}\sum_{j\in I_B}\left(\hat{\nabla} f_j(\widetilde{x}^{s-1}) - \hat{\nabla} f(\tilde{x}^{s-1})\right)}^2\right]\notag\\
+   &\,\,\label{var-estimate-lem-5}+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+   \leq  &\label{var-estimate-lem-6}\frac{2\eta L^2 d}{b}\E\left[\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\right]+ 2\frac{I\{B < n\}\eta \sigma ^2}{B}+2\eta \E \norm{\hat{\nabla} f(x_{t-1}^s)-\nabla f(x_{t-1}^s)}^2\\
+   \leq  &\label{var-estimate-lem-7}\frac{2\eta L^2 d}{b}\E\left[\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\right]+ 2\frac{I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}
+ \end{align}
+ where, recalling that a deterministic gradient estimator is used, the expectations are taking with respect to $I_b$ and $I_B$. The inequality \eqref{var-estimate-lem-1} holds by the Jensen’s inequality. \eqref{var-estimate-lem-2} and \eqref{var-estimate-lem-3} are based on $\E[\norm{x_1+x_2+\ldots+x_k}^2] = \sum_{i=1}^k \E[\norm{x_i}^2]$ if $x_1,x_2,\ldots,x_k$ are independent and of mean zero (note that $I_b$ and $I_B$ are also independent). \eqref{var-estimate-lem-4} uses the fact that $\E[\norm{x-\E[x]}^2] \leq \E[\norm{x}^2]$, for any random variable $x$. \eqref{var-estimate-lem-5} holds due to the following inequality  
+ \begin{equation}
+ \begin{split}
+ \E \norm{\hat{\nabla} f_i(x_{t}^s)-\hat{\nabla} f_i(\tilde{x}^s)}^2 &= \E \norm{ \sum_{j=1}^d\frac{f_{i,\mu_j}(x_{t}^s)}{\partial x_j}e_j-\frac{f_{i,\mu_j}(\tilde{x}^s)}{\partial x_j}e_j}^2\\
+ &\leq d \sum_{j=1}^d \E \norm{ \frac{f_{i,\mu_j}(x_{t}^s)}{\partial x_j}-\frac{f_{i,\mu_j}(\tilde{x}^s)}{\partial x_j}}^2\\
+ &\leq L^2 d \sum_{j=1}^d \E \norm{x_{t,j}^s-\tilde{x}_{j}^s}^2 = L^2 d \norm{x_{t}^s-\tilde{x}^s}^2\\
+ \end{split}
+ \end{equation}
+  where the last inequality used the fact that $f_{i,\mu_j}$ is $L$-smooth. \eqref{var-estimate-lem-6} is by Assumption \ref{Var-Zoo} and \eqref{var-estimate-lem-7} uses Lemma \ref{CooSGE}. The proof is now complete.
+\end{proof}
+{\color{Green}
+Lemma \ref{var-estimate-lem} shows that variance of $\hat{v}_{t-1}^s$ has an upper bound. As the number of iterations increases, based on convergence analysis both $x_{t-1}^s$ and $\widetilde{x}^{s-1}$ will approach the same stationary point $x^*$, then the
+variance of stochastic gradient decreases, but does not vanishes, due to using the zeroth-order estimated gradient and variance with respect to the full gradient.
+}
+
+In the sequel we frequently use the following inequality
+\begin{equation}\label{young}
+\norm{x-z}^2 \leq (1+\frac{1}{\beta})\norm{x-y}^2 + (1+\beta) \norm{{y-z}}^2, \forall \beta> 0
+\end{equation}
+\subsection{Gradient Mapping}
+{\color{Violet}
+For convex problems, one typically uses the optimality gap $F(x) - F(x^*)$ as the convergence criterion (see e.g.,
+[Nesterov, 2004]). But for general nonconvex problems, one typically uses the gradient norm as the convergence
+criterion. E.g., for smooth nonconvex problems (i.e., $h(x) = 0$), Ghadimi and Lan [2013], Reddi et al. [2016a]
+and Lei et al. [2017] used $\norm{\nabla F(x)}^2$ (i.e., $\norm{\nabla f(x)}^2$ ) to measure the convergence results. In order to analyze the
+convergence results for nonsmooth nonconvex problems, we need to define the gradient mapping as follows (as in[Ghadimi et al., 2016, Reddi et al., 2016b]):
+\begin{equation}
+g_{\eta}(x) = \frac{1}{\eta}(x-\Po_{\eta,h}(x-\eta \nabla f(x)))
+\end{equation}
+Note that if $h(x)$ is a constant function (in particular, zero), this gradient mapping reduces to the ordinary gradient:
+$g_{\eta}(x) = \nabla F(x) = \nabla f(x)$. In this paper, we use the gradient mapping $g_{\eta}(x)$ as the convergence criterion (same as
+[Ghadimi et al., 2016, Reddi et al., 2016b]){\color{Green}(Parikh, Boyd, and others, 2014)}.}
+{\color{Green}
+For the nonconvex problems, if $g_{\eta}(x) = 0$, the point $x$ is a critical point (Parikh, Boyd, and others, 2014). Thus, we can
+use the following definition as the convergence metric.
+\begin{definition}
+Solution $x$ is called $\epsilon$-accurate, if $\E\norm{g_{\eta}(x)}^2 \leq \epsilon$, for some $\eta > 0$.
+\end{definition}
+}
+\subsection{Convergence}
+In Theorem \ref{noncon-zoo}, we focus on the effect of CoordSGE on the convergence rate of ZO-PSVRG++ and give some remarks.
+
+\begin{theorem}\label{noncon-zoo}
+Suppose Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo} hold, and the coordinate gradient estimator CoordSGE is used. The output $\hat{x}$ of Algorithm \ref{APGnonconvex-Algo} satisfies
+  \begin{equation}\label{noncon-zoo-main}
+  \begin{split}
+\E[\norm{g_{\eta}(\hat{x})}^2] & \leq \frac{6\left(F(x_0) - F({x}^*)\right)}{\eta Sm} + \frac{I\{B < n\}12\sigma ^2}{B}+3{L^2 d^2 \mu^2}
+\end{split}
+ \end{equation}
+where $\eta = \min\{\frac{1}{8L}, \frac{\sqrt{b}}{6mL\sqrt{d}}\}$ denotes the step size and $x^*$ denotes the optimal value of problem \ref{problem}.
+\end{theorem}
+
+
+\begin{proof}
+Now, we apply Lemma \ref{lemma1} to prove Theorem \ref{noncon-zoo}. Let $x_t^s = \Po_{\eta h} (x_{t-1}^s - \eta \hat{v}_{t-1}^s)$ and $\overline{x}_t^s = \Po_{\eta h} (x_{t-1}^s - \eta \nabla f(x_{t-1}^s))$. By letting $x^+ = x_t^s$, $x = x_{t-1}^s$, $v = \hat{v}_{t-1}^s$ and $z = \overline{x}_t^s$ in \eqref{eq10}, we have
+\begin{align}
+F(x^s_t) \leq& F(\overline{x}_t^s) + \Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s-\overline{x}_t^s}-\frac{1}{\eta} \Iprod{x_t^s-x_{t-1}^s}{x_t^s-\overline{x}_t^s}\notag\\
+&+\frac{L}{2}\norm{x_t^s-x_{t-1}^s}^2+\frac{L}{2}\norm{\overline{x}_t^s-x_{t-1}^s}^2.\label{eq16}
+\end{align}
+Besides, by letting $x^+ = \overline{x}_t^s$, $x = x_{t-1}^s$, $v = \nabla f(x_{t-1}^s)$ and $z = x = {x}_{t-1}^s$ in \eqref{eq10}, we have
+\begin{align}
+F(\overline{x}_t^s) \leq& F({x}_{t-1}^s) - \frac{1}{\eta}\Iprod{\overline{x}_t^s-x_{t-1}^s}{\overline{x}_t^s - x_{t-1}^s}+\frac{L}{2}\norm{\overline{x}_t^s-x_{t-1}^s}^2\notag\\
+ =& \Phi({x}_{t-1}^s) -(\frac{1}{\eta}-\frac{L}{2})\norm{\overline{x}_t^s-x_{t-1}^s}^2.\label{eq17} 
+\end{align}
+Combining \eqref{eq16} and \eqref{eq17} we have 
+ \begin{align}
+ F({x}_t^s) \leq& F({x}_{t-1}^s) +\frac{L}{2}\norm{{x}_t^s-x_{t-1}^s}^2 - \left(\frac{1}{\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+ & -\frac{1}{\eta} \Iprod{x_t^s-x_{t-1}^s}{x_t^s-\overline{x}_{t}^s}\notag\\
+  =& F({x}_{t-1}^s)  +\frac{L}{2}\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+ &-\frac{1}{2\eta} \left(\norm{x_t^s-x_{t-1}^s}^2+ \norm{x_t^s-\overline{x}_{t}^s}^2-\norm{\overline{x}_{t}^s-x_{t-1}^s}^2\right)\notag\\
+   =& F({x}_{t-1}^s)  -(\frac{1}{2\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{2\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+ & -\frac{1}{2\eta} \norm{x_t^s-\overline{x}_{t}^s}^2\notag\\
+ \leq & F({x}_{t-1}^s)  -(\frac{1}{2\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{2\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+ & -\frac{1}{8\eta} \norm{x_t^s-{x}_{t-1}^s}^2 + \frac{1}{6\eta} \norm{\overline{x}_{t}^s-{x}_{t-1}^s}^2\label{eq18}\\
+  = &  F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{3\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}{x_t^s - \overline{x}_t^s}\notag\\
+  \leq & F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{3\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\eta \norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}^2\label{eq19}
+ \end{align}
+ where the second inequality uses \eqref{young} with $\beta = 3$ and the last inequality holds due to the Lemma \ref{lemm-est-grad}.
+ 
+Note that $x_t^s = \Po_{\eta h}(x_{t-1}^s - \eta \hat{v}_{t-1}^s)$ is the iterated from in our algorithm.  By taking the expectation with respect to all random variables in \eqref{eq19} we obtain
+ \begin{equation}\label{eq25}
+ \begin{split} 
+\E[F({x}_{t}^s)] \leq \E\left[F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{3\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2+\eta \norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}^2\right]\\
+ \end{split}
+ \end{equation}
+In \eqref{eq25}, we further bound $\eta \norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}^2$ using Lemma \ref{var-estimate-lem} to obtain
+ \begin{align} 
+\E&[F({x}_{t}^s)] \notag
+\notag
+\\ \leq& \E\left[F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{1}{3\eta}-L\right)\norm{\overline{x}_t^s-x_{t-1}^s}^2\right]\notag\\
+&+ \frac{2\eta L^2 d}{b}\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2 + \frac{2I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}\notag
+\\ =& \E\left[F({x}_{t-1}^s)  -(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-x_{t-1}^s}^2- \left(\frac{\eta}{3}-L\eta^2\right)\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag
+\\&+\frac{2\eta L^2 d}{b}\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2+ \frac{2I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}\label{theor1-31}
+\\ \leq& \E\left[F({x}_{t-1}^s)  -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\widetilde{x}^{s-1}}^2- \left(\frac{\eta}{3}-L\eta^2\right)\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2
++ \frac{2I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}\label{theor1-32}
+ \end{align}
+where recalling $\overline{x}_t^s := \Po_{\eta h}(x_{t-1}^s - \eta \nabla f(x_{t-1}^s))$, \eqref{theor1-31}  is based on the definition of gradient mapping $g_{\eta}(x_{t-1}^s)$. \eqref{theor1-32} uses \eqref{young} by choosing $\beta = 2t-1$.
+ 
+Taking a telescopic sum for $t = 1, 2, \ldots, m$ in epoch $s$ from \eqref{theor1-32} and recalling that $x_m^s = \tilde{x}^s$ and $x_0^s = \tilde{x}^{s-1}$, we obtain
+ \begin{align} 
+\E&[F(\tilde{x}^s)] \notag
+\\ \leq& \E\left[F(\tilde{x}^{s-1})  -\sum_{t=1}^m\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\widetilde{x}^{s-1}}^2- \left(\frac{\eta}{3}-L\eta^2\right)\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+\sum_{t=1}^m(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\notag\\
+&+ \sum_{t=1}^m \frac{2I\{B < n\}\eta \sigma ^2}{B}+\sum_{t=1}^m \eta \frac{L^2 d^2 \mu^2}{2}\notag\\
+\leq& \E\left[F(\tilde{x}^{s-1})  -\sum_{t=1}^{m-1}\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\widetilde{x}^{s-1}}^2- \left(\frac{\eta}{3}-L\eta^2\right)\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+\sum_{t=2}^m(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\notag\\
+&+ \sum_{t=1}^m \frac{2I\{B < n\}\eta \sigma ^2}{B}+\sum_{t=1}^m \eta \frac{L^2 d^2 \mu^2}{2}\label{theor1-34}
+\\
+=& \E\left[F(\tilde{x}^{s-1}) - \left(\frac{\eta}{3}-L\eta^2\right)\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&-\sum_{t=1}^{m-1}\left((\frac{1}{2t} - \frac{1}{2t+1})(\frac{5}{8\eta} - \frac{L}{2})-\frac{2\eta L^2 d}{b})\right)\E\norm{x_{t}^s-\widetilde{x}^{s-1}}^2\notag\\
+&+ \sum_{t=1}^m \frac{2I\{B < n\}\eta \sigma ^2}{B}+\sum_{t=1}^m \eta \frac{L^2 d^2 \mu^2}{2}\notag\\
+\leq& \E\left[F(\tilde{x}^{s-1}) - \left(\frac{\eta}{3}-L\eta^2\right)\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&-\sum_{t=1}^{m-1}\left(\frac{1}{6t^2}(\frac{5}{8\eta} - \frac{L}{2})-\frac{2\eta L^2 d}{b})\right)\E\norm{x_{t}^s-\widetilde{x}^{s-1}}^2\notag\\
+&+ \sum_{t=1}^m \frac{2I\{B < n\}\eta \sigma ^2}{B}+\sum_{t=1}^m \eta \frac{L^2 d^2 \mu^2}{2}\notag\\
+\leq& \E\left[F(\tilde{x}^{s-1}) - \frac{\eta}{6}\sum_{t=1}^m\norm{g_{\eta}(x_{t-1}^s)}^2\right]+ \sum_{t=1}^m \frac{2I\{B < n\}\eta \sigma ^2}{B}+\sum_{t=1}^m \eta \frac{L^2 d^2 \mu^2}{2}\label{theor1-35}
+ \end{align}
+ where \eqref{theor1-34} holds since norm is always non-negative and $x_0^s = \tilde{x}^{s-1}$. In \eqref{theor1-35} we have used the fact that $(\frac{1}{6t^2}(\frac{5}{8\eta} - \frac{L}{2})-\frac{2\eta L^2 d}{b})\geq 0$ for all $1\leq t \leq m$ and $\frac{\eta}{5} \leq \frac{\eta}{3}-L\eta^2$ since $\eta = \min\{\frac{1}{8L}, \frac{\sqrt{b}}{6mL\sqrt{d}}\}$. 
+ Telescoping the sum for $s = 1, 2, \ldots, S$ in \eqref{theor1-35}, we obtain
+ \begin{equation*}
+\begin{split} 
+0 &\leq \E[F(\tilde{x}^S) - F({x}^*)] \\
+&\leq \E\left[F(\tilde{x}^{0}) - F({x}^*) - \sum_{s=1}^S\sum_{t=1}^m\frac{\eta}{6}\norm{g_{\eta}(x_{t-1}^s)}^2 + \sum_{s=1}^S\sum_{t=1}^m(\frac{2I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2})\right]
+ \end{split}
+ \end{equation*}
+ Thus, we have
+  \begin{align}
+\E[\norm{g_{\eta}(\hat{x})}^2] & \leq \frac{6\left(F(x_0) - F({x}^*)\right)}{\eta Sm} + \frac{I\{B < n\}12\sigma ^2}{B}+3{L^2 d^2 \mu^2}\label{theor1-eq36}
+ \end{align}
+ where \eqref{theor1-eq36} holds since we choose  $\hat{x}$ uniformly randomly from $\{x_{t-1}^s\}_{t\in [m], s\in [S]}$. 
+\end{proof} 
+{\color{Violet}
+The proof for Theorem \ref{noncon-zoo} is notably different from that of ZO-SVRG-Coord and ZO-ProxSVRG \cite{} as they used a Lyapunov function to show that the accumulated gradient mapping decreases with epoch $s$. In our proof, we directly show that $F(x^s)$ decreases by  using a different analysis. This is made possible by tightening the inequalities using Young's inequality and Lemma \ref{var-estimate-lem} which yields a much simpler analysis for our ZO-PSVRG+ compared with ZO-SVRG-Coord, ZO-ProxSVRG and ZO-ProxSAGA.  Also, our convergence result holds for any minibatch size and any epoch size $m$ unlike ZO-SVRG-Coord which holds true only for specific values of $m$ with an involved parameter setting.
+We also avoid the computation of the full gradient at the beginning of each epoch, i.e., $B \neq n$.
+} \eqref{noncon-zoo-main} shows that a large batch size $B$ indeed reduces the variance of estimated full gradient and improves the convergence of ZO-PSVRG+.
+ 
+{\color{Brown}
+Compared to the convergence rate of SVRG as given in \cite{reddi2016proximal}, Theorem 1 exhibits two
+additional errors $\frac{I\{B < n\}\sigma ^2}{B}$ and $O(L^2d^2\mu^2)$ due to batch gradient estimation $B < n$ and the use of SZO gradient estimates, respectively. The error due to $B < n$ is eliminated only when $B = n$. Roughly
+speaking, if we choose the smoothing parameter $\mu$ reasonably small, and the batch size $B$ reasonably large, then the error \eqref{noncon-zoo-main}
+would reduce, leading to non-dominant effect on the convergence rate of ZO-PSVRG+. 
+
+{\color{Brown}
+If $B = n$, ZO-PSVRG+ reduces to ZO-ProxSVRG  since Step 7 of Algorithm \ref{APGnonconvex-Algo} becomes
+$\frac{1}{B}\sum_{i\in I_B} \nabla f_i(\widetilde{x}^s_{t-1}) = \nabla f(\widetilde{x}^s_{t-1})$. }
+Note that the stepsize  $\eta$ is involved, relying on the epoch length $m$, the minibatch size $b$ , and the number of optimization variables $d$. 
+}
+
+{\color{Brown}
+In order to acquire explicit dependence on these parameters and to explore deeper insights of convergence, with the aid of Theorem \ref{noncon-zoo}, Corollary \ref{corr11} provides the convergence rate of ZO-PSVRG+ in terms precision at the solution $\hat{x}$ and  simplifies \eqref{noncon-zoo-main} for a specific parameter setting, as formalized below.
+}
+
+
+ \begin{corollary}\label{corr11}
+We set the batch size $B = \min\{12\sigma^2/\epsilon, n\}$ and the smoothing parameter $\mu \leq \frac{\sqrt{\epsilon}}{3\sqrt{dL}}$. Suppose $\hat{x}$ returned by Algorithm \ref{APGnonconvex-Algo}  is an $\epsilon$- accurate solution for problem \eqref{problem}. Recalling that CoordSGE require $O(d)$ function queries, the number of SZO calls is at most 
+\begin{equation}\label{SZO-call-nocon}
+{\color{Brown}d(SB+Smb) = 6d \left(\Phi(x_0) - \Phi({x}^*)\right) (\frac{B}{\epsilon\eta m}+\frac{b}{\epsilon\eta})} = O\left(\frac{Bd}{\epsilon\eta m}+\frac{bd}{\epsilon\eta}\right).
+\end{equation} 
+and the number of PO calls is equal to $T = Sm = \frac{6\left(\Phi(x_0) - \Phi({x}^*)\right)}{\epsilon\eta} = O\left(\frac{1}{\epsilon\eta}\right)$. In particular, by setting $m=\sqrt{b}$ and {\color{Brown}$\eta = \frac{1}{6L\sqrt{d}}$}, the number of ZO calls is at most 
+\begin{equation}\label{SZO-call-par-nocon}
+36d L (\Phi(x_0)-\Phi(x^*))\left(\frac{B\sqrt{d}}{\epsilon\sqrt{b}}+\frac{b\sqrt{d}}{\epsilon}\right) = O\left(s_n\frac{d\sqrt{d}}{\epsilon \sqrt{b}}+\frac{bd\sqrt{d}}{\epsilon}\right).
+\end{equation}
+where $s_n = \min\{n,\frac{1}{\epsilon}\}$. The number of PO calls is equal to $T = Sm = S\sqrt{b} = \frac{6\sqrt{d}\left(\Phi(x_0) - \Phi({x}^*)\right)}{\epsilon} = O\left(\frac{\sqrt{d}}{\epsilon}\right)$. 
+\end{corollary}
+\begin{proof}
+Using Theorem \ref{noncon-zoo} we have $\eta = \min\{\frac{1}{8L}, \frac{\sqrt{b}}{6mL\sqrt{d}}\}$
+\begin{align}
+\E[\norm{g_{\eta}(\hat{x})}^2] & \leq \frac{6\left(\Phi(x_0) - \Phi({x}^*)\right)}{\eta Sm} + \frac{I\{B < n\}12 \sigma ^2}{B}+3{L^2 d^2 \mu^2} = 3\epsilon\label{theor1-eq37}
+ \end{align} 
+ Now we obtain the total number of iterations  {\color{Brown} $T = Sm = \frac{6\left(\Phi(x_0) - \Phi({x}^*)\right)}{\epsilon\eta}$}. Since $\mu \leq \frac{\sqrt{\epsilon}}{3\sqrt{dL}}$, and for $B = n$, the second term in the bound \eqref{theor1-eq37} is $0$, the proof is finished as the number of SFO call equals to {\color{Brown}$Sn+Smb = 6 \left(\Phi(x_0) - \Phi({x}^*)\right) (\frac{n}{\epsilon\eta m}+\frac{b}{\epsilon\eta})$}. If  $B < n$ the number of SZO calls equal to  {\color{Brown}$d(SB+Smb) = 6d \left(\Phi(x_0) - \Phi({x}^*)\right) (\frac{B}{\epsilon\eta m}+\frac{b}{\epsilon\eta})$} by noting that $\frac{I\{B < n\}12\sigma^2}{B} \leq \epsilon$ due to $B \geq 12\sigma^2 /\epsilon$. The second part of corollary is obtained by setting $m = \sqrt{b}$ in the first part.
+\end{proof}
+Roughly speaking, Corollary \ref{corr11} shows  that if we choose the smoothing parameter $\mu$ reasonably small and the batch size $B$ sufficiently large, then the error induced by these terms would reduce, leading to non-dominant effect on the convergence rate of ZO-PSVRG+.
+The error term inherited by batch size  is eliminated only when $B = n$  (i.e., $I\{B < n\} = 0$). In
+this case, ZO-PSVRG+ reduces to ZO-ProxSVRG since Step 5 of Algorithm \ref{APGnonconvex-Algo} becomes $\hat{g}^s = \hat{\nabla} f(\widetilde{x}^{s-1})$. 
+
+If the smoothing parameter and batch size are selected appropriately, then we obtain the error term $O(\sqrt{d}/T)$, with is better than the convergence rate of competitor SZO methods by factor of $\frac{1}{\sqrt{d}}$. Moreover, ZO-PSVRG+ uses much less SZO oracle which is detailed in Table \ref{table-compare}.
+
+It is worth mentioning that the condition on the value of step size in Theorem \ref{noncon-zoo} is less restrictive than several SZO algorithms  in Table \ref{table-compare}. For example, ZO-SVRG-Coord required $\eta = O(\frac{1}{d})$ which is smaller by a factor of $\sqrt{d}$ than ours. {\color{Brown}On the other hand, the condition on the value of smoothing parameter $\mu$ in Corollary \ref{corr11} is more restrictive than several SZO algorithms. For instance, ZO-ProxSVRG required $\mu= O(\frac{1}{\sqrt{d}})$ with a stepsize $\eta$ which scales by $\frac{1}{d}$.}
+
+
+{\color{Green}
+It is noted from equation \eqref{SZO-call-par-nocon},  if ${b\sqrt{b}} = O(B)$, the SZO complexity is increased by a factor $\sqrt{b}$, which is smaller than the size of the minibatch. However, the corresponding complexity of RGF and RSG will be increased by multiplying
+a factor of $b$ (see Table \ref{table-compare}), so our algorithm has a better dependency to the mini-batch size in this special case.
+
+}
+{\color{Brown}
+Further, our work and reference \cite{} show that a large batch $B$  for $B \neq n$ indeed reduces the error inherited by variance and improves the convergence of ZO optimization methods.
+}
+\section{Convergence Under PL Condition}
+{\color{Violet} In this section, we provide the global linear convergence rate for nonconvex functions under the Polyak-Łojasiewicz
+(PL) condition [Polyak, 1963].}
+The original form of PL condition is
+\begin{equation}
+\exists \lambda >0, \text{such~that} \norm{\nabla f(x)}^2 \geq 2\lambda (f(x) - f^*),\,\, \forall x,
+\end{equation}
+where $f^*$ denotes the (global) optimal function value. It is worth noting that $f$ satisfies PL condition when $f$ is $\mu$-strongly convex.
+{\color{RubineRed}
+This condition specifies how fast the objective function grows in a local neighborhood of optimal solutions.
+}
+{\color{Brown} We show the iteration complexity of ZO-PSVRG+ (Algorithm \ref{APGnonconvex-Algo}) is improved by applying PL condition .}
+
+{\color{RubineRed}
+In particular, we propose a generic convergence framework for accelerating existing SZO algorithms for functions satisfying PL settings by leveraging variance reduced methods. This
+is accomplished by a novel synthesis of existing SZO algorithms.
+}
+
+Due to the nonsmooth term $h(x)$ in problem \eqref{problem}, we use the gradient mapping to define a more general form of PL condition as follows
+\begin{equation}
+\exists \lambda >0, \text{such~that} \norm{g_{\eta}(x)}^2 \geq 2\lambda (\Phi(x) - \Phi^*),\,\, \forall x.
+\end{equation}
+Recall that if $h(x)$ is a constant function, the gradient mapping reduces to $g_{\eta}(x) = \nabla f(x)$.
+{\color{RubineRed}
+Note that the PL condition has been studied thoroughly in Karimi et al.. The authors show that that PL condition is weaker than board family of  conditions. For example, when $f(x)$ is convex,  quadratic growth condition holds [Luo and Tseng,
+1993, Anitescu, 2000]. 
+}
+
+Our PL condition is arguably natural and considered in several existing works \cite{}. We next study the effect of the coordinate-wise gradient estimator (CoordSGE) on the convergence rate of ZO-PSVRG+ for functions with PL condition, as formalized in Theorem \ref{PL-Zoo}. 
+
+
+{\color{Violet}
+Similar to Theorem 1, we provide the convergence result of ProxSVRG+ (Algorithm 1) under PL-condition in the
+following Theorem 2. Note that under PL condition (i.e. (7) holds), ProxSVRG+ can directly use the final iteration $\widetilde{x}^S$
+as the output point instead of the randomly chosen
+one $\hat{x}$. Similar to [Reddi et al., 2016b],
+we assume the condition number $L/\mu > n$ for simplicity.
+}
+
+\begin{theorem}\label{PL-Zoo}
+Suppose  A1  and  A2  hold, and  CoordSGE  is  used  in
+ Algorithm \ref{APGnonconvex-Algo} with step size $\eta \leq \min\{\frac{1}{8L}, \frac{2\sqrt{\gamma b}}{10 m L \sqrt{d}}\}$ where $\gamma = 1-\frac{2\lambda\eta}{3} m-\frac{\lambda\eta}{3} > 0$. Then 
+\begin{equation}
+\begin{split}
+\E[\Phi(\widetilde{x}^S) - {\Phi}^*] & \leq   \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[\Phi(\widetilde{x}^0) - {\Phi}^*] + \frac{6I\{B < n\} \sigma ^2}{\lambda B}+\frac{3 L^2 d^2 \mu^2}{2\lambda}
+\end{split}
+\end{equation}
+where $x^*$ is same as Theorem \ref{noncon-zoo}.
+\end{theorem}
+\begin{proof}
+We start by recalling inequality \eqref{theor1-31} from the proof of Theorem \ref{noncon-zoo}, i.e.,
+
+{\color{Brown}
+\begin{align} 
+\E&[\Phi({x}_{t}^s)] \notag
+\\ \leq& \E\left[\Phi({x}_{t-1}^s)  -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\widetilde{x}^{s-1}}^2- \left(\frac{\eta}{3}-L\eta^2\right)\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2
++ \frac{2I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}\notag
+\\ \leq& \E\left[\Phi({x}_{t-1}^s)  -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\widetilde{x}^{s-1}}^2- \frac{\eta}{6}\norm{g_{\eta}(x_{t-1}^s)}^2\right]\notag\\
+&+(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2
++ \frac{2I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}\label{theo2-eq44}
+ \end{align}
+ where in \eqref{theo2-eq44} inequality we applied $\eta L \leq \frac{1}{6}$.
+ }
+Moreover, substituting PL inequality, i.e., 
+\begin{equation}
+\norm{g_{\eta}(x)}^2 \geq 2\lambda (\Phi(x) - \Phi^*)
+\end{equation}
+into \eqref{theo2-eq44}, we obtain
+
+{\color{Brown}
+\begin{align} 
+\E&[\Phi({x}_{t}^s)] \notag
+\\ \leq& \E\left[\Phi({x}_{t-1}^s)  -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\widetilde{x}^{s-1}}^2- \lambda\frac{\eta}{3}(\Phi({x}_{t-1}^s) - \Phi^*) \right]\notag\\
+&+(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2
++ \frac{2I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}
+ \end{align}
+ }
+Thus, we have
+{\color{Brown}
+\begin{align} 
+\E&[\Phi({x}_{t}^s)] \notag
+\\ \leq& \E\left[ (1-\lambda\frac{\eta}{3})(\Phi({x}_{t-1}^s) - \Phi^*)   -\frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\widetilde{x}^{s-1}}^2\right]\notag\\
+&+(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2
++ \frac{2I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}\label{theo2-eq46}
+ \end{align}
+ }
+Let {\color{Brown}$\alpha := 1 - \lambda\frac{\eta}{3}$} and $\Psi_t^s := \frac{\E[\Phi({x}_{t}^s)-\Phi^*]}{\alpha^t}$. Combining these definitions with \eqref{theo2-eq46}, we have  
+
+{\color{Brown}
+\begin{align} 
+\Psi_t^s \notag
+\\ \leq& \Psi_{t-1}^s - \frac{1}{\alpha^t}\E\left[ \frac{1}{2t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\widetilde{x}^{s-1}}^2-(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2}))\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\right]\notag\\
+&+ \frac{1}{\alpha^t}\frac{2I\{B < n\}\eta \sigma ^2}{B}+\frac{1}{\alpha^t}\eta \frac{L^2 d^2 \mu^2}{2}\label{theo2-eq47}
+ \end{align}
+ }
+Similar to the proof of Theorem \ref{noncon-zoo}, summing \eqref{theo2-eq47} for $t=1, 2, \ldots, m$ in epoch $s$ and recalling that $x_m^s = \tilde{x}^s$ and $x_0^s = \tilde{x}^{s-1}$, we have 
+{\color{Brown}
+\begin{align}
+\E&[\Phi(\tilde{x}^s)-\Phi^*]\notag\\
+\leq\alpha^m\E&\left[(\Phi(\tilde{x}^{s-1}) - \Phi^*)\right] +\alpha^m\sum_{t=1}^m \frac{1}{\alpha^t}\frac{2I\{B < n\}\eta \sigma ^2}{B}+\alpha^m\sum_{t=1}^m \frac{1}{\alpha^t}\eta \frac{L^2 d^2 \mu^2}{2}\notag
+\\-\alpha^m\E&\left[\sum_{t=1}^m\frac{1}{2t\alpha^t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2-\sum_{t=1}^m\frac{1}{\alpha^t}(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2})) \norm{x_{t-1}^s-\tilde{x}^{s-1}}^2 \right]\notag\\
+\leq\alpha^m\E&\left[(\Phi(\tilde{x}^{s-1}) - \Phi^*)\right] + \frac{1-\alpha^m}{1-\alpha}\frac{2I\{B < n\}\eta \sigma ^2}{B}+\frac{1-\alpha^m}{1-\alpha} \frac{\eta L^2 d^2 \mu^2}{2}\notag
+\\-\alpha^m\E&\left[\sum_{t=1}^m\frac{1}{2t\alpha^t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2-\sum_{t=1}^m\frac{1}{\alpha^t}(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2})) \norm{x_{t-1}^s-\tilde{x}^{s-1}}^2 \right]\notag\\
+\leq\alpha^m\E&\left[(\Phi(\tilde{x}^{s-1}) - \Phi^*)\right] + \frac{1-\alpha^m}{1-\alpha}\frac{2I\{B < n\}\eta \sigma ^2}{B}+\frac{1-\alpha^m}{1-\alpha}\frac{\eta L^2 d^2 \mu^2}{2}\notag
+\\-\alpha^m\E&\left[\sum_{t=1}^{m-1}\frac{1}{2t\alpha^t}(\frac{5}{8\eta} - \frac{L}{2})\norm{{x}_t^s-\tilde{x}^{s-1}}^2\right]\notag\\
++\alpha^m\E&\left[\sum_{t=2}^m\frac{1}{\alpha^t}(\frac{2\eta L^2 d}{b}+\frac{1}{2t-1}(\frac{5}{8\eta} - \frac{L}{2})) \norm{x_{t-1}^s-\tilde{x}^{s-1}}^2 \right]\label{eq48}\\
+\leq\alpha^m\E&\left[(\Phi(\tilde{x}^{s-1}) - \Phi^*)\right] + \frac{1-\alpha^m}{1-\alpha}\frac{2I\{B < n\}\eta \sigma ^2}{B}+\frac{1-\alpha^m}{1-\alpha}\frac{\eta L^2 d^2 \mu^2}{2}\notag
+\\-\alpha^m\E&\left[\sum_{t=1}^{m-1}\frac{1}{\alpha^{t+1}}\left((\frac{\alpha}{2t} - \frac{1}{2t+1})(\frac{5}{8\eta} - \frac{L}{2})-\frac{2\eta L^2 d}{b})\right) \norm{x_{t}^s-\tilde{x}^{s-1}}^2 \right]\notag\\
+\leq\alpha^m\E&\left[(\Phi(\tilde{x}^{s-1}) - \Phi^*)\right] + \frac{1-\alpha^m}{1-\alpha}\frac{2I\{B < n\}\eta \sigma ^2}{B}+\frac{1-\alpha^m}{1-\alpha}\frac{\eta L^2 d^2 \mu^2}{2}\label{eq50}
+\end{align}
+}
+where \eqref{eq48} since $\norm{.}^2$ always is non-negative and $x_0^s=\tilde{x}^{s-1}$. \eqref{eq50} holds since it is sufficient to show ${\color{Brown} (\frac{\alpha}{2t} - \frac{1}{2t+1})(\frac{5}{8\eta} - \frac{L}{2})- \frac{2\eta L^2 d}{b}} \geq 0$, for all $t=1, 2,\ldots, m$. 
+{\color{red}
+We should have
+\begin{equation}
+\begin{split}
+(\frac{\alpha}{2t} - \frac{1}{2t+1})(\frac{5}{8\eta} - \frac{L}{2})&\geq \frac{2\eta L^2 d}{b}\\
+(\frac{1-2\beta t-\beta}{6t^2})(\frac{5}{8\eta} - \frac{L}{2}) & \geq \frac{2\eta L^2 d}{b}\\
+(\frac{1-2\beta m-\beta}{6m^2})(\frac{5}{8\eta} - \frac{L}{2}) & \geq \frac{2\eta L^2 d}{b}\\
+(\frac{5\gamma}{48m^2}) & \geq \frac{2\eta^2 L^2 d}{b} +  \frac{L\eta\gamma}{12m^2}
+\end{split}
+\end{equation}
+with $L\eta\leq \frac{1}{8}$, we have 
+\begin{equation}
+\begin{split}
+(\frac{4\gamma}{100 m^2}) & \geq \frac{\eta^2 L^2 d}{b}\\
+\eta &\leq \frac{2\sqrt{\gamma b}}{10 m L \sqrt{d}} 
+\end{split}
+\end{equation} 
+}
+It is easy to see that this inequality holds since $\eta \leq \min\{\frac{1}{8L}, \frac{2\sqrt{\gamma b}}{10 m L \sqrt{d}}\}$, where $\gamma = 1-2\beta m-\beta > 0$. Similarly, let  $\tilde{\alpha} = \alpha^m$ and $\tilde{\Psi}^s = \frac{\E[\Phi(\tilde{x}^{s})-\Phi^*]}{\tilde{\alpha}^s}$. Substituting these definitions into \eqref{eq50}, we have
+{\color{Brown}
+\begin{equation}\label{eq51}
+\widetilde{\Psi}^s \leq \widetilde{\Psi}^{s-1} + \frac{1}{\tilde{\alpha}^s} \frac{1-\tilde{\alpha}}{1-{\alpha}}\frac{I\{B < n\}\eta \sigma ^2}{B}+ \frac{1}{\tilde{\alpha}^s} \frac{1-\tilde{\alpha}}{1-{\alpha}}\frac{L d \mu^2}{12}
+\end{equation}
+}
+Taking a telescopic sum from (\eqref{eq51} for all epochs $1 \leq s \leq S$, we obtain
+{\color{Brown}
+\begin{align}
+\E[\Phi(\widetilde{x}^S) - {\Phi}^*] & \leq \widetilde{\alpha}^{S} \E[\Phi(\widetilde{x}^0) - {\Phi}^*] + \widetilde{\alpha}^{S} \sum_{s=1}^S \frac{1}{\widetilde{\alpha}^s}\frac{1-\widetilde{\alpha}}{1-{\alpha}}\frac{2I\{B < n\}\eta \sigma ^2}{B} + \widetilde{\alpha}^{S} \sum_{s=1}^S \frac{1}{\widetilde{\alpha}^s}\frac{1-\widetilde{\alpha}}{1-{\alpha}}\frac{\eta L^2 d^2 \mu^2}{2}\notag\\
+& = {\alpha}^{Sm} \E[\Phi(\widetilde{x}^0) - {\Phi}^*] + \frac{1-\widetilde{\alpha}^S}{1-\widetilde{\alpha}}\frac{1-\widetilde{\alpha}}{1-{\alpha}}\frac{2I\{B < n\}\eta \sigma ^2}{B}+ \frac{1-\widetilde{\alpha}^S}{1-\widetilde{\alpha}}\frac{1-\widetilde{\alpha}}{1-{\alpha}}\frac{\eta L^2 d^2 \mu^2}{2}\notag\\
+& \leq {\alpha}^{Sm} \E[\Phi(\widetilde{x}^0) - {\Phi}^*] + \frac{1}{1-{\alpha}}\frac{2 I\{B < n\}\eta \sigma ^2}{B}+ \frac{1}{1-{\alpha}}\frac{\eta L^2 d^2 \mu^2}{2}\notag\\
+& = \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[\Phi(\widetilde{x}^0) - {\Phi}^*] + \frac{6I\{B < n\} \sigma ^2}{\lambda B}+\frac{3 L^2 d^2 \mu^2}{2\lambda}\label{eq52}\\
+& = \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[\Phi(\widetilde{x}^0) - {\Phi}^*] + \frac{6I\{B < n\} \sigma ^2}{\lambda B}+\frac{3 L^2 d^2 \mu^2}{2\lambda}= 3 \epsilon\label{eq53}
+\end{align}
+}
+where in \eqref{eq52} we recall that {\color{Brown}$\alpha = 1-\frac{\lambda\eta}{3}$}, and \eqref{eq53} uses {\color{Brown}$\eta \leq \frac{1}{6Ld}$}.
+\end{proof}
+{\color{Brown}Proposition 2 shows that compared to CoordGradEst, RandGradEst and Avg-RandGradEst involve an additional error term within a factor $?$, respectively. Such
+an error is introduced by the second-order moment of gradient estimators using random direction
+samples [12+1, 14], and it decreases as the number of direction samples $q$ increases. On the other hand, all gradient estimators have a common error bounded by $O(\mu^2L^2d^2)$, where let $\mu_l = \mu$ for $l\in[d]$ in
+CoordGradEst. If $\mu$ is specified as in (9), then we obtain the error term $O(d/T)$, consistent with the convergence rate of ZO-SVRG in Corollary 1.
+
+}
+By comparing with Theorem \ref{}, it can be seen from \eqref{} that the use of PL condition amplifies the
+error $O(\frac{I\{B < n\} \sigma ^2}{B}+\frac{L^2 d^2 \mu^2}{\lambda}$ through multiple $1/\lambda$. And the error induced by these terms ceases to be significantly improved for this term as $\lambda >> 1$.
+\begin{corollary}\label{PL-Zo-Cor}
+Suppose the final iteration point $\tilde{x}^S$ in Algorithm \ref{} satisfies $\E[\Phi(\tilde{x}^S) - \Phi^*]\leq \epsilon$ under PL condition. Under Assumption \ref{} and \ref{}, we let batch size $B = \min\{\frac{6\sigma^2}{\lambda\epsilon},n\}$ and the smoothing parameter $\mu\leq \frac{\epsilon}{2Ld\lambda}$. The number of ZO calls is bounded by
+\[
+{\color{Brown}d(SB+Smb) = O(\frac{s_n d}{\lambda\eta m}\log\frac{1}{\epsilon}+\frac{b d}{\lambda\eta}\log\frac{1}{\epsilon})}
+\]
+where $s_n = \min \{n,\frac{1}{\lambda \epsilon}\}$.
+The number of PO calls equals to the total number of iterations $T$ which is bounded by
+\[
+{\color{Brown} T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})}
+\]
+3) In particular, given the setting  $m=\sqrt{b}$ and {\color{blue}$\eta = \frac{\sqrt{\gamma}}{5 L \sqrt{d}}$}, the number of ZO calls  simplifies to 
+{\color{blue}$d(SB+Smb) = O(\frac{Bd\sqrt{d}}{\lambda\sqrt{\gamma} m}\log\frac{1}{\epsilon}+\frac{bd\sqrt{d}}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon}$.}
+\end{corollary}
+\begin{proof}
+From Theorem \ref{PL-Zoo}, we have
+\begin{align}
+\E[\Phi(\widetilde{x}^S) - {\Phi}^*] & \leq   \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[\Phi(\widetilde{x}^0) - {\Phi}^*] + \frac{6I\{B < n\} \sigma ^2}{\lambda B}+\frac{3 L^2 d^2 \mu^2}{2\lambda}= 3 \epsilon
+\end{align}
+which gives the total number of iterations {\color{Brown} $T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})$}. The number of PO calls equals to {\color{Brown} $T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})$}. The number of SFO calls equals to {\color{Brown}$SB+Smb = O(\frac{B}{\lambda\eta m}\log\frac{1}{\epsilon}+\frac{b}{\lambda\eta}\log\frac{1}{\epsilon})$} if $B < n$(note that $\frac{I\{B < n\}3 \sigma ^2}{\lambda B} \leq \epsilon$ since $B \geq 6 {\sigma ^2}/{\lambda \epsilon}$).
+{\color{blue} $\mu \leq \frac{\sqrt{2\lambda\epsilon}}{L d}$}
+
+From Theorem \ref{PL-Zoo}, we have
+\begin{align}
+\E[\Phi(\widetilde{x}^S) - {\Phi}^*] & \leq   \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[\Phi(\widetilde{x}^0) - {\Phi}^*] + \frac{6I\{B < n\} \sigma ^2}{\lambda B}+\frac{3 L^2 d^2 \mu^2}{2\lambda}= 3 \epsilon
+\end{align}
+which gives the total number of iterations $T = Sm = S\sqrt{b} = O(\frac{1}{\lambda}\log\frac{1}{\epsilon})$ {\color{Brown} $T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})$} {\color{Blue} $T = Sm = O(\frac{\sqrt{d}}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$}. The number of PO calls equals to $T = Sm = O(\frac{1}{\lambda}\log\frac{1}{\epsilon})$ {\color{Brown} $T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})$} {\color{Blue} $T = Sm = O(\frac{\sqrt{d}}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$}. The number of SFO calls equals to $Sn+Smb = O(\frac{n}{\lambda \sqrt{b}}\log\frac{1}{\epsilon}+\frac{b}{\lambda}\log\frac{1}{\epsilon})$ if $B = n$, or equals to  $Sn+Smb = O(\frac{B}{\lambda \sqrt{b}}\log\frac{1}{\epsilon}+\frac{b}{\lambda}\log\frac{1}{\epsilon})$ {\color{Brown}$SB+Smb = O(\frac{B}{\lambda\eta m}\log\frac{1}{\epsilon}+\frac{b}{\lambda\eta}\log\frac{1}{\epsilon})$} {\color{blue}$SB+Smb = O(\frac{B\sqrt{d}}{\lambda\sqrt{\gamma} m}\log\frac{1}{\epsilon}+\frac{b\sqrt{d}}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$}if $B < n$(note that $\frac{I\{B < n\}3 \sigma ^2}{\lambda B} \leq \epsilon$ since $B \geq 6 {\sigma ^2}/{\lambda \epsilon}$).
+{\color{blue} $\mu \leq \frac{\sqrt{2\lambda\epsilon}}{L d}$}
+\end{proof}
+Corollary \ref{PL-Zo-Cor} shows that the use of PL condition improves the dominant convergence rate, where the error of
+order $O(d/\epsilon)$ in Corollary \ref{corr11} improves to $O(\log(d/\epsilon))$.
+{\color{Brown}
+By contrast with Corollary 1, it can be seen from (12) that the use of Avg-RandGradEst reduces the
+error $?$ in (10) through multiple (q) direction samples. And the convergence rate ceases to
+be significantly improved as $?$. Our empirical results show that a moderate choice of q can
+significantly speed up the convergence of ZO-SVRG.
+
+Compared to the aforementioned ZO algorithms [5, 14, 24], the convergence performance of ZO-SVRG in \eqref{} has an improved (linear rather than sub-linear) dependence on $1/T$. However, it suffers an additional error of order $O(1/b)$ inherited
+from $?$ in (5), which is also a consequence of the last error term in (4). We recall from the
+definition of $\delta_n$ in Proposition 1 that if $b < n$ or samples in the mini-batch are chosen independently
+from $[n]$, then $?$.
+}
+\begin{remark}
+Compared to the convergence rate of SVRG as given in Theorem \ref{}, Theorem \ref{} exhibits additional parameter $\gamma$ for parameter selection due to the use of PL condition. 
+If we assume the condition number $\lambda/L\leq \sqrt{n}$ and choose $m = n^{1/2}$ and $\rho\leq \frac{1}{2}$, then the definition of $\gamma$ yields  
+\begin{align}
+\gamma &= 1-\frac{2\lambda\eta}{3} m-\frac{\lambda\eta}{3}\notag \\
+& \geq 1 - \frac{2\lambda\rho}{3L}m - \frac{\lambda\rho}{3L}\notag\\
+& \geq  1 - \frac{2\rho}{3\sqrt{n}}m - \frac{\rho}{3\sqrt{n}}\notag\\
+& \geq  1 - \rho \geq \frac{1}{2}\label{eq54}
+\end{align}
+According to Theorem \ref{PL-Zoo}, equation \eqref{eq54} implies $\eta \leq \min\{\frac{1}{8L}, \frac{\sqrt{\gamma b}}{10 m L \sqrt{d}}\}$. 
+Hence, choosing $b = n$ leads to the constant step size  $\eta = \frac{1}{10 L \sqrt{d}}$.
+Not that the assumption $\lambda/L \leq \sqrt{n}$ is milder than the assumption $L/\mu > n$, which is considered in [Reddi et al., 2016b] for the condition number of PL functions.
+\end{remark}
+{\color{Violet}
+We show that ProxSVRG+ directly obtains a global linear convergence rate without restart by a nontrivial proof. Note that Reddi et al. [2016b] used PL-SVRG/SAGA to restart ProxSVRG/SAGA $O(log(1/\epsilon))$ times to obtain
+the linear convergence rate under PL condition.
+Moreover, similar to Table 2, if we choose $b = 1$ or $n$ for ProxSVRG+, then its convergence result is $O(\log \frac{1}{\epsilon})$,
+which is the same as ProxGD [Karimi et al., 2016]. If we choose $b = n$ for ProxSVRG+, then the convergence result is $O()$, the same as the best result achieved by ProxSVRG/SAGA [Reddi et al., 2016b]. If we
+choose $b = $ for ProxSVRG+, then its convergence result is $O(\log\frac{1}{\epsilon})$
+which generalizes the best result of SCSG [Lei et al., 2017] to the more general nonsmooth nonconvex case and is better than ProxGD and ProxSVRG/SAGA. Also note that our ProxSVRG+ uses much less proximal oracle calls than ProxSVRG/SAGA if $b < n ^{2/3}$.
+
+}
+\section{Strongly Convex with Momentum Acceleration}
+{\color{Green}
+
+In the subsection, we propose the zeroth-order proximal SAGA (ZO-ProxSAGA) method via using VR technique of SAGA in (Defazio, Bach, and Lacoste-Julien, 2014; Reddi et al., 2016).
+
+The corresponding algorithmic description is given in Algorithm \ref{}, where we use a mixture
+stochatic gradient ${\hat{v}}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left(\hat{\nabla} f_{i}(x_{t-1}^s)-\hat{\nabla} f_{i}(\tilde{x}^{s-1})\right)+\hat{g}^s$. Similarly, $\E_{I_b}[\hat{v}_{t-1}^s] = \hat{\nabla} f(x_{t-1}^s) \neq {\nabla} f(x_{t-1}^s)$, i.e., this stochastic gradient is a biased
+estimate of the true full gradient. Note that in Algorithm \ref{}, $\widetilde{x}^s = ?$ which is computer in the step ?, to avoid unnecessary calculations. Next, we give the upper bounds for the variance of stochastic gradient $\hat{v}_{t-1}^s$ based on the CooSGE.
+}
+
+In this section, we improve the efficiency of ZO-PSVRG++ (Algorithm \ref{}) by using momentum acceleration.
+In Theorem \ref{APGconvex-Algo}, we show the effect of CooGrad on the convergence rate of ZO-SVRG. Similar to
+Theorem \ref{}, we analyze the convergence based on optimality gap.
+\begin{algorithm}\label{APGconvex-Algo}
+\caption{ZO-PROXSVRG for convex Optimization}\begin{algorithmic}[1]
+\State\Input initial point $x_0$, batch size $B$, minibatch size $b$, epoch length $m$, step size $\eta$
+\State\Initialize $\tilde{x}^0 = x_0$
+\For{ $s=1,2,\ldots, S$ }
+\State $x_0^s = z_0^s = \widetilde{x}^{s-1}$
+\State $\hat{g}^s = \frac{1}{B} \sum_{j\in I_B} \hat{\nabla} f_j (\widetilde{x}^{s-1})$
+\For{ $t=1,2,\ldots, m$ }
+\State $\hat{v}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left(\hat{\nabla} f_{i}(x_{t-1}^s)-\hat{\nabla} f_{i}(\tilde{x}^{s-1})\right)+\hat{g}^s$
+\State $z_{t}^s= \Po_{\frac{\eta}{\theta} h}(z_{t-1}^s - \frac{\eta}{\theta} \hat{v}_{t-1}^s)$
+\State $x_{t}^s = \theta z_{t}^s+(1-\theta)\widetilde{x}^{s-1}$
+\EndFor
+\State $\tilde{x}^s=\frac{1}{m}\sum_{j=1}^{m}x_j^s$ 
+ \EndFor
+ \State\Output ${\tilde{x}}^{S}$
+\end{algorithmic}
+\end{algorithm}
+{\color{Green}
+Next, based on the above lemma, we study the convergence property of the ZO-ProxSVRG-CooSGE.
+}
+
+{\color{DarkOrchid}
+In this section, we introduce a simple accelerated stochastic algorithm (MiG) for strongly convex 
+problems.
+More recently, researchers have proposed accelerated stochastic variance reduced methods for Problem (1), which include Acc-Prox-SVRG (Nitanda, 2014), APCG (Lin et al., 2014), Catalyst (Lin et al., 2015), SPDC (Zhang  Xiao, 2015), point-SAGA (Defazio, 2016), and Katyusha (Allen-Zhu, 2017). For strongly convex problems, both Acc-Prox-SVRG (Nitanda, 2014) and Catalyst (Lin et al., 2015) make good use of the "Nesterov’s momentum" in (Nesterov, 2004) and attain the corresponding oracle complexities $\mathcal{O}((n+b\sqrt{\kappa})\log (1/\epsilon))$. 
+
+In this section we make the following assumption:
+\begin{assumption}
+In problem \eqref{}, function $f$ is $\lambda$-strongly convex.
+\end{assumption}
+
+As we can see in Algorithm 1, $y$ is a
+convex combination of $x$ and $\widetilde{x}^s$ with the parameter $\theta$. So for implementation, we do not need to keep track
+of y in the whole inner loop. For the purpose of giving a clean proof, we mark $y$ with iteration number $j$.
+
+We choose to use the following update for $\widetilde{x}^s$ in contrast to use the last iterate and use it as the initial
+vector for new epoch.
+
+Next we give the convergence rate of MiG in terms of oracle complexity as follows
+
+In this part, we consider the case of Problem (1) when $f$ is $\nu$-strongly convex.
+
+Similar to existing stochastic variance reduced methods such as SVRG [1] and Prox-SVRG [35], we design a simple fast stochastic variance reduction algorithm with momentum acceleration for solving smooth objective functions, as outlined
+in Algorithm 1.
+
+Inspired by the momentum acceleration trick for accelerating first-order optimization methods [17, 20, 1], we design the following update rule
+
+In addition, FSVRG only has one momentum weight $\theta$, compared with the existing methods and . therefore, FSVRG is much simpler than existing accelerated methods [1, 8]. If $b = n$ (i.e., the
+batch setting), we have $?$, and the second term on the right-hand side of (19) diminishes. In other words, FSVRG degenerates to the accelerated deterministic method.
+}
+\begin{theorem}\label{SC-theo}
+Suppose  A1  and  A2  hold, and  CoordSGE  is  used  in  Algorithm \ref{APGconvex-Algo} and define a positive sequence $\{c_t\}$ as follows:
+\[
+c_{t-1} = c_{t}(1+{\beta})+\frac{Ld}{bC_{\eta}}+\frac{L^2d\theta}{b\mu}
+\]
+Let $c_m = 0$, $C_{\eta} = \frac{1-\eta L}{2\eta L}$, $\eta = \frac{\rho}{L}$ where $\rho\leq \min\{\frac{1}{2},\frac{b}{8dm^2(4+m)}\}$ $\rho = \min\{\frac{1}{2},{\color{Brown}\frac{\sqrt{b}}{6m\sqrt{d(4+m)}}}\}$. Then we have
+\begin{align}\label{main-eq-SC}
+\E[F(\widetilde{x}^S) - F(x^*)] & \leq {(1-\gamma)}^{Sm} \E[F(\widetilde{x}^0) - F(x^*)]+\frac{1}{{\gamma}}\left(\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}\right)\notag\\
+&+ \frac{1}{\gamma}\left((\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\right)
+\end{align}
+where $\gamma  = \theta - \frac{ \theta^2}{\lambda\eta m}$ and $x^*$ is same as Theorem \ref{noncon-zoo}.
+
+\end{theorem}
+
+{
+\begin{proof}
+We start by applying Lipschitz continuous nature of the gradient of function $f$ 
+
+\begin{align}
+f(&x_{t}^s)  \leq f(x_{t-1}^s) + \Iprod{\nabla f(x_{t-1}^s)}{x_{t}^s-x_{t-1}^s}+\frac{L}{2}\norm{x_{t}^s-x_{t-1}^s}^2\notag\\
+&=f(x_{t-1}^s) + \Iprod{\nabla f(x_{t-1}^s)}{x_{t}^s-x_{t-1}^s}\notag\\
+&~~~+ {\frac{1 }{2\eta}}\norm{x_{t}^s-x_{t-1}^s}^2-{C_{\eta} L}\norm{x_{t}^s-x_{t-1}^s}^2\label{SC-Eq1-Lemma1}\\
+&= f(x_{t-1}^s) + \Iprod{\hat{v}_{t-1}}{x_{t}^s-x_{t-1}^s}\notag\\
+&~~~+ { \frac{1}{2\eta}}\norm{x_{t}^s-x_{t-1}^s}^2+\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}{x_{t}^s-x_{t-1}^s}\notag\\
+&~~~-{C_{\eta} L}\norm{x_{t}^s-x_{t-1}^s}\label{SC-Eq2-Lemma1}
+\end{align}
+where \label{SC-Eq1-Lemma1} is based on definition of $C_{\eta} = \frac{1-\eta L}{2\eta L}$. 
+In \eqref{SC-Eq2-Lemma1}, we further bound the following
+
+\begin{equation}\label{SC-Eq3-Lemma1}
+\begin{split}
+&\Iprod{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}{x_{t}^s-x_{t-1}^s}\\
+&{\leq} \E\left[\frac{1}{2C_{\eta} L}\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}^2 + \frac{C_{\eta} L}{2}\norm{x_{t}^s-x_{t-1}^s}^2\right]
+\end{split}
+\end{equation}
+Substituting the inequality \eqref{SC-Eq3-Lemma1} in \eqref{SC-Eq2-Lemma1} and taking expectation, we have
+\begin{align}
+&\E \left[ F(x_{t}^s) -f(x_{t-1}^s)\right]\notag\\
+&\leq \E\left[h(x_{t}^s)+ \Iprod{\hat{v}_{t-1}}{x_{t}^s-x_{t-1}^s}+{(\frac{1}{2\eta}-\frac{C_{\eta} L}{2})}\norm{x_{t}^s-x_{t-1}^s}^2\right]\notag\\
+&~~~+\E\left[\frac{1}{2C_{\eta} L}\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}^2\right]\notag\\
+&{\leq}\E\left[\Iprod{\theta\hat{v}_{t-1}}{z_{t}^s-z_{t-1}^s}\right]+{\frac{{ \theta^2}}{2\eta}}\norm{z_{t}^s-z_{t-1}^s}^2-\frac{C_{\eta} L}{2}\norm{x_{t}^s-x_{t-1}^s}^2\notag\\
+&~~~+\E\left[\theta h(z_{t}^s)+(1-\theta) h(\widetilde{x}^{s-1})\right]+\frac{1}{2C_{\eta} L}\E\left[\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}^2\right]\label{SC-Eq4-Lemma1}
+\end{align}
+where in \eqref{SC-Eq4-Lemma1} we use the update $x_t^s = \theta z_t^s+(1-\theta)\widetilde{x}^{s-1}$ and convexity of $h$. Using Three Point Property \ref{}, with $\phi(x) = h(x)+\Iprod{\hat{v}_{t-1}}{x-z_{t-1}^s}$, $D_l(x,z) = {\frac{\theta}{2\eta}}\norm{x-z}^2$, $z^+ = z_t^s, z = z_{t-1}^s, x^+ = x^*$, it follows
+
+\begin{align}
+h(z_{t}^s) &+ \Iprod{\hat{v}_{t-1}}{z_{t}^s-z_{t-1}^s}+{\frac{\theta}{2\eta}}\norm{z_{t}^s-z_{t-1}^s}^2  \notag\\
+\leq& h(x^*)+\Iprod{\hat{v}_{t-1}}{x^* - z_{t-1}^s}\notag\\
+&+{\frac{\theta}{2\eta}}(\norm{z_{t-1}^s-x^*}^2-\norm{z_{t}^s-x^*}^2)\label{SC-Eq4-1-Lemma1}.  
+\end{align}
+
+Moreover, substituting \eqref{SC-Eq4-1-Lemma1} into  \eqref{SC-Eq4-Lemma1}, we have
+
+\begin{align}
+&\E\left[F(x_{t}^s) -f(x_{t-1}^s)\right]\notag\\
+{\leq}&\E\left[\Iprod{\theta(\hat{v}_{t-1}-\nabla f(x_{t-1}^s)+\nabla f(x_{t-1}^s))}{x^* - z_{t-1}^s}+{\frac{\theta^2}{2\eta}}(\norm{z_{t-1}^s-x^*}^2-\norm{z_{t}^s-x^*}^2)\right]\notag\\
+&+\E\left[\theta h(x^*)+(1-\theta) h(\widetilde{x}^{s-1})\right]\notag\\
+&+\frac{1}{2C_{\eta} L}\E\left[\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}^2\right]-\frac{C_{\eta} L}{2}\norm{x_{t}^s-x_{t-1}^s}^2\\
+ =& \E\left[{\frac{ \theta^2}{2\eta}}(\norm{z_{t-1}^s-x^*}^2-\norm{z_{t}^s-x^*}^2)+\theta h(x^*)\right]\notag\\
+&+\E\left[\Iprod{\nabla f(x_{t-1}^s)}{\theta x^*+(1-\theta)\widetilde{x}^{s-1}-{x}^{s}_{t-1}}\right]\notag\\
+&+\frac{1}{2C_{\eta} L}\E\left[\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}^2\right]-\frac{C_{\eta} L}{2}\norm{x_{t}^s-x_{t-1}^s}^2\notag\\
+&+(1-\theta) \E[h(\widetilde{x}^{s-1})]+\E\left[\Iprod{\theta(\hat{v}_{t-1}-\nabla f(x_{t-1}^s))}{x^* - z_{t-1}^s}\right]\label{SC-Eq5-Lemma1}
+\raisetag{18pt}
+\end{align}
+The equality \eqref{SC-Eq5-Lemma1} is obtained by $x_{t-1}^s = \theta z_{t-1}^s+(1-\theta)\widetilde{x}^{s-1}$ and rearranging terms. 
+
+Additionally, we have the following,
+\begin{align}
+&\Iprod{\nabla f(x_{t-1}^s)}{\theta x^*+(1-\theta)\widetilde{x}^{s-1}-{x}^{s}_{t-1}}\notag\\
+&= \Iprod{\nabla f(x_{t-1}^s)}{\theta x^*-\theta{z}^{s}_{t-1}}\notag\\
+&{\leq} \theta f(x^*)-\theta f(z_{t-1}^s)-\frac{\lambda\theta}{2}\norm{x^*-z_{t-1}^s}^2\label{SC-Eq6-Lemma1}\\
+&{\leq} \theta f(x^*)+(1-\theta)f(\widetilde{x}^{s-1})-f(x_{t-1}^s)-\frac{\lambda\theta}{2}\norm{x^*-z_{t-1}^s}^2\label{SC-Eq7-Lemma1}
+\end{align}
+where in \eqref{SC-Eq6-Lemma1} and \eqref{SC-Eq7-Lemma1} we used the strong convexity of $f$. The last term at the right hand side (RHS) of \eqref{SC-Eq5-Lemma1} yields
+
+\begin{align}
+\E&\left[\Iprod{\theta(\hat{v}_{t-1}-\nabla f(x_{t-1}^s))}{x^* - z_{t-1}^s}\right]\notag \\
+&\leq \frac{\theta}{2\lambda} \norm{\hat{v}_{t-1}-\nabla f(x_{t-1}^s)}^2+\frac{\lambda\theta}{2}\norm{x^* - z_{t-1}^s}^2\label{SC-Eq8-Lemma1}
+\end{align}
+
+Substituting \eqref{SC-Eq7-Lemma1} and \eqref{SC-Eq8-Lemma1} into \eqref{SC-Eq5-Lemma1}
+
+\begin{equation}
+\begin{split}
+\E[F(x_{t}^s)] \leq &\theta F(x^*)+(1-\theta)F(\widetilde{x}^{s-1})\\
+&+ {\frac{\theta^2}{2\eta}}\E[\norm{z_{t-1}^s-x^*}^2-\norm{z_{t}^s-x^*}^2]\\
+&~~~+(\frac{1}{2C_{\eta} L}+\frac{\theta}{2\lambda})\E\left[\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}^2\right]-\frac{C_{\eta} L}{2}\norm{x_{t}^s-x_{t-1}^s}^2. 
+\end{split}
+\end{equation}
+Hence, we have the following
+
+\begin{equation}\label{SC-Eq9-Lemma1}
+\begin{split}
+\E[F(x_{t}^s)-F(x^*)] \leq &(1-\theta)[F(\widetilde{x}^{s-1})-F(x^*)] \\
+&+ {\frac{ \theta^2}{2\eta}}\E[\norm{z_{t-1}^s-x^*}^2-\norm{z_{t}^s-x^*}^2]\\
+&+(\frac{1}{2C_{\eta} L}+\frac{\theta}{2\lambda})\E\left[\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t}}^2\right]-\frac{C_{\eta} L}{2}\norm{x_{t}^s-x_{t-1}^s}^2. 
+\end{split}
+\end{equation}
+By telescoping the sum of \eqref{SC-Eq9-Lemma1} for $t = 1, 2, \ldots, m$ we obtain
+
+\begin{equation}
+\begin{split}
+\E[\sum_{t=1}^{m}&F(x_{t}^s)-F(x^*)] \leq  m(1-\theta)[F(\widetilde{x}^{s-1})-F(x^*)] \\
+&+ {\frac{ \theta^2}{2\eta}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m}^s-x^*}^2]\\
+&+(\frac{1}{2C_{\eta} L}+\frac{\theta}{2\lambda})\sum_{t=1}^{m}\E\left[\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}^2\right]-\frac{C_{\eta} L}{2}\sum_{t=1}^{m}\norm{x_{t}^s-x_{t-1}^s}^2. 
+\end{split}
+\end{equation}
+We define $\psi_t^s = F({x}^s_t)-F(x^*)$. We have
+
+\begin{align}
+\sum_{t=1}^{m}\E[\psi_{t}^s] \leq &m(1-\theta)[F(\widetilde{x}^{s-1})-F(x^*)]\notag\\
+&+ {\frac{ \theta^2}{2\eta}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m}^s-x^*}^2]\notag\\
+&+(\frac{1}{2C_{\eta} L}+\frac{\theta}{2\lambda})\sum_{t=1}^{m}\E\left[\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}}^2\right]-\frac{C_{\eta} L}{2}\sum_{t=1}^{m}\norm{x_{t}^s-x_{t-1}^s}^2\notag\\
+\leq &m(1-\theta)[F(\widetilde{x}^{s-1})-F(x^*)] \notag\\
+&+ {\frac{ \theta^2}{2\eta}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m}^s-x^*}^2]\notag\\
+&+(\frac{Ld}{bC_{\eta}}+\frac{L^2d\theta}{b\lambda})\sum_{t=1}^{m} \E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2+m\frac{Ld^2\mu^2}{4C_{\eta}}+m\frac{ L^2d^2\mu^2\theta}{4\lambda}\notag\\
+&+ m(\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}-\frac{C_{\eta} L}{2}\sum_{t=1}^{m}\norm{x_{t}^s-x_{t-1}^s}^2\label{SC-Eq10-Lemma1}
+\end{align}
+{\color{red}
+\begin{equation}
+\frac{2\eta L^2 d}{b}\E\left[\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\right]+ 2\frac{I\{B < n\}\eta \sigma ^2}{B}+\eta \frac{L^2 d^2 \mu^2}{2}
+\end{equation}}
+where in \eqref{SC-Eq10-Lemma1}, we used Lemma \ref{var-estimate-lem}. Define the following Lyapunov function:
+\begin{equation}
+R_t^s = \E\left[\psi_{t}^s+ c_t\norm{x_t^s-\tilde{x}^s}^2\right],
+\end{equation}
+where $\{c_t\}$ are non-negative coefficients which are defined recursively later. Using \eqref{young}, we have
+\begin{align}
+\norm{x_{t}^s-\widetilde{x}^{s-1}}^2 &\leq (1+\frac{1}{\beta})\norm{x_{t}^s-x_{t-1}^s}^2+(1+\beta)\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2
+\end{align}
+where $\beta > 0$. Then from \eqref{SC-Eq10-Lemma1} we have 
+
+\begin{align}
+\sum_{t=1}^{m}& \E[R_{t}^s] = \sum_{t=1}^{m}\E\left[\psi_{t}^s+ c_{t}\norm{x_{t}^s-\tilde{x}^{s-1}}^2\right]\notag\\
+\leq& \sum_{t=1}^{m}\E\left[\psi_{t}^s+ c_{t}(1+\frac{1}{\beta})\norm{x_{t}^s-x_{t-1}^s}^2+ c_{t}(1+{\beta})\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]\\
+\leq & m(1-\theta)[F(\widetilde{x}^{s-1})-F(x^*)]\notag \\
+&+ {\frac{ \theta^2}{2\eta}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m}^s-x^*}^2]\notag\\
+&+ \sum_{t=1}^{m} (c_{t}(1+{\beta})+\frac{Ld}{bC_{\eta}}+\frac{L^2d\theta}{b\lambda})\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\notag\\
+&+\sum_{t=1}^{m}(c_{t}(1+\frac{1}{\beta})-\frac{C_{\eta} L}{2})\norm{x_{t}^s-x_{t-1}^s}^2\notag\\
+&+m\frac{Ld^2\mu^2}{4C_{\eta}}+m\frac{ L^2d^2\mu^2\theta}{4\lambda}+m(\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\\
+= & m(1-\theta)[F(\widetilde{x}^{s-1})-F(x^*)]\notag\\
+&+ {\frac{ \theta^2}{2\eta}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m}^s-x^*}^2]\notag\\
+&+ \sum_{t=1}^{m} c_{t-1}\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\notag\\
+&+\sum_{t=1}^{m}(c_{t}(1+\frac{1}{\beta})-\frac{C_{\eta} L}{2})\norm{x_{t}^s-x_{t-1}^s}^2\notag\\
+&+m\frac{Ld^2\mu^2}{4C_{\eta}}+m\frac{ L^2d^2\mu^2\theta}{4\lambda}+m(\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\label{SC-Eq11-Lemma1}
+\end{align}
+where in \eqref{SC-Eq11-Lemma1} we define $c_{t-1} = c_{t}(1+{\beta})+\frac{Ld}{bC_{\eta}}+\frac{L^2d\theta}{b\lambda}$ and $c_m=0$. Recursing on $t$ and setting $\beta = \frac{1}{m}$, we have 
+
+\begin{align}
+c_{t-1} &= {\color{red} c_{t}(1+{\beta})+\frac{Ld}{bC_{\eta}}+\frac{L^2d\theta}{b\mu} \notag}\\
+c_{t-1} &= (\frac{Ld}{bC_{\eta}}+\frac{L^2d\theta}{b\lambda }) \frac{(1+\beta)^{m-t}-1}{\beta} \notag\\
+&\leq m(\frac{Ld}{bC_{\eta}}+\frac{L^2d\theta}{b\lambda })((1+\frac{1}{m})^m-1)\label{SC-Eq12-Lemma1}\\
+&\leq m(\frac{Ld}{bC_{\eta} }+\frac{L^2d\theta}{b\lambda })(e-1)\notag\\
+&\leq 2m(\frac{Ld}{bC_{\eta} }+\frac{L^2d\theta}{b\lambda })\label{SC-Eq14-Lemma1}
+\end{align}
+where the inequality \eqref{SC-Eq12-Lemma1} holds since $(1+1/a)^a\leq \lim_{a\to\infty}(1+1/a)^a = e$.
+Equation \eqref{SC-Eq14-Lemma1} implies that 
+
+\begin{equation}\label{SC-Eq15-Lemma1}
+\begin{split}
+c_{t}(1+\frac{1}{\beta})&\leq 2m(\frac{Ld}{bC_{\eta} }+\frac{L^2d\theta}{b\lambda })(1+m)\\
+&\leq 4m^2(\frac{Ld}{bC_{\eta} }+\frac{L^2d\theta}{b\lambda })
+\end{split}
+\end{equation}\label{SC-Eq16-Lemma1}
+Moreover, recall $C_{\eta} = \frac{1-\eta L}{2\eta L} = \frac{1-\rho}{2\rho}$, if we set $\rho\leq \min\{\frac{1}{2},\frac{b}{8dm^2(4+m)}\}$, it is easy to verify that
+ {\color{red}We need to pick  $C_{\eta} = \frac{1-\eta L}{2\eta L} = \frac{1-\rho}{2\rho}$ such that we have}
+\begin{align}
+ 4m^2(\frac{Ld}{bC_{\eta} }+\frac{L^2d\theta}{b\lambda }) &\leq \frac{C_{\eta} L}{2}\label{SC-Eq16-Lemma1}\\
+ {\color{red} 4m^2(\frac{d}{bC_{\eta} }+\frac{Ld\theta}{b\lambda })} &\leq \frac{C_{\eta}}{2}\notag
+\end{align}
+ by choosing $\rho \leq \frac{1}{2}$ and $4\rho+ \frac{\rho m}{\sqrt{2}}\leq \frac{b}{8dm^2}$
+{\color{blue}$\rho \leq \frac{b}{8dm^2(4+m)}$}
+\eqref{SC-Eq15-Lemma1}  holds. 
+{\color{red}
+\[
+C_{\eta} = \frac{1-\eta L}{2\eta L} = \frac{1-\rho}{2\rho}
+\]
+We assume $C_{\eta} \geq 1$ and thus we should have $\rho \leq \frac{1}{2}$.
+}
+{\color{red}
+Hence, it is sufficient
+\begin{equation}
+\begin{split}
+  (\frac{1}{C_{\eta} }+\frac{L\theta}{\lambda }) &\leq \frac{b}{8dm^2}\\
+    (\frac{2\rho}{1-\rho}+\frac{L\theta}{\lambda }) &\leq \frac{b}{8dm^2}\\
+  4\rho+ \frac{\rho m}{\sqrt{2}}&\leq \frac{b}{8dm^2}
+\end{split}
+\end{equation}
+}
+{\color{Brown}
+Hence, it is sufficient
+\begin{equation}
+\begin{split}
+4m^2(\frac{d}{bC_{\eta} }+\frac{Ld\theta}{b\lambda }) &\leq \frac{C_{\eta}}{2}\\
+  (\frac{1}{C_{\eta} }+\frac{L\theta}{\lambda }) &\leq \frac{b}{32dm^2\rho}\\
+    (\frac{2\rho^2}{1-\rho}+\frac{L\theta\rho}{\lambda }) &\leq \frac{b}{32dm^2}\\
+  4\rho^2+ \frac{\rho^2 m}{\sqrt{2}}&\leq \frac{b}{32dm^2}\\
+  \rho^2 &\leq \frac{b}{32dm^2(4+m)}\\
+  \rho &\leq \frac{\sqrt{b}}{6m\sqrt{d(4+m)}}
+\end{split}
+\end{equation}
+}
+Combining \eqref{SC-Eq15-Lemma1} and \eqref{SC-Eq16-Lemma1},  we obtain from \eqref{SC-Eq11-Lemma1}
+\begin{equation}
+\begin{split}
+\sum_{t=1}^{m} &\E[R_{t}^s]\leq m(1-\theta)[F(\widetilde{x}^{s-1})-F(x^*)] \\
+&+ {\frac{ \theta^2}{2\eta}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m}^s-x^*}^2]\\
+&+ \sum_{t=1}^{m} c_{t-1}\E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\\
+&~+m\frac{Ld^2\mu^2}{4C_{\eta}}+m\frac{ L^2d^2\mu^2\theta}{4\lambda}+m(\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\\
+\end{split}
+\end{equation}
+Therefore, we have
+
+\begin{equation}\label{SC-Eq17-Lemma1}
+\begin{split}
+&\sum_{t=1}^{m} \E[R_{t}^s]-\sum_{t=1}^{m-1}c_{t-1} E\norm{x_{t-1}^s-\widetilde{x}^{s-1}}^2\\
+&= \sum_{t=1}^{m}\E[\psi_{t}^s] + c_{m}\norm{x_{m}^s-\widetilde{x}^{s-1}}^2-c_{0}\norm{x_{0}^s-\widetilde{x}^{s-1}}^2\\
+\leq &m(1-\theta)[F(\widetilde{x}^{s-1})-F(x^*)] \\
+&+ {\frac{ \theta^2}{2\eta}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m}^s-x^*}^2]\\
+&~+m\frac{Ld^2\mu^2}{4C_{\eta}}+m\frac{ L^2d^2\mu^2\theta}{4\lambda}+m(\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}
+\end{split}
+\end{equation}
+Recall convexity of function $F$ and the definition $\widetilde{x}^s = \frac{1}{m}\sum_{t=0}^{m-1}x_{t+1}^s$ $\widetilde{x}^s = \frac{1}{m}\sum_{t=1}^{m}x_{t}^s$, we have 
+
+\begin{equation}
+\begin{split}
+F(\widetilde{x}^s) &= F(\frac{1}{m}\sum_{t=1}^{m} x_{t}^s)\leq \frac{1}{m}\sum_{t=1}^{m}F(x_{t}^s)
+\end{split}
+\end{equation}
+Using $x_0^s = \widetilde{x}^{s-1}$ and $c_m=0$ in \eqref{SC-Eq17-Lemma1}, we obtain
+\begin{align}
+[F(\widetilde{x}^{s})-F(x^*)] \leq &(1-\theta)[F(\widetilde{x}^{s-1})-F(x^*)]\notag \\
+&+ {\frac{ \theta^2}{2\eta m}}\E[\norm{z_{0}^s-x^*}^2-\norm{z_{m}^s-x^*}^2]\notag\\
+&+\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}+(\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\notag\\
+\leq&(1-\theta+\frac{ \theta^2}{\lambda\eta m})[F(\widetilde{x}^{s-1})-F(x^*)] \notag\\
+&+\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}+(\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\label{SC-Eq18-Lemma1}\\
+=&\tilde{\alpha}[F(\widetilde{x}^{s-1})-F(x^*)] +\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}\notag\\
+&+(\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\label{SC-Eq19-Lemma1}
+\end{align}
+where in \eqref{SC-Eq18-Lemma1} we used the strong convexity of $F$ and in \eqref{SC-Eq19-Lemma1} we define $\tilde{\alpha} = (1-\gamma)$ where $\gamma  = \theta - \frac{ \theta^2}{\lambda\eta m}$. The rest of the proof essentially follow along the lines of \ref{PL-Zoo} under a different parameter setting. Based on the definition of $\widetilde{\Psi}^s := \frac{\E[F(\tilde{x}^s)-F(x^*)]}{{\alpha}^s}$, we can simplify \eqref{SC-Eq19-Lemma1} as
+ {\color{blue}
+\begin{equation}\label{SC-Eq19-1-Lemma1}
+\begin{split}
+\widetilde{\Psi}^s \leq& \widetilde{\Psi}^{s-1} + \frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}+(\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}
+\end{split}
+\end{equation}
+}
+Now, we sum up \eqref{SC-Eq19-Lemma1} for all epochs $s=1, 2,\ldots, S$ and telescoping to obtain
+
+{\color{blue}
+\begin{align}
+\E[F(\widetilde{x}^S) - F(x^*)] & \leq \widetilde{\alpha}^{S} \E[F(\widetilde{x}^0) - F({x}^*)] +\widetilde{\alpha}^{S} \sum_{s=1}^S \frac{1}{\widetilde{\alpha}^s}\left(\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}\right)\notag\\
+&+\widetilde{\alpha}^{S} \sum_{s=1}^S \frac{1}{\widetilde{\alpha}^s}\left(2(\frac{1}{2C_{\eta} L}+\frac{\theta}{2\lambda})\frac{I\{B < n\} \sigma ^2}{B}\right)\notag\\
+ =& \widetilde{\alpha}^{S} \E[F(\widetilde{x}^0) - F(x^*)]+\frac{1-\widetilde{\alpha}^S}{1-\widetilde{\alpha}}\left(\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}\right)\notag\\
+&+ \frac{1-\widetilde{\alpha}^S}{1-\widetilde{\alpha}}\left((\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\right)\notag\\
+ \leq& {\alpha}^{Sm} \E[F(\widetilde{x}^0) - F(x^*)]+\frac{1}{1-{\alpha}}\left(\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}\right)\notag\\
+&+ \frac{1}{1-{\alpha}}\left((\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\right)\label{SC-Eq20-Lemma1}\\
+ =& {(1-\gamma)}^{Sm} \E[F(\widetilde{x}^0) - F(x^*)]+\frac{1}{{\gamma}}\left(\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}\right)\notag\\
+&+ \frac{1}{\gamma}\left((\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\right)\label{SC-Eq21-Lemma1}
+\end{align}
+}
+where \eqref{SC-Eq20-Lemma1} uses $\widetilde{\alpha} \leq \alpha$ and \eqref{SC-Eq21-Lemma1}  holds since $\alpha = 1-\gamma$. The proof is now complete.
+\end{proof}
+}
+As it is observed in previous theorems, all gradient have a common error bounded induced by ZO-estimator and batch size.
+If $\mu$  and $B$ are selected appropriately as we elaborated in Corollary \ref{}, then we obtain the error term $O(d\log \frac{1}{\epsilon})$ which exhibits a sub-linear convergence rate.
+
+{\color{DarkOrchid}
+Next we give the convergence rate of MiG in terms of oracle complexity as follows
+}
+
+\begin{corollary}
+ The constant $\alpha = 1-\gamma$ is minimized by choosing $\theta = \frac{m\eta\lambda}{\sqrt{2}}$. Suppose we set $b = m^2$ {\color{brown}$b=m^2$}, $\rho = \frac{1}{8d(4+m)}$ {\color{Brown}$\rho = \frac{1}{6\sqrt{d(4+m)}}$ }and $\theta = \frac{m\eta\lambda}{\sqrt{2}}$. Then we have the following convergence result:
+\begin{align}
+\E[F(\widetilde{x}^S) - F(x^*)] & \leq {(1-\frac{m\eta\lambda}{2})}^{Sm} \E[F(\widetilde{x}^0) - F(x^*)]+\frac{2}{{m\eta\lambda}}\left(\frac{Ld^2\mu^2}{4\frac{1-\eta L}{2\eta L}}+\frac{ L^2d^2\mu^2m\eta\lambda}{4\lambda}\right)\notag\\
+&+ \frac{2}{m\eta\lambda}\left((\frac{1}{L\frac{1-\eta L}{2\eta L}}+\frac{m\eta\lambda}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\right)\\
+\E[F(\widetilde{x}^S) - F(x^*)] & \leq {(1-\frac{m\eta\lambda}{2})}^{Sm} \E[F(\widetilde{x}^0) - F(x^*)]+\left(\frac{2L^2d^2\mu^2}{m\lambda}+\frac{ L^2d^2\mu^2}{2\lambda}\right)\notag\\
+&+ \left((\frac{8}{m\lambda}+\frac{2}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\right)\\
+\E[F(\widetilde{x}^S) - F(x^*)] & \leq {(1-\gamma)}^{Sm} \E[F(\widetilde{x}^0) - F(x^*)]+\frac{1}{{\gamma}}\left(\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu\theta}{4}\right)\notag\\
+&+ \frac{1}{\gamma}\left((\frac{1}{C_{\eta} L}+\frac{\theta}{\mu})\frac{I\{B < n\} \sigma ^2}{B}\right)
+\end{align}
+\end{corollary}
+In order
+to acquire explicit dependence on these parameters and to explore deeper insights of convergence, we
+simplify \eqref{main-eq-SC} for a specific parameter setting, as formalized below.
+\begin{corollary}\label{SC-CorI}
+Let step size $\eta = \frac{1}{6L}$ and $b$ denote the minibatch size. Then the final iteration point $\tilde{x}^S$ in Algorithm \ref{} satisfies $\E[\Phi(\tilde{x}^S) - \Phi^*]\leq \epsilon$ under PL condition. We distinguish the following two cases:
+
+1) Under Assumption 1, we let batch size $B = \min\{(\eta+\frac{\theta}{\lambda})\frac{\sigma ^2}{\gamma\epsilon}, n\}$ and {\color{Brown} $\mu \leq \frac{\sqrt{\gamma\epsilon}}{\sqrt{\frac{Ld^2}{4C_{\eta}}+\frac{ L^2d^2\theta}{4\lambda}}}$}. The number of SFO calls is bounded by
+\[
+O\left((n\wedge\frac{1}{\lambda \epsilon})\frac{1}{\lambda \sqrt{b}}\log \frac{1}{\epsilon}+\frac{b}{\lambda}\log\frac{1}{\epsilon}\right).{\color{Brown}SB+Smb = O( \frac{B}{\gamma m}\log\frac{1}{\epsilon}+\frac{b}{\gamma}\log\frac{1}{\epsilon})}
+\]
+where $\wedge$ denotes the minimum. The number of PO calls equals to the total number of iterations $T$ which is bounded by
+\[
+O\left(\frac{1}{\lambda}\log\frac{1}{\epsilon}\right).{\color{Brown} T = Sm = O(\frac{1}{\gamma}\log\frac{1}{\epsilon})}
+\]
+2) Given the setting  of Corollary \ref{SC-CorI}, we let batch size $B = \min\{\frac{I\{B < n\} \sigma ^2}{\lambda\epsilon}, n\}$ and smoothing parameter $\mu\leq\frac{\sqrt{\lambda\epsilon}}{6Ld}$. The number of SFO calls  simplifies to 
+{\color{blue}$SB+Smb = O(\frac{B\sqrt{d}}{b^{3/4} \lambda}\log\frac{1}{\epsilon}+\frac{b^{3/4} \sqrt{d}}{\lambda}\log\frac{1}{\epsilon})$}
+\end{corollary}
+\begin{proof}
+From Theorem \ref{PL-Zoo}, we have
+\begin{align}
+\E[F(\widetilde{x}^S) - F(x^*)] & \leq {(1-\gamma)}^{Sm} \E[F(\widetilde{x}^0) - F(x^*)]+\frac{1}{{\gamma}}\left(\frac{Ld^2\mu^2}{4C_{\eta}}+\frac{ L^2d^2\mu^2\theta}{4\lambda}\right)\notag\\
+&+ \frac{1}{\gamma}\left((\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{B}\right)= 3 \epsilon
+\end{align}
+which gives the total number of iterations $T = Sm = S\sqrt{b} = O(\frac{1}{\lambda}\log\frac{1}{\epsilon})$ {\color{Brown} $T = Sm = O(\frac{1}{\gamma}\log\frac{1}{\epsilon})$} {\color{Blue} $T = Sm = O(\frac{1}{m\eta\lambda}\log\frac{1}{\epsilon})$}. The number of PO calls equals to $T = Sm = O(\frac{1}{\lambda}\log\frac{1}{\epsilon})$ {\color{Brown} $T = Sm = O(\frac{1}{\gamma}\log\frac{1}{\epsilon})$} {\color{Blue} $T = Sm = O(\frac{1}{m\eta\lambda}\log\frac{1}{\epsilon})$}. The number of SFO calls equals to $Sn+Smb = O(\frac{n}{\lambda \sqrt{b}}\log\frac{1}{\epsilon}+\frac{b}{\lambda}\log\frac{1}{\epsilon})$ if $B = n$, or equals to  $Sn+Smb = O(\frac{B}{\lambda \sqrt{b}}\log\frac{1}{\epsilon}+\frac{b}{\lambda}\log\frac{1}{\epsilon})$ {\color{Brown}$SB+Smb = O(\frac{B}{\gamma m}\log\frac{1}{\epsilon}+\frac{b}{\gamma}\log\frac{1}{\epsilon})$} {\color{blue}$SB+Smb = O(\frac{B}{m^2 \eta \lambda}\log\frac{1}{\epsilon}+\frac{b}{m\eta \lambda}\log\frac{1}{\epsilon})$}if $B < n$(note that $\frac{I\{B < n\}3 \sigma ^2}{\lambda B} \leq \epsilon$ since $B \geq 6 {\sigma ^2}/{\lambda \epsilon}$ {\color{Brown}$\frac{1}{\gamma}\left((\frac{1}{C_{\eta} L}+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{\epsilon}\right) = \frac{1}{\gamma}\left((\eta+\frac{\theta}{\lambda})\frac{I\{B < n\} \sigma ^2}{\epsilon}\right) $} = {\color{blue} $\left((\frac{1}{m\lambda}+\frac{1}{\lambda})\frac{I\{B < n\} \sigma ^2}{\epsilon}\right) $}).
+{\color{Brown} $\mu \leq \frac{\sqrt{\gamma\epsilon}}{\sqrt{\frac{Ld^2}{4C_{\eta}}+\frac{ L^2d^2\theta}{4\lambda}}}$}{\color{blue} $\mu \leq \frac{\sqrt{m\eta\lambda\epsilon}}{\sqrt{\frac{Ld^2}{4C_{\eta}}+\frac{ L^2d^2\theta}{4\lambda}}}$}{\color{blue} $\mu \leq \frac{\sqrt{m\eta\lambda\epsilon}}{\sqrt{\frac{Ld^2}{4\frac{1-\eta L}{2\eta L}}+\frac{ L^2d^2\frac{m\eta\lambda}{\sqrt{2}}}{4\lambda}}}$ = $\frac{\sqrt{m\eta\lambda\epsilon}}{\sqrt{\frac{Ld^2{\eta L}}{2({1-\eta L})}+\frac{ L^2d^2{m\eta}}{4\sqrt{2}}}}$ = $\frac{\sqrt{m\eta\lambda\epsilon}}{\sqrt{{Ld^2\eta L}+\frac{ L^2d^2{m\eta}}{4\sqrt{2}}}}$ = $\frac{\sqrt{m\lambda\epsilon}}{\sqrt{{L^2d^2}+{ L^2d^2{m}}}}$ = $\frac{\sqrt{\lambda\epsilon}}{3Ld}$}
+\end{proof}
+For $B \leq $ the SZO complexity of our proposed method is
+$O()$ This result is similar to SCSG \cite{} if the dimension $d$ is not large enough. Furthermore, in our algorithm, we set B as a value that can be less than $n$ rather than a value which is fixed and equals to $n$. 
+{\color{Brown}
+In ZO-SVRG (Algorithm 2), the total number of gradient evaluations is given by $nS + bT$, where $T = mS$. Therefore, by fixing the number of iterations $T$, the function query complexity of ZO-SVRG using the studied estimators is then given by $O(d(nS + bT ))$, respectively.
+}
+
+{\color{DarkOrchid}
+This result implies that in the strongly convex setting, MiG enjoys the best-known oracle complexity for stochastic first-order algorithms.
+}
+\section{Appendix}
+{\color{Green}
+In this section, we provide the detailed proofs of the above lemmas and theorems. First, we give some useful properties of the CooSGE and the GauSGE, respectively.
+}
+\begin{lemma}[Three-Point Property] Let $\phi(\cdot)$ be a convex function, and let $D_{l}(\cdot,\cdot)$ be the Bregman distance for $l(\cdot)$. For a given vector $z$, let 
+\[
+z^+ = \text{arg}\,\,\min_{x\in\R^d}\{\phi(x)+D_{l}(x,z)\}.
+\]
+Then 
+\begin{equation}
+\phi(x) + D_l(x,z) \geq \phi(z^+) + D_l(x^+,z) + D_l(x,z^+)\qquad for\,\,all\,\,x\in\R^n
+\end{equation}
+with equality holding in the case when $\phi(\cdot)$ is a linear function and $l(\cdot)$ is a quadratic function.
+\end{lemma}
+
+
+\begin{lemma}\label{CooSGE}
+Assume that the function $f(x)$ is $L$-smooth. Let $\hat{\nabla} f(x)$ denote the estimated gradient defined by {\bf CooSGE}. Define $f_{\mu_j} = \E_{u\sim U[\mu_j, \mu_j]} f(x+ue_j)$, where $U[-\mu_j,\mu_j]$ denotes the uniform distribution at the interval $[\mu_j, \mu_j]$. Then we have 
+1) $f_{\mu_j}$ is $L$-smooth, and 
+\begin{equation}
+\hat{\nabla} f(x) = \sum_{j=1}^d \frac{\partial f_{\mu_j}}{\partial x_j}e_j
+\end{equation} 
+where $\partial f/\partial x_j$ denotes the partial derivative with respect to $j$th coordinate.
+
+2) For $j\in [d]$, 
+\begin{align}
+\abs{f_{\mu_j}(x) - f(x)} &\leq \frac{L\mu_j^2}{2}\\
+\abs{\frac{\partial f_{\mu_j}(x)}{\partial x_j}} \leq \frac{L\mu_j^2}{2}
+\end{align}
+ 
+ 3) If $\mu = \mu_j$ for $j\in [d]$, then 
+ \begin{equation}
+ \norm{\hat{\nabla} f(x) - {\nabla} f(x)} ^2 \leq \frac{L^2 d^2 \mu^2}{4}
+\end{equation}  
+\end{lemma}
+
+\begin{lemma}\label{lemma1}
+Let $x^+ = \Po_{\eta h}(x-\eta v)$, then the following inequality holds:
+\begin{equation}\label{eq10}
+\Phi(x^+) \leq \Phi(z) + \Iprod{\nabla f(x)-v}{x^+-z}-\frac{1}{\eta} \Iprod{x^+-x}{x^+-z}+\frac{L}{2}\norm{x^+-x}^2+\frac{L}{2}\norm{z-x}^2, \forall z\in \R^d. 
+\end{equation}
+\end{lemma}
+\begin{proof}
+First, we recall the proximal operator 
+\begin{equation}\label{eq11}
+\Po_{\eta h}(x-\eta v) := \text{arg}\,\,\min_{y\in\R^d}\left(h(y)+\frac{1}{2\eta}\norm{y-x}^2+\Iprod{v}{y}\right)
+\end{equation}
+For the nonsmooth function $h(x)$, we have 
+\begin{equation}\label{eq12}
+\begin{split}
+h(x^+) &\leq h(z) + \Iprod{p}{x^+-z}\\
+&= h(z) - \Iprod{v+\frac{1}{\eta}(x^+-x)}{x^+-z}
+\end{split}
+\end{equation}
+where $p\in \partial h(x^+)$ such that $p+\frac{1}{\eta}(x^+-x)+v = 0$ according to the optimality condition of \eqref{eq11}, and \eqref{eq12} due to the convexity of $h$.
+\begin{equation}\label{eq14}
+f(x^+) \leq f(x)+\Iprod{\nabla f(x)}{x^+-x}+\frac{L}{2}\norm{x^+-x}^2
+\end{equation}
+\begin{equation}\label{eq15}
+-f(z) \leq -f(x)+\Iprod{-\nabla f(x)}{z-x}+\frac{L}{2}\norm{z-x}^2
+\end{equation}
+where \eqref{eq14} holds since $f(x)$ has $L$-Lipschitz continuous gradient, and \eqref{eq15} holds since $-f(x)$ has the same $L$-Lipschitz continuous gradient as $f(x)$. 
+
+ This lemma is proved by adding \eqref{eq12}, \eqref{eq14}, \eqref{eq15}, and recalling $\Phi(x) = f(x)+h(x)$. 
+\end{proof}
+\begin{lemma}\label{lemm-est-grad}
+Let  $x_{t}^s= \Po_{\eta h}(x_{t-1}^s - \eta \hat{v}_{t-1}^s)$ and $\overline{x}_{t}^s= \Po_{\eta h}(x_{t-1}^s - \eta \nabla f(x_{t-1}^s))$. Then the following inequality holds
+\[
+\Iprod{\nabla f(x_{t-1}^s) -\hat{v}_{t-1}^s)}{x_t^s -\overline{x}_t^s} \leq \eta\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}^2
+\]
+\end{lemma}
+\begin{proof}
+First, we obtain $\norm{x_{t}^s-\overline{x}_{t}^s}$ and $\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}$ as follows 
+\begin{align}
+h(x_t^s)&\leq h(\overline{x}_t^s) - \Iprod{\hat{v}_{t-1}^s+\frac{1}{\eta}(x_t^s-x_{t-1}^s)}{x_t^s-\overline{x}_t^s}\label{lemm-est-grad-1}\\
+h(\overline{x}_t^s)&\leq h({x}_t^s) - \Iprod{\nabla f(x_{t-1}^s)+\frac{1}{\eta}(\overline{x}_t^s-x_{t-1}^s)}{\overline{x}_t^s-x_t^s}\label{lemm-est-grad-2}
+\end{align}
+where \eqref{lemm-est-grad-1} and \eqref{lemm-est-grad-2} hold due to \eqref{eq12}. Adding \eqref{lemm-est-grad-1} and \eqref{lemm-est-grad-2}, we have 
+\begin{align}
+\frac{1}{\eta}\Iprod{x_t^s -\overline{x}_t^s}{x_t^s -\overline{x}_t^s} &\leq \Iprod{\nabla f(x_{t-1}^s) -\hat{v}_{t-1}^s)}{x_t^s -\overline{x}_t^s}\notag\\
+\frac{1}{\eta}\norm{x_t^s -\overline{x}_t^s}^2 &\leq \norm{\nabla f(x_{t-1}^s) -\hat{v}_{t-1}^s)}\norm{x_t^s -\overline{x}_t^s}\label{lemm-est-grad-3}\\
+\norm{x_t^s -\overline{x}_t^s} &\leq \eta\norm{\nabla f(x_{t-1}^s) -\hat{v}_{t-1}^s}\label{lemm-est-grad-4}
+\end{align}
+where \eqref{lemm-est-grad-3} uses Cauchy-Schwarz inequality. Now this lemma is proved using Cauchy-Schwarz inequality and \eqref{lemm-est-grad-4}, i.e., $\Iprod{\nabla f(x_{t-1}^s) -\hat{v}_{t-1}^s)}{x_t^s -\overline{x}_t^s} \leq \norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s} \norm{x_t^s -\overline{x}_t^s} \leq \eta\norm{\nabla f(x_{t-1}^s)-\hat{v}_{t-1}^s}^2$.
+\end{proof}
+\bibliographystyle{acm}
+\bibliography{GTA}
+\end{document}
+

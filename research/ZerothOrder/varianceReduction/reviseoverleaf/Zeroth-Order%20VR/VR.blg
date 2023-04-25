@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: VR.aux
+The style file: plainnat.bst
+Database file #1: GTA.bib
+Warning--I didn't find a database entry for ""
+You've used 54 entries,
+            2773 wiz_defined-function locations,
+            875 strings with 14355 characters,
+and the built_in function-call counts, 28930 in all, are:
+= -- 2665
+> -- 1534
+< -- 51
++ -- 522
+- -- 465
+* -- 2220
+:= -- 4175
+add.period$ -- 169
+call.type$ -- 54
+change.case$ -- 315
+chr.to.int$ -- 51
+cite$ -- 108
+duplicate$ -- 1406
+empty$ -- 2414
+format.name$ -- 547
+if$ -- 6295
+int.to.chr$ -- 4
+int.to.str$ -- 1
+missing$ -- 55
+newline$ -- 278
+num.names$ -- 216
+pop$ -- 687
+preamble$ -- 1
+purify$ -- 262
+quote$ -- 0
+skip$ -- 1145
+stack$ -- 0
+substring$ -- 1384
+swap$ -- 320
+text.length$ -- 26
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 584
+warning$ -- 0
+while$ -- 270
+width$ -- 0
+write$ -- 706
+(There was 1 warning)

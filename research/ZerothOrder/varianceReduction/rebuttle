@@ -1,0 +1,120 @@
+ We have provided additional discussion and references to recent works 
+ We have included a brief discussion on how Theorem
+
+We thank the reviewer for the comments. Our goals in this work are threefold: (1) 
+
+Regarding the reviewer’s first comment, we would like to clarify that our Definition 1 *does not* 
+
+
+We want to point out that our own results and a number of recent studies show strong evidences that SGD in practical neural network training encourage positive gradient coherence
+
+We therefore sincerely ask the reviewer to reevaluate our work in light of these empirical evidence that are consistent with our findings.
+
+Finally, we fully understand the reviewer’s concern about reproducibility. We believe that our simulation work provides a well-controlled environment for future research of distributed machine learning systems. 
+
+We appreciate the insightful comments and careful review of our work.
+
+ We thank the reviewer for pointing out the error. The delay should be r 
+
+
+
+************************************************************************************
+
+We have revised our paper to include relevant references that we overlooked and minor changes that were suggested.
+We hope that we have convinced Reviewer 1 that our results are plausible. It has been generally observed experimentally and theoretically, that at least for smooth convex optimization problems, asynchronicity does not cause significant slowdown (for delays not too large). 
+
+We hope that we have helped to reconile Reviewers 3's intuition on acceleration with our results. Our monotonicity is an extension of similar results by Nesterov. We thank Reviewer 2 for drawing our attention to the rich body of work on asynchronous SGD.
+
+In light of our responses to the reviewers' concerns, we hope that you will reconsider our current scores. We believe our work has solved a longstanding and challenging problem in asynchronous optimization. We invite the reviewers' comments on anything else that would help improve our paper and its impact on the ML community. It would be a great honor to present our work at ICML 2019. Sincerely,
+
+
+. The reviewer brings up a very interesting point of discussion. 
+
+This also leads to a less counterintuitive condition on the delay.
+
+
+It might be possible to tighten our analysis, and weaken the condition on the delay further, and perhaps change the dependence on 
+
+We thank the reviewer for their time and consideration of our work. We hope that we can convince the reviewer to increase their score. We believe that our work solves a difficult outstanding problem in the field of asynchronous optimization, and provides a valuable contribution to ICLR.
+
+
+“My main confusion…” We admit this may sound somewhat surprising. However, this result is consistent with many previous theoretical and experimental results in the coordinate descent setting.
+
+Our work extends these theoretical and experimental results to the accelerated case.
+
+ Given this, it makes sense that some delay is tolerable from a complexity standpoint, and that it is only a question of how much. 
+
+
+“Theorem 1 essentially shows...” You are correct in stating that the objective function value and the distance to the solution are not guaranteed to improve in expectation at each iteration. However, in “Efficiency of coordinate descent methods on huge-scale optimization problems” Nesterov (2012), Nesterov discovered that a certain linear combination of both is guaranteed to decrease linearly and monotonically in expectation at every step (see Theorem 6 of that paper).
+
+This realization was essential to obtaining a state-of-the-art coordinate descent algorithm, and led to a massive speedup for both the synchronous and asynchronous case.
+
+Our proof of convergence for this base case can be seen as a roadmap to prove convergence for other asynchronous accelerated algorithm implementations, which we expect to be fairly similar.
+
+ It is unclear if there is a general way to prove convergence results for all possible implementations. 
+
+Yes, we believe it is extremely likely that it is possible to extend our work in this direction. 
+
+From a technical viewpoint: 
+
+
+*******************************************************
+
+es, the large mini-batch size of b = O(T) indeed improves the convergence rate of ZO-signSGD. As b = O(T), the convergence rate given in (9) becomes O(\sqrt{d}/\sqrt{T} + \alpha_b \sqrt{d}/\sqrt{T} + d/\sqrt{Tq}), where the last error term O(d/\sqrt{Tq}) is induced by ZO gradient estimation error. In order to further improve the rate to O(\sqrt{d}/\sqrt{T}), it is required to make the number of random direction samples  proportional to . Similar to other ZO methods (Liu et al. 2018; Hajinezhad et al. 2017), the large q helps to reduce the variance of ZO gradient estimates. 
+
+On the other hand,  the assumption of b = O(T) might not be necessary if n < O(T), where n is the total number of individual cost functions. Suppose that b = n and we use mini-batch sampling without replacement, then ZO-signSGD becomes ZO-signGD. This leads to the convergence rate O(\sqrt{d}/\sqrt{T} + d/\sqrt{nq}). In this case, we can improve the rate to recover O(\sqrt{d}/\sqrt{T}) by only setting the number of random direction vectors induced by ZO gradient estimation, . It is worth mentioning that such an improvement  cannot be achieved by ZO-signSGD using mini-batch with replacement even if b = n with the same setting of q. We refer reviewer to our detailed analysis in the last paragraph of Sec. 4.
+
+
+ Accordingly, ZO-signSGD might converge to moderate accuracy (e.g., a solution neighborhood) rather than a very high accuracy. However, the convergence of ZO-signSGD to moderate accuracy could be much faster than ZO-SGD since the former meets a stricter convergence criterion (L2 norm of gradient) than that of ZO-SGD (squared L2 norm of gradient). We refer the reviewer to the paragraph after Eq. (9) for more discussions. 
+
+ Throughout the paper, we have tried our best to address reviewers’ comments and to make our presentation as clear as possible.
+
+The authors agreed that the extra unimodal symmetric assumption can improve the theoretical convergence bound. And indeed we showed that in the zeroth-order setting, this conclusion holds (Corollary 2). Most importantly, both papers showed the potential impact of zeroth-order and first-order signSGD on addressing practical ML problems.
+
+
+We thank R1 for the positive comments on our paper. We would like to point out that sign-based gradient estimators, e.g., (11)-(12) in Sec. 5, have not been well studied in the ZO literature. 
+
+
+We are sorry to learn  that the reviewer feels our work is a relatively straightforward combination of signSGD with existing zero-order techniques. Based on the reviewer’s comments, our paper has been largely improved. 
+
+First, beyond signSGD, our established results apply to the case of mini-batch sampling without replacement. And thus, ZO-signGD can be treated as a special case in our analysis. 
+
+
+Second, to derive the eventual convergence error of ZO-signSGD, we require to fill the gap between the L1 geometry of signSGD and the variance of the ZO gradient estimate in terms of squared L2 norm.
+
+Moreover, we require to study the effects of different types of ZO gradient estimators on the convergence of ZO-signSGD. In particular, sign-based gradient estimators, (11)-(12) in Sec. 5, have not been well studied in the ZO literature. These estimators can be interpreted as the ZO counterparts of first-order gradient estimators with majority vote in the centralized and distributed settings.
+
+Last but not the least, our goal is not to 'combine' ZO and signSGD. As a matter of fact, ZO-signSGD has been well motivated in the design of black-box adversarial examples (Ilyas et al., 2018a). However, the formal connection between optimization theory and adversarial ML was not fully established. Our work provides a comprehensive study on ZO-signSGD from multiple perspectives including convergence analysis, gradient estimator, and applications. We really hope that the reviewer can recognize the contributions of this work in both theory and practice. 
+
+The least squared formulation is commonly used for nonconvex machine learning (Xue et al. 2017), given the fact that the standard logistic regression yields a convex problem. Since we study ZO-signSGD in the nonconvex setting, we choose to solve the least squared binary classification problem in order to make empirical studies consistent with theory. And Assumption A2 is indeed satisfied for the proposed problem. This is not difficult to prove by the boundedness of the sigmoid function. We have clarified this point in Sec. 6.
+
+Based on the reviewer’s comment, we realize that our explanation on the possible fast convergence of ZO-signSGD is not enough. 
+
+First, the original motivation for signSGD is for both fast communication and fast convergence; see abstract, Sec. 3 and Figure A1 in (Bernstein et al., 2018). Thus, the motivation of signSGD is not limited to the fact that it can significantly reduce communication overhead. 
+
+Second, it is not strange that ZO-signSGD could converge faster to at least moderate accuracy than ZO-SGD and other ZO variants. Our work, the previous work on signSGD (Bernstein et al., 2018), and many other white-box and black-box adversarial example generation methods (Goodfellow et al., 2015; Madry et al., 2018; Ilyas et al., 2018a) have shown that taking the sign could make the algorithm converge faster. We have added a subsection ‘Motivations of ZO-signSGD’ in Sec. 3 to provide rationale about why the sign operation could be beneficial to fast convergence. We repeat our discussion as below.
+
+“Compared to SGD-type methods, the fast empirical convergence of signSGD and ZO-signSGD has been shown in the application of generating white-box and black-box adversarial examples (Goodfellow et al., 2015; Madry et al., 2018; Ilyas et al., 2018a). As mentioned in (Bernstein et al., 2018), the sign operation could mitigate the negative effect of (coordinate-wise) gradient noise of large variance. Recall that the ZO gradient estimate is a biased approximation to the true gradient, and thus, could suffer larger noise variance than (first-order) stochastic gradients. In this context, one could benefit from ZO-signSGD due to its robustness to gradient noise. In Appendix 1, we provide two concrete examples (Fig. A1 and Fig. A2) to confirm the aforementioned analysis. In Fig. A1, we show the robustness of ZO-signSGD against sparse noise perturbation through a toy quadratic optimization problem, first introduced by (Bernstein et al., 2018). In Fig. A2, we show that gradient estimation via ZO oracle indeed encounters gradient noise of large variance. Thus, taking the sign of a gradient estimate might scale down the extremely noisy components.”
+
+Third, both our empirical results and theoretical results confirm that ZO-signSGD converge faster than ZO-SGD to moderate accuracy. In theory,  the convergence rate of ZO-signSGD is measured through the L2 norm | \nabla f(x_R) |_2  rather than its squared counterpart | \nabla f(x_R) |_2^2, where the latter was used to evaluate the convergence of ZO-SGD. We recall from (Ghadimi & Lan, 2013, Theorem 3.2 & Corollary 3.3) that ZO-SGD yields the convergence error E [ | \nabla f(x_R) |_2^2 ] \leq O(\sqrt{d}/\sqrt{T}).  Since  | \nabla f(x_R) |_2^2 \leq | \nabla f(x_R) |_2 as it converges, the established rate of ZO-signSGD meets a stricter convergence criterion than that of ZO-SGD. Thus, ZO-signSGD can converge faster (than ZO-SGD) to moderate accuracy, e.g., a neighborhood of a stationary point, where the size of the neighborhood is controlled by the mini-batch size b and the number of random direction vectors q. The application of black-box adversarial attack further shows that the fast convergence of ZO-signSGD to the first successful adversarial attack significantly saves the cost of function queries. We also show the superior performance of ZO-signSGD to a benchmark black-box attack generation method. We refer the reviewer to Sec. 6 for more details.
+
+First, it is not trivial to overcome the second technical challenge, since we need to carefully investigate the effect of two mini-batch sampling schemes as well as the effect of random direction sampling on the variance of ZO gradient estimates (see Proposition 2). In particular, the use of mini-batch samples without replacement removes the assumption of i.i.d. samples. This challenge does not go away immediately even if we replace f by f_mu. 
+
+Second, in the last technical challenge, we aimed to emphasize that both the sign operation and the ZO random gradient estimation are biased approximations to the true gradient. Note that the sign-based descent algorithm measures the convergence in L1 geometry, which introduces a mismatch with the squared L2  norm used in bounding the variance of ZO gradient estimates. In addition to relating f_mu with f, we need to translate the gradient norm from L1 to L2 and use the probabilistic convergence method to derive the eventual convergence error bound (see Theorem 1).
+
+
+
+
+R: We agree with the reviewer that distributed optimization is an interesting setting to perform ZOsignSGD. However, even in the centralizing setting, ZO (gradient-free) methods are also attractive when the gradient is difficult or impossible to compute. For ZO-signSGD, we have shown in Sec. 3 and Sec. 6 that it is well motivated by centralization optimization problems, e.g., the design of black-box adversarial examples under limited queries.
+
+To further address the reviewer’s concern, we have also added a new sign-based gradient estimator (12) used for ZO distributed optimization. This results in a distributed variant of ZO-signSGD, whose convergence rate is derived in Corollary 3 and empirical performance is compared with other variants of ZO-signSGD in Figure 2. We refer the reviewer to Sec. 5 for more details.
+
+Hopefully, the reviewer agrees with us that our new version has been largely improved, and could re-evaluate our work towards a better score. We thanks the reviewer's efforts to review our work.
+
+ It is a bit difficult to consume some parameters with a long and complicated equation in those theorems. If they are not critical to understand the theorem, they could be simpler. I like Table 1.   2. If combining random coordinate descent and SVRG, the d times more function queries could be reduced to 1
+
+What do the authors mean by “accelerated variants”? Accelerated because of the better gradient approximations? 
+
+
+
+

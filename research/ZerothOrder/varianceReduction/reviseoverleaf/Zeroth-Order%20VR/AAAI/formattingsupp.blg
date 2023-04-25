@@ -1,0 +1,74 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: formattingsupp.aux
+A level-1 auxiliary file: sub.aux
+The style file: aaai.bst
+Database file #1: GTAsupp.bib
+Warning--I didn't find a database entry for "johnson2013accelerating"
+Warning--I didn't find a database entry for "reddi2016stochastic"
+Warning--I didn't find a database entry for "nitanda2016accelerated"
+Warning--I didn't find a database entry for "allen2016improved"
+Warning--I didn't find a database entry for "lei2017non"
+Warning--I didn't find a database entry for "wibisono2012finite"
+Warning--I didn't find a database entry for "sokolov2016stochastic"
+Warning--I didn't find a database entry for "shamir2017optimal"
+Warning--I didn't find a database entry for "chen2017zoo"
+Warning--I didn't find a database entry for "nesterov2017random"
+Warning--I didn't find a database entry for "brent2013algorithms"
+Warning--I didn't find a database entry for "spall2005introduction"
+Warning--I didn't find a database entry for "ghadimi2016accelerated"
+Warning--I didn't find a database entry for "huang2019faster"
+Warning--I didn't find a database entry for "polyak1963gradient"
+Warning--I didn't find a database entry for "duchi2015optimal"
+Warning--I didn't find a database entry for "gu2018faster"
+Warning--I didn't find a database entry for "flaxman2005online"
+Warning--I didn't find a database entry for "lian2016comprehensive"
+Warning--I didn't find a database entry for "gu2018inexact"
+Warning--I didn't find a database entry for "xiao2014proximal"
+Warning--I didn't find a database entry for "reddi2016proximal"
+Warning--I didn't find a database entry for "li2018simple"
+Warning--I didn't find a database entry for "liu2017zeroth"
+Warning--I didn't find a database entry for "hajinezhad2019zone"
+Warning--I didn't find a database entry for "karimi2016linear"
+You've used 3 entries,
+            2568 wiz_defined-function locations,
+            620 strings with 5681 characters,
+and the built_in function-call counts, 1739 in all, are:
+= -- 188
+> -- 74
+< -- 2
++ -- 26
+- -- 26
+* -- 135
+:= -- 265
+add.period$ -- 15
+call.type$ -- 3
+change.case$ -- 25
+chr.to.int$ -- 3
+cite$ -- 3
+duplicate$ -- 68
+empty$ -- 118
+format.name$ -- 31
+if$ -- 373
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 3
+newline$ -- 21
+num.names$ -- 9
+pop$ -- 24
+preamble$ -- 1
+purify$ -- 28
+quote$ -- 0
+skip$ -- 61
+stack$ -- 0
+substring$ -- 120
+swap$ -- 28
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 24
+warning$ -- 0
+while$ -- 14
+width$ -- 4
+write$ -- 44
+(There were 26 warnings)

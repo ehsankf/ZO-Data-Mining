@@ -1,0 +1,251 @@
+https://www.sciencedirect.com/science/article/pii/S0167819118300024
+https://dl.acm.org/citation.cfm?id=3212763
+
+https://www.sciencedirect.com/science/article/pii/S0893608011002681
+https://ieeexplore.ieee.org/abstract/document/6178801
+
+Analysis for Incremental and Decremental Standard Support Vector Machine journal of software
+https://www.sciencedirect.com/science/article/pii/S0950705114001555
+https://ieeexplore.ieee.org/abstract/document/7419254
+
+https://ieeexplore.ieee.org/abstract/document/8634909 IEEE cybernetics
+
+https://www.sciencedirect.com/science/article/pii/S0165168419300593 Signal Processing
+
+
+https://github.com/LIBBLE/LIBBLE-Spark/
+http://junehuang.com/software.html
+https://github.com/slowbull/MPIPlatform
+https://github.com/fabianp/ProxASAGA
+https://github.com/RemiLeblond/Asaga
+
+https://us-east-1.signin.aws.amazon.com/oauth?SignatureVersion=4&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJMOATPLHVSJ563XQ&X-Amz-Date=2019-06-06T03%3A37%3A26.061Z&X-Amz-Signature=d4c4831ca633e18cb85c5ee39b3e644aff77181b3ae5af9e9273711dbd12db76&X-Amz-SignedHeaders=host&client_id=arn%3Aaws%3Aiam%3A%3A015428540659%3Auser%2Fhomepage&redirect_uri=https%3A%2F%2Fconsole.aws.amazon.com%2Fconsole%2Fhome%3Fstate%3DhashArgs%2523%26isauthcode%3Dtrue&response_type=code&state=hashArgs%23
+
+Green Gu
+bin Gu
+huang2019faster
+Beck and Teboulle (2009);
+beck2009fast
+Li, H., and Lin
+li2015accelerated
+Bertsekas, D. P. 2011
+bertsekas2011incremental
+Xiao, L., and Zhang, T. 2014
+xiao2014proximal
+Ghadimi, S.; Lan, G.; and Zhang, H. 2016
+ghadimi2016accelerated
+Reddi, S.; Sra, S.; Poczos, B.
+reddi2016proximal
+Wainwright, M. J.; Jordan, M. I.; et al. 2008.
+wainwright2008graphical
+Sokolov, A.; Hitschler, J.; and Riezler
+sokolov2018sparse
+Shamir, O. 2017.
+shamir2017optimal
+Chen, P.-Y.; Zhang, H.; Sharma,
+chen2017zoo
+Nesterov, Y., and Spokoiny, V. G. 2017.
+nesterov2017random
+Conn, A. R.; Scheinberg
+conn2009introduction
+Yu et al. (2018)
+yu2018generic
+Dvurechensky, Gasnikov, and Gorbunov (2018)
+dvurechensky2018accelerated
+Liu et al., 2018b
+liu2017zeroth
+Gao, Jiang, and Zhang, 2018
+gao2018information
+Chen et al., 2017; 
+chen2017zoo
+Liu et al., 2018c
+liu2018zeroth
+Ghadimi and Lan (2013)
+ghadimi2013stochastic
+Liu et al. (2018c,a)
+liu2018stochastic
+liu2018zeroth
+Gu, Huo, and Huang, 2016
+gu2018inexact
+Lian et al., 2016
+lian2016comprehensive
+Gu et al., 2018
+gu2018faster
+Liu et al., 2018c
+liu2018zeroth
+Parikh, Boyd, and others, 2014
+parikh2014proximal
+nips liu
+Brown Zeroth--order Nips 
+1
+papernot2017practical
+2
+madry2017towards
+3
+chen2017zoo
+4
+chen2019bandit
+5
+liu2017zeroth
+6
+fu2002optimization
+7
+lian2016comprehensive
+8
+brent2013algorithms
+9
+spall2005introduction
+10
+flaxman2005online
+11
+shamir2013complexity
+12
+agarwal2010optimal
+12+1
+nesterov2017random
+14
+duchi2015optimal
+15
+shamir2017optimal
+17
+dvurechensky2018accelerated
+18
+wang2017stochastic
+19
+johnson2013accelerating
+20
+reddi2016stochastic
+21
+nitanda2016accelerated
+22
+allen2016improved
+23
+lei2017non
+24
+ghadimi2013stochastic
+25
+hajinezhad2017zeroth
+26
+gu2016zeroth
+allerton
+kazemi2018proximal
+
+Violet simple variance reduced nips
+
+simpleVR
+li2018simple
+Aaron Defazio, Francis Bach, and Simon Lacoste-Julien
+defazio2014saga
+Guanghui Lan and Yi Zhou
+lan2017optimal
+Zeyuan Allen-Zhu. Katyusha
+allen2017katyusha
+Lin Xiao and Tong Zhang
+xiao2014proximal
+Rie Johnson and Tong Zhang.
+johnson2013accelerating
+Boris Teodorovich Polyak
+polyak1963gradient
+Karimi et al.
+karimi2016linear
+Zhi-Quan Luo and Paul Tseng.
+luo1993error
+Mihai Anitescu
+anitescu2000degenerate
+
+DarkOrchis FAst
+RubinRed zeroth-order Ijcai
+Andre Wibisono, Martin J Wainwright, Michael I Jordan, and John C Duchi
+Artem Sokolov, Julia Kreutzer, Stefan Riezler, and Christopher Lo
+
+Green
+Mine and Fukushima,
+1981
+
+Nesterov, 2004
+
+xiao2014proximal
+reddi2016proximal
+li2018simple
+
+{C-Eq1-Lemma1}
+{C-Eq3-Lemma1}
+
+{C-Eq4-Lemma1}
+
+C-Eq4-1-Lemma1
+
+
+// Outer loop
+	for (k = 0; k < iters_outer; k++) {
+
+                compute_full_gradient(Xt, w_tilda, y, mu, n, d, lambda);
+        
+		// Evaluate function value if output requested
+		if (evalf == true) {		
+			hist[k] = compute_function_value(w_prev, Xt, y, n, d, lambda);			
+		}		
+               
+		// Inner loop
+		for (i = 0; i < iters_inner; i++) {
+            
+			long idx = dis(gen);
+                        printf("idx= %d \n", idx);
+                       /* for (j = 0; j < d; j ++){
+				g_tilda[j] = Matrix[idx][j];
+			}*/
+			// Compute gradient of last inner iter
+			compute_partial_gradient(Xt, w_prev, y, g_prev, n, d, lambda, idx);
+			//compute_zeroth_partial_gradient(Xt, w_prev, y, g_prev, n, d, lambda, idx);
+        
+			// Compute the gradient of last outer iter
+			compute_partial_gradient(Xt, w_tilda, y, g_tilda, n, d, lambda, idx);
+                        //compute_zeroth_partial_gradient(Xt, w_tilda, y, g_tilda, n, d, lambda, idx);
+
+                        // Update the test point 
+			update_test_point_SVRG(w_prev, g_prev, g_tilda, mu, alpha, d);
+
+                        // add gradient of l2 reg
+			for (j = 0; j < d; j ++){
+				//g_prev[j] += lambda * w_prev[j];
+                                Matrix[idx][j] = g_prev[j];
+				//g_tilda[j] += lambda * w_tilda[j]; 
+			}
+
+                         
+                        for (j = 0; j < d; j ++){
+                             //mu[j] += (g_prev[j] - g_tilda[j])/n;
+			     //mu[j] += lambda * w_tilda[j];
+                             
+		        }
+        
+
+			
+        
+                        //w_tilda[idx] = w_prev[idx];
+                        for (j = 0; j < d; j ++){
+				w_tilda[j] = w_prev[j];
+			}
+			
+                        
+             
+			/*for (j = 0; j < d; j ++){
+				ww_prev[j] += w_prev[j];
+			}*/
+
+            /*i = randi(n);
+            end
+            % Update the next iteration
+            gx         = gradf(x,i);
+            w_next     = x - gamma * (gx - g_phi(i,:) + g_phi_av);
+            g_phi_av   = g_phi_av - g_phi(i,:) / n + gx / n;
+            g_phi(i,:) = gx;          
+x_next = prox(w_next, gamma);*/
+		}
+
+		/*for (j = 0; j < d; j ++) {
+            w_tilda[j] = w_prev[j];
+            //w_tilda[j] = ww_prev[j]/iters_inner;
+            //w_prev[j] = w_tilda[j];
+		}*/
+    }

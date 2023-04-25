@@ -1,0 +1,22 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{what we want to do}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Background in research}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{Reason to use zeroth\205order techniques}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{Problem with existing methods}{section.1}% 5
+\BOOKMARK [2][-]{subsection.1.5}{Compare with other methods}{section.1}% 6
+\BOOKMARK [1][-]{section.2}{Main Challenge}{}% 7
+\BOOKMARK [1][-]{section.3}{Main contributions}{}% 8
+\BOOKMARK [1][-]{section.4}{Related Works}{}% 9
+\BOOKMARK [2][-]{subsection.4.1}{Motivation at the end of related works}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.2}{Zeroth-order \(ZO\) gradient estimators}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.3}{Accelerated Proximal Gradient Method}{section.4}% 12
+\BOOKMARK [1][-]{section.5}{Accelerated Proximal Gradient Method}{}% 13
+\BOOKMARK [2][-]{subsection.5.1}{reason to avoid full gradient calculation}{section.5}% 14
+\BOOKMARK [1][-]{section.6}{Convergence Analysis}{}% 15
+\BOOKMARK [2][-]{subsection.6.1}{Gradient Mapping}{section.6}% 16
+\BOOKMARK [2][-]{subsection.6.2}{Convergence}{section.6}% 17
+\BOOKMARK [1][-]{section.7}{Convergence Under PL Condition}{}% 18
+\BOOKMARK [1][-]{section.8}{Experimental results}{}% 19
+\BOOKMARK [2][-]{subsection.8.1}{Black-Box Binary Classification}{section.8}% 20
+\BOOKMARK [2][-]{subsection.8.2}{Adversarial Attacks on Black-Box DNNs}{section.8}% 21
+\BOOKMARK [1][-]{section.9}{Appendix}{}% 22

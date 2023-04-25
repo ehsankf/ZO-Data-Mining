@@ -1,0 +1,367 @@
+\begin{thebibliography}{54}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agarwal et~al.(2010)Agarwal, Dekel, and Xiao]{agarwal2010optimal}
+Alekh Agarwal, Ofer Dekel, and Lin Xiao.
+\newblock Optimal algorithms for online convex optimization with multi-point
+  bandit feedback.
+\newblock In \emph{COLT}, pages 28--40. Citeseer, 2010.
+
+\bibitem[Allen-Zhu(2017)]{allen2017katyusha}
+Zeyuan Allen-Zhu.
+\newblock Katyusha: The first direct acceleration of stochastic gradient
+  methods.
+\newblock \emph{The Journal of Machine Learning Research}, 18\penalty0
+  (1):\penalty0 8194--8244, 2017.
+
+\bibitem[Allen-Zhu and Yuan(2016)]{allen2016improved}
+Zeyuan Allen-Zhu and Yang Yuan.
+\newblock Improved svrg for non-strongly-convex or sum-of-non-convex
+  objectives.
+\newblock In \emph{International conference on machine learning}, pages
+  1080--1089, 2016.
+
+\bibitem[Anitescu(2000)]{anitescu2000degenerate}
+Mihai Anitescu.
+\newblock Degenerate nonlinear programming with a quadratic growth condition.
+\newblock \emph{SIAM Journal on Optimization}, 10\penalty0 (4):\penalty0
+  1116--1135, 2000.
+
+\bibitem[Beck and Teboulle(2009)]{beck2009fast}
+Amir Beck and Marc Teboulle.
+\newblock A fast iterative shrinkage-thresholding algorithm for linear inverse
+  problems.
+\newblock \emph{SIAM journal on imaging sciences}, 2\penalty0 (1):\penalty0
+  183--202, 2009.
+
+\bibitem[Bertsekas(2011)]{bertsekas2011incremental}
+Dimitri~P Bertsekas.
+\newblock Incremental proximal methods for large scale convex optimization.
+\newblock \emph{Mathematical programming}, 129\penalty0 (2):\penalty0 163,
+  2011.
+
+\bibitem[Brent(2013)]{brent2013algorithms}
+Richard~P Brent.
+\newblock \emph{Algorithms for minimization without derivatives}.
+\newblock Courier Corporation, 2013.
+
+\bibitem[Chen et~al.(2017)Chen, Zhang, Sharma, Yi, and Hsieh]{chen2017zoo}
+Pin-Yu Chen, Huan Zhang, Yash Sharma, Jinfeng Yi, and Cho-Jui Hsieh.
+\newblock Zoo: Zeroth order optimization based black-box attacks to deep neural
+  networks without training substitute models.
+\newblock In \emph{Proceedings of the 10th ACM Workshop on Artificial
+  Intelligence and Security}, pages 15--26. ACM, 2017.
+
+\bibitem[Chen and Giannakis(2019)]{chen2019bandit}
+Tianyi Chen and Georgios~B Giannakis.
+\newblock Bandit convex optimization for scalable and dynamic iot management.
+\newblock \emph{IEEE Internet of Things Journal}, 6\penalty0 (1):\penalty0
+  1276--1286, 2019.
+
+\bibitem[Conn et~al.(2009)Conn, Scheinberg, and Vicente]{conn2009introduction}
+Andrew~R Conn, Katya Scheinberg, and Luis~N Vicente.
+\newblock \emph{Introduction to derivative-free optimization}, volume~8.
+\newblock Siam, 2009.
+
+\bibitem[Defazio et~al.(2014)Defazio, Bach, and
+  Lacoste-Julien]{defazio2014saga}
+Aaron Defazio, Francis Bach, and Simon Lacoste-Julien.
+\newblock Saga: A fast incremental gradient method with support for
+  non-strongly convex composite objectives.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  1646--1654, 2014.
+
+\bibitem[Duchi et~al.(2015)Duchi, Jordan, Wainwright, and
+  Wibisono]{duchi2015optimal}
+John~C Duchi, Michael~I Jordan, Martin~J Wainwright, and Andre Wibisono.
+\newblock Optimal rates for zero-order convex optimization: The power of two
+  function evaluations.
+\newblock \emph{IEEE Transactions on Information Theory}, 61\penalty0
+  (5):\penalty0 2788--2806, 2015.
+
+\bibitem[Dvurechensky et~al.(2018)Dvurechensky, Gasnikov, and
+  Gorbunov]{dvurechensky2018accelerated}
+Pavel Dvurechensky, Alexander Gasnikov, and Eduard Gorbunov.
+\newblock An accelerated method for derivative-free smooth stochastic convex
+  optimization.
+\newblock \emph{arXiv preprint arXiv:1802.09022}, 2018.
+
+\bibitem[Flaxman et~al.(2005)Flaxman, Kalai, and McMahan]{flaxman2005online}
+Abraham~D Flaxman, Adam~Tauman Kalai, and H~Brendan McMahan.
+\newblock Online convex optimization in the bandit setting: gradient descent
+  without a gradient.
+\newblock In \emph{Proceedings of the sixteenth annual ACM-SIAM symposium on
+  Discrete algorithms}, pages 385--394. Society for Industrial and Applied
+  Mathematics, 2005.
+
+\bibitem[Fu(2002)]{fu2002optimization}
+Michael~C Fu.
+\newblock Optimization for simulation: Theory vs. practice.
+\newblock \emph{INFORMS Journal on Computing}, 14\penalty0 (3):\penalty0
+  192--215, 2002.
+
+\bibitem[Gao et~al.(2018)Gao, Jiang, and Zhang]{gao2018information}
+Xiang Gao, Bo~Jiang, and Shuzhong Zhang.
+\newblock On the information-adaptive variants of the admm: an iteration
+  complexity perspective.
+\newblock \emph{Journal of Scientific Computing}, 76\penalty0 (1):\penalty0
+  327--363, 2018.
+
+\bibitem[Ghadimi and Lan(2013)]{ghadimi2013stochastic}
+Saeed Ghadimi and Guanghui Lan.
+\newblock Stochastic first-and zeroth-order methods for nonconvex stochastic
+  programming.
+\newblock \emph{SIAM Journal on Optimization}, 23\penalty0 (4):\penalty0
+  2341--2368, 2013.
+
+\bibitem[Ghadimi and Lan(2016)]{ghadimi2016accelerated}
+Saeed Ghadimi and Guanghui Lan.
+\newblock Accelerated gradient methods for nonconvex nonlinear and stochastic
+  programming.
+\newblock \emph{Mathematical Programming}, 156\penalty0 (1-2):\penalty0 59--99,
+  2016.
+
+\bibitem[Gu et~al.(2016)Gu, Huo, and Huang]{gu2016zeroth}
+Bin Gu, Zhouyuan Huo, and Heng Huang.
+\newblock Zeroth-order asynchronous doubly stochastic algorithm with variance
+  reduction.
+\newblock \emph{arXiv preprint arXiv:1612.01425}, 2016.
+
+\bibitem[Gu et~al.(2018{\natexlab{a}})Gu, Huo, Deng, and Huang]{gu2018faster}
+Bin Gu, Zhouyuan Huo, Cheng Deng, and Heng Huang.
+\newblock Faster derivative-free stochastic algorithm for shared memory
+  machines.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  1807--1816, 2018{\natexlab{a}}.
+
+\bibitem[Gu et~al.(2018{\natexlab{b}})Gu, Wang, Huo, and Huang]{gu2018inexact}
+Bin Gu, De~Wang, Zhouyuan Huo, and Heng Huang.
+\newblock Inexact proximal gradient methods for non-convex and non-smooth
+  optimization.
+\newblock In \emph{Thirty-Second AAAI Conference on Artificial Intelligence},
+  2018{\natexlab{b}}.
+
+\bibitem[Hajinezhad et~al.(2017)Hajinezhad, Hong, and
+  Garcia]{hajinezhad2017zeroth}
+Davood Hajinezhad, Mingyi Hong, and Alfredo Garcia.
+\newblock Zeroth order nonconvex multi-agent optimization over networks.
+\newblock \emph{arXiv preprint arXiv:1710.09997}, 2017.
+
+\bibitem[Huang et~al.(2019)Huang, Gu, Huo, Chen, and Huang]{huang2019faster}
+Feihu Huang, Bin Gu, Zhouyuan Huo, Songcan Chen, and Heng Huang.
+\newblock Faster gradient-free proximal stochastic methods for nonconvex
+  nonsmooth optimization.
+\newblock \emph{arXiv preprint arXiv:1902.06158}, 2019.
+
+\bibitem[Johnson and Zhang(2013)]{johnson2013accelerating}
+Rie Johnson and Tong Zhang.
+\newblock Accelerating stochastic gradient descent using predictive variance
+  reduction.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  315--323, 2013.
+
+\bibitem[Karimi et~al.(2016)Karimi, Nutini, and Schmidt]{karimi2016linear}
+Hamed Karimi, Julie Nutini, and Mark Schmidt.
+\newblock Linear convergence of gradient and proximal-gradient methods under
+  the polyak-{\l}ojasiewicz condition.
+\newblock In \emph{Joint European Conference on Machine Learning and Knowledge
+  Discovery in Databases}, pages 795--811. Springer, 2016.
+
+\bibitem[Kazemi and Wang(2018)]{kazemi2018proximal}
+Ehsan Kazemi and Liqiang Wang.
+\newblock A proximal zeroth-order algorithm for nonconvex nonsmooth problems.
+\newblock In \emph{2018 56th Annual Allerton Conference on Communication,
+  Control, and Computing (Allerton)}, pages 64--71. IEEE, 2018.
+
+\bibitem[Lan and Zhou(2017)]{lan2017optimal}
+Guanghui Lan and Yi~Zhou.
+\newblock An optimal randomized incremental gradient method.
+\newblock \emph{Mathematical programming}, pages 1--49, 2017.
+
+\bibitem[Lei et~al.(2017)Lei, Ju, Chen, and Jordan]{lei2017non}
+Lihua Lei, Cheng Ju, Jianbo Chen, and Michael~I Jordan.
+\newblock Non-convex finite-sum optimization via scsg methods.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  2348--2358, 2017.
+
+\bibitem[Li and Lin(2015)]{li2015accelerated}
+Huan Li and Zhouchen Lin.
+\newblock Accelerated proximal gradient methods for nonconvex programming.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  379--387, 2015.
+
+\bibitem[Li and Li(2018)]{li2018simple}
+Zhize Li and Jian Li.
+\newblock A simple proximal stochastic gradient method for nonsmooth nonconvex
+  optimization.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  5564--5574, 2018.
+
+\bibitem[Lian et~al.(2016)Lian, Zhang, Hsieh, Huang, and
+  Liu]{lian2016comprehensive}
+Xiangru Lian, Huan Zhang, Cho-Jui Hsieh, Yijun Huang, and Ji~Liu.
+\newblock A comprehensive linear speedup analysis for asynchronous stochastic
+  parallel optimization from zeroth-order to first-order.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  3054--3062, 2016.
+
+\bibitem[Liu et~al.(2018{\natexlab{a}})Liu, Cheng, Hsieh, and
+  Tao]{liu2018stochastic}
+Liu Liu, Minhao Cheng, Cho-Jui Hsieh, and Dacheng Tao.
+\newblock Stochastic zeroth-order optimization via variance reduction method.
+\newblock \emph{arXiv preprint arXiv:1805.11811}, 2018{\natexlab{a}}.
+
+\bibitem[Liu et~al.(2017)Liu, Chen, Chen, and Hero]{liu2017zeroth}
+Sijia Liu, Jie Chen, Pin-Yu Chen, and Alfred~O Hero.
+\newblock Zeroth-order online alternating direction method of multipliers:
+  Convergence analysis and applications.
+\newblock \emph{arXiv preprint arXiv:1710.07804}, 2017.
+
+\bibitem[Liu et~al.(2018{\natexlab{b}})Liu, Kailkhura, Chen, Ting, Chang, and
+  Amini]{liu2018zeroth}
+Sijia Liu, Bhavya Kailkhura, Pin-Yu Chen, Paishun Ting, Shiyu Chang, and Lisa
+  Amini.
+\newblock Zeroth-order stochastic variance reduction for nonconvex
+  optimization.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  3727--3737, 2018{\natexlab{b}}.
+
+\bibitem[Luo and Tseng(1993)]{luo1993error}
+Zhi-Quan Luo and Paul Tseng.
+\newblock Error bounds and convergence analysis of feasible descent methods: a
+  general approach.
+\newblock \emph{Annals of Operations Research}, 46\penalty0 (1):\penalty0
+  157--178, 1993.
+
+\bibitem[Madry et~al.(2017)Madry, Makelov, Schmidt, Tsipras, and
+  Vladu]{madry2017towards}
+Aleksander Madry, Aleksandar Makelov, Ludwig Schmidt, Dimitris Tsipras, and
+  Adrian Vladu.
+\newblock Towards deep learning models resistant to adversarial attacks.
+\newblock \emph{arXiv preprint arXiv:1706.06083}, 2017.
+
+\bibitem[Nesterov(2013)]{nesterov2013gradient}
+Yu~Nesterov.
+\newblock Gradient methods for minimizing composite functions.
+\newblock \emph{Mathematical Programming}, 140\penalty0 (1):\penalty0 125--161,
+  2013.
+
+\bibitem[Nesterov and Spokoiny(2017)]{nesterov2017random}
+Yurii Nesterov and Vladimir Spokoiny.
+\newblock Random gradient-free minimization of convex functions.
+\newblock \emph{Foundations of Computational Mathematics}, 17\penalty0
+  (2):\penalty0 527--566, 2017.
+
+\bibitem[Nitanda(2016)]{nitanda2016accelerated}
+Atsushi Nitanda.
+\newblock Accelerated stochastic gradient descent for minimizing finite sums.
+\newblock In \emph{Artificial Intelligence and Statistics}, pages 195--203,
+  2016.
+
+\bibitem[Papernot et~al.(2017)Papernot, McDaniel, Goodfellow, Jha, Celik, and
+  Swami]{papernot2017practical}
+Nicolas Papernot, Patrick McDaniel, Ian Goodfellow, Somesh Jha, Z~Berkay Celik,
+  and Ananthram Swami.
+\newblock Practical black-box attacks against machine learning.
+\newblock In \emph{Proceedings of the 2017 ACM on Asia conference on computer
+  and communications security}, pages 506--519. ACM, 2017.
+
+\bibitem[Parikh et~al.(2014)Parikh, Boyd, et~al.]{parikh2014proximal}
+Neal Parikh, Stephen Boyd, et~al.
+\newblock Proximal algorithms.
+\newblock \emph{Foundations and Trends{\textregistered} in Optimization},
+  1\penalty0 (3):\penalty0 127--239, 2014.
+
+\bibitem[Polyak(1963)]{polyak1963gradient}
+Boris~Teodorovich Polyak.
+\newblock Gradient methods for minimizing functionals.
+\newblock \emph{Zhurnal Vychislitel'noi Matematiki i Matematicheskoi Fiziki},
+  3\penalty0 (4):\penalty0 643--653, 1963.
+
+\bibitem[Reddi et~al.(2016{\natexlab{a}})Reddi, Hefny, Sra, Poczos, and
+  Smola]{reddi2016stochastic}
+Sashank~J Reddi, Ahmed Hefny, Suvrit Sra, Barnabas Poczos, and Alex Smola.
+\newblock Stochastic variance reduction for nonconvex optimization.
+\newblock In \emph{International conference on machine learning}, pages
+  314--323, 2016{\natexlab{a}}.
+
+\bibitem[Reddi et~al.(2016{\natexlab{b}})Reddi, Sra, P{\'o}czos, and
+  Smola]{reddi2016proximal}
+Sashank~J Reddi, Suvrit Sra, Barnab{\'a}s P{\'o}czos, and Alexander~J Smola.
+\newblock Proximal stochastic methods for nonsmooth nonconvex finite-sum
+  optimization.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  1145--1153, 2016{\natexlab{b}}.
+
+\bibitem[Shamir(2013)]{shamir2013complexity}
+Ohad Shamir.
+\newblock On the complexity of bandit and derivative-free stochastic convex
+  optimization.
+\newblock In \emph{Conference on Learning Theory}, pages 3--24, 2013.
+
+\bibitem[Shamir(2017)]{shamir2017optimal}
+Ohad Shamir.
+\newblock An optimal algorithm for bandit and zero-order convex optimization
+  with two-point feedback.
+\newblock \emph{Journal of Machine Learning Research}, 18\penalty0
+  (52):\penalty0 1--11, 2017.
+
+\bibitem[Sokolov et~al.(2016)Sokolov, Kreutzer, Riezler, and
+  Lo]{sokolov2016stochastic}
+Artem Sokolov, Julia Kreutzer, Stefan Riezler, and Christopher Lo.
+\newblock Stochastic structured prediction under bandit feedback.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  1489--1497, 2016.
+
+\bibitem[Sokolov et~al.(2018)Sokolov, Hitschler, and
+  Riezler]{sokolov2018sparse}
+Artem Sokolov, Julian Hitschler, and Stefan Riezler.
+\newblock Sparse stochastic zeroth-order optimization with an application to
+  bandit structured prediction.
+\newblock \emph{arXiv preprint arXiv:1806.04458}, 2018.
+
+\bibitem[Spall(2005)]{spall2005introduction}
+James~C Spall.
+\newblock \emph{Introduction to stochastic search and optimization: estimation,
+  simulation, and control}, volume~65.
+\newblock John Wiley \& Sons, 2005.
+
+\bibitem[Wainwright et~al.(2008)Wainwright, Jordan,
+  et~al.]{wainwright2008graphical}
+Martin~J Wainwright, Michael~I Jordan, et~al.
+\newblock Graphical models, exponential families, and variational inference.
+\newblock \emph{Foundations and Trends{\textregistered} in Machine Learning},
+  1\penalty0 (1--2):\penalty0 1--305, 2008.
+
+\bibitem[Wang et~al.(2017)Wang, Du, Balakrishnan, and
+  Singh]{wang2017stochastic}
+Yining Wang, Simon Du, Sivaraman Balakrishnan, and Aarti Singh.
+\newblock Stochastic zeroth-order optimization in high dimensions.
+\newblock \emph{arXiv preprint arXiv:1710.10551}, 2017.
+
+\bibitem[Wibisono et~al.(2012)Wibisono, Wainwright, Jordan, and
+  Duchi]{wibisono2012finite}
+Andre Wibisono, Martin~J Wainwright, Michael~I Jordan, and John~C Duchi.
+\newblock Finite sample convergence rates of zero-order stochastic optimization
+  methods.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  1439--1447, 2012.
+
+\bibitem[Xiao and Zhang(2014)]{xiao2014proximal}
+Lin Xiao and Tong Zhang.
+\newblock A proximal stochastic gradient method with progressive variance
+  reduction.
+\newblock \emph{SIAM Journal on Optimization}, 24\penalty0 (4):\penalty0
+  2057--2075, 2014.
+
+\bibitem[Yu et~al.(2018)Yu, King, Lyu, and Yang]{yu2018generic}
+Xiaotian Yu, Irwin King, Michael~R Lyu, and Tianbao Yang.
+\newblock A generic approach for accelerating stochastic zeroth-order convex
+  optimization.
+\newblock In \emph{IJCAI}, pages 3040--3046, 2018.
+
+\end{thebibliography}

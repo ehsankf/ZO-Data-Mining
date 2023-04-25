@@ -1,0 +1,28 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Gao, Jiang, and
+  Zhang}{2018}]{gao2018information}
+Gao, X.; Jiang, B.; and Zhang, S.
+\newblock 2018.
+\newblock On the information-adaptive variants of the admm: an iteration
+  complexity perspective.
+\newblock {\em Journal of Scientific Computing} 76(1):327--363.
+
+\bibitem[\protect\citeauthoryear{Ji \bgroup et al\mbox.\egroup
+  }{2019}]{ji2019improved}
+Ji, K.; Wang, Z.; Zhou, Y.; and Liang, Y.
+\newblock 2019.
+\newblock Improved zeroth-order variance reduced algorithms and analysis for
+  nonconvex optimization.
+\newblock In {\em International Conference on Machine Learning},  3100--3109.
+
+\bibitem[\protect\citeauthoryear{Liu \bgroup et al\mbox.\egroup
+  }{2018}]{liu2018zeroth}
+Liu, S.; Kailkhura, B.; Chen, P.-Y.; Ting, P.; Chang, S.; and Amini, L.
+\newblock 2018.
+\newblock Zeroth-order stochastic variance reduction for nonconvex
+  optimization.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  3727--3737.
+
+\end{thebibliography}

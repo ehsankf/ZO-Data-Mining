@@ -1,0 +1,395 @@
+\section{Introduction}
+In this paper, we consider nonsmooth nonconvex optimization problems of the generic form
+\begin{equation}\label{problem}
+\min_{x\in\R^d} F(x) =  f(x) + h(x),\,\,\,f(x):=\frac{1}{n}\sum_{i=1}^n f_i(x)
+\end{equation}
+where each $f_i(x)$ is possibly nonconvex and smooth function, and $h(x)$ is a nonsmooth convex function such as $l_1$-norm regularizer. 
+The general structure \eqref{problem} covers
+numerous machine learning areas, ranged from neural networks to  generalized linear models  
+ and from convex problems like  SVM  and Lasso to highly nonconvex optimization including minimizing loss function for deep learning. We will investigate and explore a set of accelerated variance reduced stochastic zeroth-order (SZO) optimization algorithms for \eqref{problem}. Stochastic variance reduced gradient
+(SVRG) is a generic and powerful methodology to decrease the variance induced by stochastic sampling \cite{johnson2013accelerating,reddi2016stochastic,nitanda2016accelerated,allen2016improved,lei2017non}. It is known from SVRG that it enhances the rate of convergence for stochastic gradient descent (SGD) complexity by a factor of $O(1/{\epsilon})$ due to the decrease in the variance of gradient. One may apply the comparable concepts and similar ideas in the first-order methods to reduce the variance in SZO optimization and enhance the convergence rate. 
+
+\iffalse
+\subsection{Background in research}
+In recent years, there has been significant studies for convex problems of the form \eqref{problem} (see e.g., \cite{nesterov2013gradient}, \cite{xiao2014proximal,defazio2014saga,lan2017optimal,allen2017katyusha}. 
+In particular, in \cite{beck2009fast}, the authors designed a fast-converging class of proximal gradient (PG) schemes for problems with convex structure based on Nesterov's momentum acceleration.  
+\cite{xiao2014proximal} developed an algorithm called Prox-SVRG for large-scale problems with a 
+linear convergence rate when each  $f_i$ is strongly-convex. To deal with large-scale convex problems, several stochastic PG methods are developed in \cite{bertsekas2011incremental,xiao2014proximal}. Due to the growing applications of deep neural networks, recently the studies for nonconvex problems have been noticeably increasing. Nevertheless, for the generic nonsmooth nonconvex problems the analysis is still rather sparse.  \cite{li2015accelerated} introduced a set of fast-converging PG algorithms for nonconvex structure problems. In the similar spirit, \cite{ghadimi2016accelerated,reddi2016proximal} studied stochastic PG methods for nonconvex optimization.
+Recently, \cite{li2018simple} designed an algorithm by extending the results from \cite{reddi2016proximal}, implying an improved iteration complexity for stochastic gradient method. 
+\fi
+
+The major adversity of first-order methods for these accelerated methods is their design which is based on first-order information from the problem. However, there are circumstances where the first-order gradient evaluations are computationally unfeasible, costly, or unachievable, while zeroth-order information (function information) are accessible. For instance, in online auctions and advertisement
+selections, only zeroth-order information in the form of responses to the queries is accessible \cite{wibisono2012finite}. Similarly, in predictions with stochastic structure computing the derivatives is possibly complicated or forbidden, while the functional estimations of foreseen frameworks are accessible \cite{sokolov2016stochastic}. 
+This highlights the
+necessity of derivative-free  optimization method \cite{nesterov2017random} to tackle these problems. The development of zeroth-order optimization methods has become significantly important to solve many machine learning problems in which calculation of the gradients explicitly is expensive or infeasible to derive. 
+This procedure computes the full gradient using gradient approximation only based on function estimations, which will result to derivative-free optimization \cite{brent2013algorithms,spall2005introduction}. 
+Recently, zeroth-order optimization has attracted significant attention, e.g., black-box adversarial attacks on deep neural networks (DNNs)\cite{kurakin2016adversarial,papernot2017practical,chen2017zoo}, reinforcement learning \cite{choromanski2018structured} and structured prediction \cite{taskar2005learning}.
+Further applications cover time-varying constrained networks with restricted computation capacity \cite{chen2019bandit,liu2017zeroth}, and model inference with black-box setting \cite{fu2002optimization,lian2016comprehensive}. 
+
+Currently, there are only a few number of zeroth-order stochastic methods
+for solving problem \eqref{problem}, e.g., \cite{ghadimi2016accelerated} and \cite{huang2019faster}. In particular, \cite{ghadimi2016accelerated} analyzed a zeroth-order gradient method called RSPGE. Nevertheless, due to high variance based on random vector sampling for two point gradient approximation, the iteration complexity of RSPGE (i.e., $O(\frac{d}{\epsilon^2})$) is notably worse than the best known rate $O(\frac{d}{{\epsilon}})$ for zeroth-order stochastic optimization. A major issue in the development of SZO algorithms for solving  \eqref{problem} is the order of the required number of function queries, namely SZO calls or iteration complexity. While the existing zeroth-order methods based on SVRG algorithms show higher convergence rate, they induce higher querying complexity than either of zeroth-order gradient descent (ZO-GD) and zeroth-order stochastic gradient descent (ZO-SGD) methods.  
+
+The term related to the dimension of the problem in the convergence studies (i.e., $d$) plays a key role on the efficiency of SZO optimization. For instance, \cite{ji2019improved} refined the ZO estimations to derive an improved ZO complexity with improved convergence rate. However, their analysis is only for smooth functions based on a complicated parameter selection and it is only valid for large minibatch sizes.
+We design an accelerated ZO proximal variants by leveraging variance reduced gradient approximation for nonsmooth composite optimization. This provides a lower iteration complexity towards $O(1/\epsilon )$, which is to our knowledge the best iteration complexity bound obtained thus far for proximal ZO stochastic optimization with nonconvex structure. This demonstrates an improvement for ZO iteration complexity up to a factor of ${d}$.
+
+In Table \ref{table-compare}, we compared the results from our analysis and 8 other ZO optimization method from 4 perspectives: a) the type of gradient estimator, b) the setting of problem, c) stepsize, d) convergence rate, and e) function query complexity. Table 1 shows that for nonconvex nonsmooth optimization, the convergence of ZO-PSVRG+
+achieves best dependency on $d$ than RSPGF and and ZO-ProxSVRG/SAGA. Table \ref{table-compare} shows that RGF has the largest query complexity and yet has the worst convergence rate. ZO-SVRG-Coord and ZO-ProxSVRG/SAGA provide an improved rate of convergence $O(d/\epsilon )$ owning to applying variance reduction techniques. On the other hand, existing SVRG type zeroth-order algorithms are highly affected by function query complexities compared to RSPGF, while our algorithm, ZO-PSVRG+, could achieve better trade-offs between the convergence rate and the querying complexity.
+
+Despite the fact that proximal SVRG has indicated a huge promise for first-order algorithms, utilizing identical concepts to ZO optimization is not effortless. SZO algorithms have involved coupled stochastic structure which arises from both data sampling and the error induced by ZO gradient estimation. This makes the analysis of ZO optimization difficult in many settings. The other major challenge is related to the fact that ProxSVRG is based on the notion that stochastic gradient is an unbiased approximation of the actual full gradient, which is not valid in the ZO case. 
+Considering the motivation of zeroth-order ProxSVRG and the success of proximal SVRG, one
+question arises that if the proximal ZO stochastic variance reduced gradient could accelerate the convergence of proximal ZO algorithms with arbitrary minibatch sizes.
+In this paper, we plan to fill the void between
+SZO optimization and ProxSVRG by improving the complexity of the exiting ZO variance reduced methods for problem \eqref{problem}.
+
+
+\section{Main contributions}
+In this paper, we present a novel analysis which is different from the existing convergence studies provided in \cite{liu2018zeroth,ji2019improved}. Through  our new analysis we prove that ZO-PSVRG+  surpasses several state-of-the-art SVRG-type zeroth-order methods as well as RSPGF. In particular, we attempt to address several important open questions in ZO proximal variance reduced methods. More specifically, we address the open question if the dependence on the dimension $d$ for the convergence analysis proposed in \cite{liu2018zeroth} is optimal. Our work provides an inclusive analysis on how ZO gradient approximations influence ProxSVRG on both  convergence rate and function query complexity. This
+is conducted based on the novel structure of recently introduced SZO algorithms.
+Note that our analysis does not rely on bounded gradient assumption in \cite{ghadimi2016accelerated,huang2019faster}.
+The convergence results are demonstrated with respect to the number of stochastic zeroth-order (SZO) queries and proximal oracle (PO) calls. 
+We summarize the following results from this paper related to our new analysis:
+
+1) Our analysis yield iteration complexity $O(\frac{1}{{\epsilon}})$ corresponding to $O(\frac{d}{\epsilon^2})$ of RSPGF \cite{ghadimi2016accelerated}  and $O(\frac{d}{\epsilon})$ of ZO-ProxSVRG/SAGA  \cite{huang2019faster} (the existing variance-reduce SZO proximal algorithm for solving nonconvex nonsmooth problems).  
+Thus, our results have better or no dependence on
+$d$ in contrast to the existing proximal variance-reduced SZO methods. ZO-PSVRG+ also matches the best result achieved by ZO-SVRG-Coord-Rand with minibatch size $b = d n^{2/3}$ and epoch size $m = n^{1/3}$ in \cite{ji2019improved}, while our results are valid for any minibatch sizes as detailed in the following sections.  
+Indeed, it is necessary to analyze and study the convergence behavior of SZO optimization with minibatchs of single or moderate sizes, as practically many machine learning models are trained with intermediate minibatch sizes.
+
+
+2) The convergence analysis for ZO-PSVRG+ in contrast to  ZO-SVRG-Coord in \cite{liu2018zeroth,ji2019improved} is straightforward, and yields simpler proofs. Our analysis achieve new iteration complexity bounds and improve the effectiveness of  all the existing ZO-SVRG-based algorithms along with RSPGF for nonconvex nonsmooth composite optimization, while it provides the best results to our best knowledge (see Table \ref{table-compare}). Note that the convergence studies for RSPGF and ZO-ProxSVRG/SAGA rely on bounded gradient assumption, which is not our working assumption in this paper.
+
+
+3) For the nonconvex functions under Polyak-Łojasiewicz condition \cite{polyak1963gradient}, we show that ZO-PSVRG+
+obtains a global linear rate of convergence  equivalent to first-order ProxSVRG. Thus, ZO-PSVRG+ can certainly achieve linear convergence in some zones without restarting. To the best of
+our knowledge, this is the first paper that leverages the PL condition for improving the convergence of of ZO-ProxSVRG for problem \eqref{problem} with arbitrary minibatch sizes. This analysis generalizes the results of \cite{duchi2015optimal} while  shows linear convergence versus the sublinear convergence rate in their paper.
+In \cite{ji2019improved}, the authors show that  ZO-SPIDER-Coord achieves linear convergence under PL condition but only for the minibatch of size $b = O(n^{1/2})$. Note that due to both computational and statistical efficiency, convergence analysis for minibatchs of moderate sizes is essential (Also see the remarks after Theorem \ref{PL-Zoo-rand} for more details). 
+
+Finally, to demonstrate the efficiency and adaptability of our approach for achieving a balance between the convergence rate and the number of SZO queries, we perform some
+experimental evaluations for two distinct applications: black-box binary classification and universal adversarial
+attacks on black-box deep neural network models. The empirical results and
+theoretical investigations verify the effectiveness of our algorithms.
+
+\section{Related Works}
+Derivative-free (zeroth-order) methods have been efficiently applied for solving numerous machine learning problems when the computation of the true gradient is infeasible. In ZO algorithms, a full gradient is generally estimated based on either a one-point or a two-point gradient approximation. The one-point estimator computes the gradient estimation $\hat{\nabla} f(x)$ by probing $f$ at a single random point near to $x$,   while the two-point estimator given by the difference of function values at random
+query points \cite{agarwal2010optimal,nesterov2017random}. In this paper, we focus on two-point gradient approximation since it has a lower variance and thus represents lower iteration complexity.
+
+% \cite{nesterov2017random} proposed several stochastic derivative-free 
+%algorithms by employing Gaussian smoothing method.  A zeroth-order mirror descent algorithm is analyzed in \cite{duchi2015optimal}. 
+%More recently, \cite{yu2018generic,dvurechensky2018accelerated} introduced some accelerated zeroth-order algorithms for convex optimization. 
+The recent studies show that ZO algorithms typically agree with the complexity of first-order algorithms up to a small-degree polynomial of the problem size $d$. The existing zeroth-order algorithms mostly target (strongly) convex problems, while the studies for nonconvex ZO methods are relatively limited. In particular, there are many nonconvex machine learning applications, where the explicit derivatives are not accessible, e.g., nonconvex black-box learning problems \cite{chen2017zoo,liu2018zeroth}. Thus, developing zeroth-order stochastic methods for nonconvex optimization is indeed essential.
+\cite{ghadimi2013stochastic} and \cite{nesterov2011random} proposed ZO-GD and its corresponding stochastic algorithm ZO-SGD, respectively. \cite{liu2018stochastic} introduced a variance reduced stochastic zeroth-order method with  Gaussian smoothing. More recently, \cite{liu2018zeroth} presented a thorough analysis based on SVRG algorithms. \cite{ji2019improved} elaborated the results in \cite{liu2018zeroth} and achieved improved bounds based on involved relations for parameter selection. However the downside of the improvement offered in their paper is its dependency on large minibatch sizes. More comprehensive discussion on SZO methods for nonconvex nonsmooth probelm \eqref{problem} can be found in \cite{huang2019faster}, where the authors proposed two algorithms called ZO-ProxSVRG and ZO-ProxSAGA based on the well-known variance reduction techniques ProxSVRG and ProxSAGA \cite{reddi2016proximal}. Before that,  \cite{ghadimi2016accelerated} also considered the stochastic case (here we denote
+it as RSPGF), which relies on increasing or large minibatch sizes, i.e., roughly of order $\Omega(1/\epsilon)$. However,  due to the necessity for growing the size of minibatch sizes during iterations in their analysis, RSPGF may change to deterministic proximal gradient descent (ZO-ProxGD) after few iterations. Further, \cite{liu2018stochastic} also analyzed a zeroth-order algorithm for solving nonconvex nonsmooth problems, which are different from problem \eqref{problem}. Several asynchronous stochastic zeroth-order algorithms have also been studied for large-scale problems, e.g., \cite{gu2018inexact,lian2016comprehensive,gu2018faster}.
+In \cite{lian2016comprehensive}, an asynchronous ZO stochastic coordinate
+descent (ZO-SCD) was designed with a convergence rate of $O(d/\epsilon^2)$. In \cite{gu2018faster}, the authors improved the onvergence rate of asynchronous SZO by integrating SVRG techniques with stochastic coordinate descent method. Moreover, ZO versions of Frank-Wolfe
+(FW) \cite{balasubramanian2018zeroth,sahu2018towards} and alternating direction method of multipliers (ADMM) \cite{liu2017zeroth,chen2019zo} have been developed for constrained optimization.
+  
+In spite of the fact that the aforementioned zeroth-order stochastic algorithms can effectively solve problems with nonconvex structure, there are only a limited number of zeroth-order stochastic methods to solve nonconvex nonsmooth composite problems. We emphasize that, in contrast to existing ZO proximal methods, our analysis do not require bounded gradient assumption, which is not valid for many unconstrained optimization problems. 
+\iffalse
+It should be highlighted that computing full-gradient may not be effective for large-scale machine learning problems. Thus, we focus on studying a more general framework for ZO-ProxSVRG with different gradient estimators.
+\fi
+\begin{table*}[t]
+\begin{center}
+\begin{tabular}{ |l|l|l|l|l| } 
+ \hline
+ Method & Problem & Stepsize& Convergence rate & SZO complexity\\ 
+ \hline
+  
+ RGF (\cite{nesterov2017random}) & NS(C) & $O\left(\frac{1}{\sqrt{dT}}\right)$ & $O\left(\frac{d^2}{\epsilon^2}\right)$ &$O\left(\frac{nd^2}{\epsilon^2}b\right)$\\
+ RSPGF (\cite{ghadimi2016accelerated}) & S(NC)+NS(C) & $O\left(1\right)$ & $O\left(\frac{d}{\epsilon^2}\right)$ &$O\left(\frac{nd}{\epsilon^2}\right)$\\ 
+ ZO-SVRG-Coord (\cite{liu2018zeroth}) & S(NC)& $O\left(\frac{1}{{d}}\right)$ & $O\left(\frac{d}{\epsilon}\right)$ & $O(\frac{nd^2}{\epsilon}+\frac{d^2b}{\epsilon})$\\
+ ZO-SVRG-Coord-Rand (\cite{ji2019improved}) & S(NC)& $O\left(\frac{1}{{dn^{2/3}}}\right)$ & $O\left(\frac{dn^{2/3}}{\epsilon}\right)$ & $O(\min\{\frac{dn^{2/3}}{\epsilon},\frac{d}{\epsilon^{5/3}}\})^{*}$\\
+  ZO-ProxSVRG-Coord (\cite{huang2019faster}) & S(NC)+NS(C) & $O\left(\frac{1}{{d}}\right)$ & $O\left(\frac{d}{\epsilon}\right)$ & $O(\frac{nd^2}{\epsilon\sqrt{b}}+\frac{md^2\sqrt{b}}{\epsilon})$\\
+   ZO-ProxSAGA-Coord (\cite{huang2019faster}) & S(NC)+NS(C)& $O\left(\frac{1}{{d}}\right)$ & $O\left(\frac{d}{\epsilon}\right)$ & $O(\frac{nd^2}{\epsilon\sqrt{b}})$\\
+   ZO-PSVRG+ (Ours)  & S(NC)+NS(C) & $O\left(1\right)$ & $O\left(\frac{1}{\epsilon}\right)$ & $O\left(s_n\frac{d}{\epsilon \sqrt{b}}+\frac{bd}{\epsilon}\right)$\\
+   ZO-PSVRG+ (RandSGE) (Ours)  & S(NC)+NS(C) & $O\left(\frac{1}{\sqrt{d}}\right)$ & $O\left(\frac{\sqrt{d}}{\epsilon}\right)$ & $O\left(s_n\frac{d\sqrt{d}}{\epsilon \sqrt{b}}+\frac{b\sqrt{d}}{\epsilon}\right)$\\
+   ZO-PSVRG+ (Ours) & S(PL)+NS(C) & $O\left(1\right)$ & $O\left(\log(\frac{1}{\epsilon})\right)$ & {$O(s_n \frac{d}{\lambda}\log\frac{1}{\epsilon}+\frac{bd}{\lambda}\log\frac{1}{\epsilon})$}\\
+   ZO-PSVRG+ (RandSGE) (Ours) & S(PL)+NS(C) & $O\left(\frac{1}{\sqrt{d}}\right)$ & $O\left(\sqrt{d}\log(\frac{1}{\epsilon})\right)$ & {$O(s_n\frac{d\sqrt{d}}{\lambda}\log\frac{1}{\epsilon}+\frac{b\sqrt{d}}{\lambda}\log\frac{1}{\epsilon})$}\\
+ \hline
+\end{tabular}
+\caption{Summary of convergence rate and function query complexity of various SZO algorithms. S: Smooth, NS: Nonsmooth, NC: Nonconvex, C: Convex, SC: Strong Convexity, and PL: Polyak-Łojasiewicz Condition. $b$ denotes the minibatch size, $m$ denotes the epoch size, $\lambda$ is the constant in PL condition \eqref{zo-pl-cond} and $s_n = \min\{n, \frac{1}{\epsilon}\}$. *: The single-minibatch version.}
+\label{table-compare}
+\end{center}
+\end{table*}
+
+\section{Preliminaries}
+In the following we illustrate some details on ZO gradient approximations.
+Considering a single loss function $f_i$, a two-point random stochastic gradient estimator (RandSGE) $\hat{\nabla}_r f_i(x)$ is defined as \cite{nesterov2017random,gao2018information}
+\begin{equation}\label{gradestrand}
+\hat{\nabla}_r f_i(x, u_i) = \frac{d(f_i(x+\mu u_i) - f_i(x))}{\mu}u_i,\qquad i\in [n]
+\end{equation}
+where $d$ is the number of optimization variables, $\{u_i\}$ are i.i.d. random directions drawn from a uniform distribution over a unit sphere and $\mu > 0$ is the smoothing parameter  \cite{flaxman2005online,shamir2017optimal,gao2018information}. Typically, RandSGE is a biased approximation to the true gradient $\nabla f_i(x)$, and its bias decreases as $\mu$ approaches zero. Nevertheless, in practice, if $\mu$ is too small, the function variation
+could be signified by the noise in the function evaluations when the rate of noise to signal is high  
+ \cite{lian2016comprehensive}.
+To obtain a higher quality approximation for ZO gradient, one can apply coordinate gradient estimation (CoordSGE) \cite{gu2018inexact,gu2018faster,liu2018zeroth} to evaluate the gradients as:
+\begin{align}\label{gradestcoord}
+\hat{\nabla} f_i(x) = \sum_{j=1}^d \frac{f_i(x+\mu e_j) - f_i(x-\mu e_j)}{2\mu}e_j,\,\,\,i\in [n]
+\end{align}
+where  $e_j$ is a standard basis vector with $1$ at its $j$-th coordinate and $0$ otherwise, and $\mu$ is the smoothing parameter. In contrast to RandSGE, CoordSGE is deterministic and needs $d$ times more ZO function calls. 
+However, our studies indicate that for ZO variance-reduced methods based on CoordSGE provide a more accurate ZO estimation. This will result in a
+larger stepsize and a speedier convergence, although the coordinate-wise gradient estimator
+requires more ZO calls than the two-point random gradient approximation. 
+
+Since proximal gradient method needs to compute the gradient in each iteration, it cannot be applied to tackle the optimization problems where the computation of explicit gradient of function $f(x)$ is infeasible.
+We present a zeroth-order proximal gradient descent method based on ZO gradient estimation \eqref{gradestcoord}, which performs iterations of the form
+\begin{equation}
+x_{t}^s= \Po_{\eta h}(x_{t-1}^s - \eta \hat{\nabla} f(x_{t-1}^s)),\qquad t=1, 2, \ldots
+\end{equation}
+where $s$ is epoch number, $\hat{\nabla} f=\frac{1}{n}\sum_{i=1}^n \hat{\nabla} f_i(x)$
+\begin{equation}\label{po-operator}
+\Po_{\eta h}(x) := \text{arg}\,\,\min_{y\in\R^d}\left(h(y)+\frac{1}{2\eta}\norm{y-x}^2\right)
+\end{equation}
+In the following we assume that the
+nonsmooth convex function $h(x)$ in \eqref{problem} is well-defined, i.e., the proximal operator \eqref{po-operator} can be computed effectively.
+
+Generally, for convex problems the optimality gap $F(x) - F(x^*)$ is applied as the convergence metric, where throughout the paper, we let $x^*$ denote the optimal solution of Problem \eqref{problem}. However, for general nonconvex problems, the gradient norm is commonly used as the convergence metric. For instance, for smooth nonconvex optimization (i.e., $h(x) = 0$), \cite{ghadimi2013stochastic,reddi2016stochastic,lei2017non,liu2018zeroth}  applied $\norm{\nabla F(x)}^2$ (i.e., $\norm{\nabla f(x)}^2$ ) as the convergence criterion. Aiming to investigate the
+convergence behavior for nonsmooth nonconvex problems, it is necessary to define the gradient mapping as illustrated in \cite{ghadimi2016accelerated,reddi2016proximal,huang2019faster}:
+
+\begin{equation}
+g_{\eta}(x) = \frac{1}{\eta}(x-\Po_{\eta,h}(x-\eta \nabla f(x)))
+\end{equation}
+If $h(x)$ is a constant function, the gradient mapping reduces to the ordinary gradient:
+$g_{\eta}(x) = \nabla F(x) = \nabla f(x)$. In this paper, we use the gradient mapping $g_{\eta}(x)$ as the convergence metric similar to
+\cite{ghadimi2016accelerated,reddi2016proximal,parikh2014proximal}.
+For problems with nonconvex structure, if $g_{\eta}(x) = 0$, the point $x$ is a stationary point \cite{parikh2014proximal}. With the aid of this notion, we can
+exploit the following definition as the convergence metric.
+\begin{definition}
+We call point $x\in \R^d$ as an $\epsilon$-accurate point, if $\E\norm{g_{\eta}(x)}^2 \leq \epsilon$, for some $\eta > 0$.
+\end{definition}
+
+\section{ZO Proximal Stochastic Method (ZO-PSVRG+)}
+\begin{algorithm}
+\caption{Zeroth-Order Proximal Stochastic Method}
+\begin{algorithmic}[1]
+\State\Input initial point $x_0$, batch size $\mathcal{B}$, minibatch size $b$, epoch length $m$, stepsize $\eta$
+\State\Initialize $\tilde{x}^0 = x_0$
+\For{ $s=1,2,\ldots, S$ }
+\State $x_0^s = \tilde{x}^{s-1}$
+\State $\hat{g}^s = \frac{1}{\mathcal{B}} \sum_{j\in I_{\mathcal{B}}} \hat{\nabla} f_j (\tilde{x}^{s-1})$
+\For{ $t=1,2,\ldots, m$ }
+\State Compute ${\hat{v}}_{t-1}^s$ according to \eqref{zo-grad-fo} or \eqref{zo-grad-fo-rand}
+\State $x_{t}^s= \Po_{\eta h}(x_{t-1}^s - \eta \hat{v}_{t-1}^s)$
+\EndFor
+\State $\tilde{x}^{s} = x_m^s$
+ \EndFor
+ \State\Output $\hat{x}$ chosen uniformly from $\{x_{t}^s\}_{t\in [m], s\in [S]}$
+\end{algorithmic}
+\label{APGnonconvex-Algo}
+\end{algorithm}
+The main idea in variance-reduced algorithms is to construct an additional sequence $\tilde{x}^{s-1}$ at which the full gradient is computed for obtaining  a revised stochastic gradient estimate
+\begin{equation}\label{grad-fo}
+{{v}}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left({\nabla} f_{i}(x_{t-1}^s)-{\nabla} f_{i}(\tilde{x}^{s-1})\right)+{g}^s
+\end{equation}
+where ${{v}}_{t-1}^s$ represents the gradient estimate at $x_{t-1}^s$ and  ${g}^s= \frac{1}{\mathcal{B}}\sum_{i\in I_{\mathcal{B}}}{\nabla} f_{i}(\tilde{x}^{s-1})$. We study a proximal stochastic gradient algorithm based on variance reduced approach of ProxSVRG in  \cite{xiao2014proximal,reddi2016proximal,li2018simple}.
+The description of ZO-PSVRG+ is presented in Algorithm \ref{APGnonconvex-Algo}. Our method has two types of random sampling. In the outer iteration, we calculate the gradient consisting of $\mathcal{B}$ samples. In the inner iteration, we randomly  choose a minibatch of samples of size $b$ to approximate  gradient over the minibatch. We call $\mathcal{B}$ and $b$, batch and  minibatch size, respectively. 
+In our ZO framework, the mix gradient \eqref{grad-fo} is estimated by applying only function evaluations, given by
+\begin{equation}\label{zo-grad-fo}
+{\hat{v}}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left(\hat{\nabla} f_{i}(x_{t-1}^s)-\hat{\nabla} f_{i}(\tilde{x}^{s-1})\right)+\hat{g}^s
+\end{equation}
+or 
+\begin{equation}\label{zo-grad-fo-rand}
+{\hat{v}}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left(\hat{\nabla}_r f_{i}(x_{t-1}^s, u_i)-\hat{\nabla}_r f_{i}(\tilde{x}^{s-1}, u_i)\right)+\hat{g}^s
+\end{equation}
+where $\hat{g}^s= \frac{1}{\mathcal{B}}\sum_{i\in I_{\mathcal{B}}}\hat{\nabla} f_{i}(\tilde{x}^{s-1})$,   $\hat{\nabla} f_{i}$ is a ZO gradient approximation using CoordSGE and $\hat{\nabla}_r f_{i}$ is a ZO gradient estimate using RandSGE.  We let ZO-PSVRG+ and ZO-PSVRG+ (RandSGE) denote Algorithm \ref{APGnonconvex-Algo} with gradient estimation \eqref{zo-grad-fo} and 
+\eqref{zo-grad-fo-rand}, respectively. 
+Note that, $\E_{I_b}[\hat{v}_{t-1}^s] = \hat{\nabla} f(x_{t-1}^s) \neq {\nabla} f(x_{t-1}^s)$, i.e., this stochastic gradient is a biased approximation of the true gradient.
+In other words, the unbiased assumption on gradient approximates utilized in ProxSVRG \cite{reddi2016proximal,li2018simple} is no longer valid. Note that the biased ZO gradient estimation yields a fundamental challenge in analyzing ZO-PSVRG+. It means that adjusting the similar concepts from ProxSVRG to zeroth-order algorithm \ref{APGnonconvex-Algo} is not effortless and requires an elaborated analysis of ZO-PSVRG+. To tackle this issue, we derive an upper bound for the variance of the gradient approximation $\hat{v}_t^s$ by selecting an appropriate stepsize $\eta$ and smoothing parameter $\mu$ to control
+variance of gradient estimation which is discussed later.
+
+The other major difference of our ZO-PSVRG+  and ZO-ProxSVRG is that we avoid the evaluation of the total gradient for each epoch, i.e., the number of samples $\mathcal{B}$ is not necessarily equal to $n$ (see Line 5 of Algorithm \ref{APGnonconvex-Algo}).  If $\mathcal{B} = n$, ZO-PSVRG+ is equivalent to ZO-ProxSVRG, however, our convergence studies yield a novel analysis for ZO-ProxSVRG-Coord (i.e, $\mathcal{B} = n$). In the next section, we will carefully study the convergence of ZO-PSVRG+ under different settings.
+
+\section{Convergence Analysis}
+Now, we provide some
+minimal assumptions for problem \eqref{problem} as demonstrated in the sequel:
+\begin{assumption}\label{Lip-Zoo}
+For $\forall i\in [n]$, gradient of the function $f_i$ is Lipschitz continuous with a Lipschitz constant $L > 0$, such that 
+\[
+\norm{\nabla f_i(x) - \nabla f_i(y)}\leq L \norm{x-y},\,\,\forall x,y\in\R^d
+\]
+\end{assumption}
+
+\begin{assumption}\label{Var-Zoo}
+For $\forall x\in\R^d$, $\E\left[\norm{\hat{\nabla} f_i(x) - \hat{\nabla} f(x)}^2\right] \leq \sigma^2$, where $\sigma > 0$ is a constant and $\hat{\nabla} f_i(x)$ is a CoordSGE gradient approximation of $\nabla f_i(x)$.
+\end{assumption}
+Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo} are standard assumptions applied in SZO optimization. 
+
+The first assumption is for the convergence studies of the zeroth-order algorithms \cite{ghadimi2016accelerated,nesterov2017random,liu2018zeroth}. The second assumption specifies bounded variance for zeroth-order gradient approximations \cite{lian2016comprehensive,liu2018stochastic,liu2018zeroth}. 
+Assumption \ref{Var-Zoo} is essential in order to obtain a convergence result independent of $n$.
+Note that due to the error estimation for CoordSGE, this assumption is equivalent to the bounded  variance of true gradients. 
+
+Assumption \ref{Var-Zoo} is weaker than the assumption of bounded gradients in \cite{liu2017zeroth,hajinezhad2019zone},
+while, we are capable to analyze the more complicated problem \eqref{problem} involving a nonsmooth part and obtain faster convergence rates. Note that according to the error estimation for CoordSGE, this assumption is equivalent to the bounded  variance of true gradients.
+Below, we start by deriving an upper bound for the variance of estimated gradient $\hat{v}_{t-1}^s$ based on CoordSGE. 
+\begin{lemma}\label{var-estimate-lem}
+Given the mix gradient estimation $\hat{v}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left(\hat{\nabla} f_{i}(x_{t-1}^s)-\hat{\nabla} f_{i}(\tilde{x}^{s-1})\right)+\hat{g}^s$ with $\hat{g}^s = \frac{1}{\mathcal{B}} \sum_{j\in I_{\mathcal{B}}} \hat{\nabla} f_j (\tilde{x}^{s-1})$, the following inequality holds. 
+\begin{align}
+\E&\left[\eta\norm{\nabla f(x_{t-1}^s)-{\hat{v}_{t-1}^s}}^2\right] \leq  \frac{6\eta L^2}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]\notag\\
+&+ 2\frac{I(\mathcal{B} < n)\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7 L^2 d^2 \mu^2}{2}
+\end{align}
+where $I(A) = 1$ if the scenario $A$ occurs and $0$ otherwise.
+\end{lemma}
+
+Lemma \ref{var-estimate-lem} provides an upper bound for the variance of $\hat{v}_{t-1}^s$.  We will show later that the points $x_{t-1}^s$ and $\tilde{x}^{s-1}$ both will converge to the same stationary point.  This results in reducing the variance of stochastic gradient, however the variance is not totally diminished due to the zeroth-order gradient estimation and the variance of the gradient over batch.
+
+Blow we present the counterpart of Lemma \ref{var-estimate-lem} for the mix gradient estimation in \eqref{zo-grad-fo-rand}.
+\begin{lemma}\label{RandSGE-var-estimate-lem}
+Given the mix gradient estimation $\tilde{v}_{t-1}^s = \frac{1}{b} \sum_{i\in I_b}\left(\hat{\nabla}_r f_{i}(x_{t-1}^s)-\hat{\nabla}_r f_{i}(\tilde{x}^{s-1})\right)+\hat{g}^s$ with $\hat{g}^s = \frac{1}{\mathcal{B}} \sum_{j\in I_{\mathcal{B}}} \hat{\nabla} f_j (\tilde{x}^{s-1})$, the following inequality holds. 
+\begin{align}
+\E&\left[\eta\norm{\nabla f(x_{t-1}^s)-{\tilde{v}_{t-1}^s}}^2\right] \leq  \frac{6\eta L^2 d}{b}\E\left[\norm{x_{t-1}^s-\tilde{x}^{s-1}}^2\right]\notag\\
+&+ 2\frac{I(\mathcal{B} < n)\eta \sigma ^2}{\mathcal{B}}+\eta \frac{7L^2 d^2 \mu^2}{2}
+\end{align}
+\end{lemma}
+\subsection{Analysis for ZO-PSVRG+}
+In Theorem \ref{noncon-zoo-coord}, we focus on the convergence rate of ZO-PSVRG+ and provide some corollaries.
+
+\begin{theorem}\label{noncon-zoo-coord}
+Suppose Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo} hold, and the ZO gradient estimator \eqref{zo-grad-fo} for mix gradient $\hat{v}_k$ is used. The output $\hat{x}$ of Algorithm \ref{APGnonconvex-Algo} satisfies
+\begin{align}
+\E[\norm{g_{\eta}(\hat{x})}^2] & \leq \frac{6\left(F(x_0) - F({x}^*)\right)}{\eta Sm}\notag\\
+& + \frac{I(\mathcal{B} < n)12\sigma ^2}{\mathcal{B}}+21{L^2 d^2 \mu^2}\notag
+\end{align}
+where $\eta = \min\{\frac{1}{8L}, \frac{\sqrt{b}}{12mL}\}$ denotes the stepsize.
+\end{theorem}
+In contrast to the convergence rate of SVRG in \cite{reddi2016proximal}, Theorem \ref{noncon-zoo-coord} presents two
+extra error terms $\frac{I(\mathcal{B} < n)\sigma ^2}{\mathcal{B}}$ and $O(L^2d^2\mu^2)$, related to the batch gradient estimation $\mathcal{B} < n$ and the use of SZO gradient approximations, respectively. The error related to $\mathcal{B} < n$ is removed only when $\mathcal{B} = n$. Note that the stepsize  $\eta$ depends on the epoch length $m$, and the minibatch size $b$. 
+
+The proof for Theorem \ref{noncon-zoo-coord} is
+significantly different from the proofs in the existing literature. For instance, the convergence analysis for ZO-SVRG-Coord and ZO-ProxSVRG/SAGA use the notion of Lyapunov function to show that the accumulated gradient mapping decreases with epoch $s$. However, in our analysis we explicitly prove that $F(x^s)$ decreases by employing the inequalities from Lemma \ref{var-estimate-lem}. On the other hand, our convergence result is valid for a wide range of minibatch sizes and any epoch size $m$, while the analysis for ZO-SVRG-Coord is valid only for specific values of $m$ with a complicated  setting for parameter selection.
+
+In order to obtain an explicit description for the  parameters in Theorem \ref{noncon-zoo-coord}, the next corollary demonstrates the convergence rate of ZO-PSVRG+ in terms of precision at the solution $\hat{x}$.
+ \begin{corollary}\label{corr11}
+Let the batch size $\mathcal{B} = \min\{12\sigma^2/\epsilon, n\}$ and $\mu \leq \frac{\sqrt{\epsilon}}{5{dL}}$ denote the smoothing parameter. Suppose $\hat{x}$ in Algorithm \ref{APGnonconvex-Algo} is an $\epsilon$-accurate solution for problem \eqref{problem}. Recalling that CoordSGE require $O(d)$ function queries, the number of SZO calls is at most 
+\begin{align}
+d(S\mathcal{B}+Smb) &= 6d \left(F(x_0) - F({x}^*)\right) (\frac{\mathcal{B}}{\epsilon\eta m}+\frac{b}{\epsilon\eta})\notag\\
+& = O\left(\frac{\mathcal{B}d}{\epsilon\eta m}+\frac{bd}{\epsilon\eta}\right)\label{SZO-call-nocon}
+\end{align}
+and the number of PO calls is equal to $T = Sm = \frac{6\left(F(x_0) - F({x}^*)\right)}{\epsilon\eta} = O\left(\frac{1}{\epsilon\eta}\right)$. In particular, by setting $m=\sqrt{b}$ and $\eta = \frac{1}{12L}$, the number of SZO calls is at most 
+\begin{align}
+72&d L (F(x_0)-F(x^*))\left(\frac{\mathcal{B}}{\epsilon\sqrt{b}}+\frac{b}{\epsilon}\right)\notag\\
+& = O\left(s_n\frac{d}{\epsilon \sqrt{b}}+\frac{bd}{\epsilon}\right)\label{SZO-call-par-nocon}
+\end{align}
+where $s_n = \min\{n,\frac{1}{\epsilon}\}$ and the number of PO calls equals to $T = Sm = S\sqrt{b} = \frac{72 L \left(F(x_0) - F({x}^*)\right)}{\epsilon} = O\left(\frac{1}{\epsilon}\right)$. 
+\end{corollary}
+Corollary \ref{corr11} indicates that if the smoothing parameter $\mu$ is sufficiently small and the batch size $\mathcal{B}$ is large enough, then the errors induced from zeroth-order estimation and batch gradient approximation will decrease, leading to a non-dominant term in the convergence rate of ZO-PSVRG+. Indeed, the error term induced by batch size  is eliminated only when $\mathcal{B} = n$  (i.e., $I(\mathcal{B} < n) = 0$). 
+In
+this case, Step 5 of Algorithm \ref{APGnonconvex-Algo} becomes $\hat{g}^s = \hat{\nabla} f(\tilde{x}^{s-1})$ and consequently ZO-PSVRG+ changes to ZO-ProxSVRG. Note that equation \eqref{SZO-call-par-nocon} indicates that a large batch $\mathcal{B}$  for $\mathcal{B} \neq n$ indeed reduces the error inherited by the variance of batch gradient and improves the convergence of ZO-PSVRG+. In summation, if the smoothing parameter and batch size are chosen properly, we derive the error term $O(1/\epsilon)$, which is better than the convergence rate of the state-of-the-art SZO algorithms by the factor $\frac{1}{d}$. Moreover, ZO-PSVRG+ uses much less SZO oracle calls compared to the methods listed in Table \ref{table-compare}. It is worth mentioning that the stepsize $\eta$ in Theorem \ref{noncon-zoo-coord} has the milder dimension-dependency than the existing SZO algorithms in Table \ref{table-compare}. 
+\subsection{Analysis for ZO-PSVRG+ (RandSGE)}
+In this section, we will study the convergence of ZO-PSVRG+ (RandSGE) under different settings using Lemma \ref{RandSGE-var-estimate-lem}. In particular, in the following theorem, we prove that ZO-PSVRG+ (RandSGE) improves the convergence rate and the function query complexity of the existing SZO methods.
+\begin{theorem}\label{noncon-zoo-rand}
+Suppose Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo} hold, and the coordinate gradient estimator \eqref{zo-grad-fo-rand} is used to compute the mix gradient $\hat{v}_k$. The output $\hat{x}$ of Algorithm \ref{APGnonconvex-Algo} satisfies
+  \begin{align}
+\E[\norm{g_{\eta}(\hat{x})}^2] & \leq \frac{6\left(F(x_0) - F({x}^*)\right)}{\eta Sm}\notag\\
+&  + \frac{I(\mathcal{B} < n)12\sigma ^2}{\mathcal{B}}+21{L^2 d^2 \mu^2}\label{eq-noncon-zoo-rand}
+ \end{align}
+where $\eta = \min\{\frac{1}{8L}, \frac{\sqrt{b}}{12mL\sqrt{d}}\}$ denotes the stepsize.
+\end{theorem}
+\begin{corollary}\label{corr11-rand}
+We Let the batch size $\mathcal{B} = \min\{12\sigma^2/\epsilon, n\}$ and $\mu \leq \frac{\sqrt{\epsilon}}{5{dL}}$ denote the smoothing parameter. Suppose $\hat{x}$ returned by Algorithm \ref{APGnonconvex-Algo} is an $\epsilon$-accurate solution for problem \eqref{problem}. Recalling that CoordSGE and RandSGE require $O(d)$ and $O(1)$ function queries respectively, the number of SZO calls is at most 
+\begin{align}
+(dS\mathcal{B}+Smb) & = 6 \left(F(x_0) - F({x}^*)\right) (\frac{\mathcal{B}d}{\epsilon\eta m}+\frac{b}{\epsilon\eta})\notag\\
+& = O\left(\frac{\mathcal{B}d}{\epsilon\eta m}+\frac{b}{\epsilon\eta}\right)\label{SZO-call-nocon-rand}
+\end{align} 
+and the number of PO calls is equal to $T = Sm = \frac{6\left(F(x_0) - F({x}^*)\right)}{\epsilon\eta} = O\left(\frac{1}{\epsilon\eta}\right)$. In particular, by setting $m=\sqrt{b}$ and $\eta = \frac{1}{12L\sqrt{d}}$, the number of SZO calls is at most 
+\begin{align}
+72 &L (F(x_0)-F(x^*))\left(\frac{\mathcal{B}d\sqrt{d}}{\epsilon\sqrt{b}}+\frac{b\sqrt{d}}{\epsilon}\right)\notag\\
+& = O\left(s_n\frac{d\sqrt{d}}{\epsilon \sqrt{b}}+\frac{b\sqrt{d}}{\epsilon}\right)\label{SZO-call-par-nocon-rand}
+\end{align}
+where $s_n = \min\{n,\frac{1}{\epsilon}\}$ and the number of PO calls equals to $T = Sm = S\sqrt{b} = \frac{72 L \sqrt{d}\left(F(x_0) - F({x}^*)\right)}{\epsilon} = O\left(\frac{\sqrt{d}}{\epsilon}\right)$. 
+\end{corollary}
+\begin{remark}
+The results from Theorem \ref{noncon-zoo-rand} improves the convergence rate $O(\frac{d{n}^{2/3}}{T})$ for ZO-SVRG-Coord-Rand \cite{ji2019improved} in single-minibatch setting  and   with the stepsize $O(\frac{1}{dn^{2/3}})$ to the convergence rate of $O(\frac{\sqrt{d}}{T})$
+with the stepsize $O(\frac{1}{\sqrt{d}})$. Also note that ZO-SVRG-Coord-Rand in single-minibatch setting requires that the number of inner iterations is equal to $m = d$. If we
+choose $b = d m^2$ for ProxSVRG+, then $\eta$ reduces to $O(1)$ with the convergence rate $O(\frac{1}{\epsilon})$ which generalizes the best result for ZO-SVRG-Coord-Rand that is only achieved by selecting $m = s_n^{1/3}$.
+\end{remark}
+\section{Convergence Under PL Condition}
+In this section, we show the linear convergence of  ProxSVRG+ under Polyak-Łojasiewicz (PL) assumption \cite{polyak1963gradient}.
+The classic structure of PL condition is, for all $x\in\R^d$
+\begin{equation}
+\norm{\nabla f(x)}^2 \geq 2\lambda (f(x) - f^*)
+\end{equation}
+where $\lambda >0$ and $f^*$ denotes the optimal function value. This condition specifies the rate of increasing of the loss function in a vicinity of optimal solutions. It is important to note that if $f$ is $\lambda$-strongly convex then $f$ fulfills the PL condition. We will prove that the complexity of ZO-PSVRG+ (Algorithm \ref{APGnonconvex-Algo}) under PL condition will be improved.
+Due to the presence of the nonsmooth term $h(x)$ in problem \eqref{problem}, we utilize the gradient projection to characterize a more generic form of PL condition as follows, 
+\begin{equation}\label{zo-pl-cond}
+\norm{g_{\eta}(x)}^2 \geq 2\lambda (F(x) - F^*)
+\end{equation}
+for some $\lambda >0$ and for all $x\in\R^d$. Note that if $h(x)$ is a constant function, the gradient projection changes to $g_{\eta}(x) = \nabla f(x)$.
+The PL condition has been throughly investigated  in \cite{karimi2016linear} where the authors proved that PL condition is milder than a large class of  functions. The revised PL condition \eqref{zo-pl-cond} is controversially natural and studied in several papers for problems with nonconvex nonsmooth setting, e.g., \cite{li2018simple}. A zeroth-order algorithm under PL condition for smooth functions has been analyzed in \cite{ji2019improved}.
+\subsection{ZO-PSVRG+ Under PL Condition}
+In this section similarly as Theorem \ref{noncon-zoo-coord}, we show the convergence result of ZO-PSVRG+ (Algorithm \ref{APGnonconvex-Algo}) under PL-condition. In particular, we provide a generic analysis for enhancing the convergence rate for existing SZO algorithms for functions satisfying PL condition by applying variance reduced techniques. It is worth noting that for functions satisfying PL condition (i.e. \eqref{zo-pl-cond} holds), ZO-PSVRG+ can immediately use the final iteration $\tilde{x}^S$
+as the output point rather than using a randomly chosen
+$\hat{x}$. 
+The following theorem provides the convergence guarantee for ZO-PSVRG+ under PL condition.
+
+\begin{theorem}\label{PL-Zoo}
+Let Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo} hold, and  ZO gradient estimator \eqref{zo-grad-fo} for mix gradient $\hat{v}_k$ is  used  in  Algorithm \ref{APGnonconvex-Algo} with stepsize $\eta \leq \min\{\frac{1}{8L}, \frac{\sqrt{\gamma b}}{12 m L }\}$ where $\gamma = 1-\frac{2\lambda\eta}{3} m-\frac{\lambda\eta}{3} > 0$. Then 
+\begin{align}
+\E[F(\tilde{x}^S) - {F}^*] & \leq   \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[F(\tilde{x}^0) - {F}^*]\notag\\
+& + \frac{6I(\mathcal{B} < n) \sigma ^2}{\lambda \mathcal{B}}+\frac{21 L^2 d^2 \mu^2}{2\lambda}\label{PL-eq-error}
+\end{align}
+\end{theorem}
+Theorem \ref{PL-Zoo} shows that if the batch size and smoothing parameter are  appropriately chosen, ZO-PSVRG+ has a dominant linear convergence rate without restart. Further, comparing with Theorem \ref{noncon-zoo-coord}, it is evident from \eqref{PL-eq-error} that the  error term $\frac{6I(\mathcal{B} < n) \sigma ^2}{\mathcal{B}}+\frac{7L^2 d^2 \mu^2}{2}$ is amplified by the factor $1/\lambda$. Thus, the error induced by these terms will be improved if $\lambda >> 1$.
+
+We next explore the number of ZO queries in ZO-PSVRG+ under PL condition to obtain an $\epsilon$-accurate solution, as formalized in Corollary \ref{PL-Zo-Cor}. 
+\begin{corollary}\label{PL-Zo-Cor}
+Suppose the final iteration point $\tilde{x}^S$ in Algorithm \ref{APGnonconvex-Algo} satisfies $\E[F(\tilde{x}^S) - F^*]\leq \epsilon$ under PL condition. Under Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo}, we let batch size $\mathcal{B} = \min\{\frac{6\sigma^2}{\lambda\epsilon},n\}$ and  $\mu \leq \frac{\sqrt{\lambda\epsilon}}{4 L d}$ denote the smoothing parameter. Then, The number of SZO calls is bounded by
+\[
+d(S\mathcal{B}+Smb) = O(\frac{s_n d}{\lambda\eta m}\log\frac{1}{\epsilon}+\frac{b d}{\lambda\eta}\log\frac{1}{\epsilon})
+\]
+where $s_n = \min \{n,\frac{1}{\lambda \epsilon}\}$.
+The number of PO calls equals to the total number of iterations $T$ which is bounded by
+\[
+ T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})
+\]
+In particular, given the setting  $m=\sqrt{b}$ and $\eta = \frac{\sqrt{\gamma}}{12 L}$, the number of SZO calls  simplifies to 
+$d(S\mathcal{B}+Smb) = O(\frac{\mathcal{B}d}{\lambda\sqrt{\gamma} m}\log\frac{1}{\epsilon}+\frac{bd}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$.
+\end{corollary}
+
+Here we provide some insights on Corollary \ref{PL-Zo-Cor}. It actually indicates that leveraging the PL condition improves the dominant convergence rate, when the error of
+order $O(1/\epsilon)$ in Corollary \ref{corr11} is improved to $O(\log(1/\epsilon))$, resulting to a significant speed up.
+Compared to the sub-linear convergence rate for ZO algorithms in \cite{duchi2015optimal,nesterov2017random,liu2018zeroth}, the convergence performance of PSVRG+ under PL condition has a global linear convergence rate and therefore requires lower number of ZO oracle calls. 
+This also indicates that if ZO-PSVRG+ is initialized in a generic non-convex domain, the rate of convergence can be automatically accelerated because of entering in PL area. It is an improved result compared with \cite{reddi2016stochastic} where the authors applied PL-SVRG/SAGA to restart ProxSVRG/SAGA in order to obtain a linear convergence rate under PL condition. On the other hand, note that the convergence analysis under PL condition in \cite{ji2019improved} has complex coupling structures which makes its application from practical perspective very difficult, while our proof is simple and the parameters are explicitly specified.
+
+\begin{remark}
+Compared to Theorem \ref{noncon-zoo-coord}, the convergence rate of ZO-PSVRG+ in Theorem \ref{PL-Zoo} exhibits additional parameter $\gamma$ for parameter selection due to the use of PL condition. 
+By assuming the condition number $\lambda/L\leq \frac{1}{n^{1/3}}$ and choose $m = n^{1/3}$ and $\eta = \frac{\rho}{L}$ with $\rho\leq \frac{1}{2}$, the definition of $\gamma$ yields  
+\begin{align}
+\gamma &= 1-\frac{2\lambda\eta}{3} m-\frac{\lambda\eta}{3}\notag \\
+& \geq  1 - \rho \geq \frac{1}{2}\label{eq54}
+\end{align}
+According to Theorem \ref{PL-Zoo}, equation \eqref{eq54} implies $\eta \leq \min\{\frac{1}{8L}, \frac{\sqrt{b}}{12\sqrt{2} m L }\}$. 
+Hence, choosing $b = m^{2}$ implying the constant stepsize  $\eta \leq \frac{1}{12\sqrt{2} L}$.
+Note that the assumption $\lambda/L \leq \frac{1}{{n}^{1/3}}$ on condition number is milder than the assumption $\lambda/L < \frac{1}{\sqrt{n}}$ in \cite{reddi2016proximal}.
+\end{remark}
+\subsection{ZO-PSVRG+ (RandSGE) Under PL Condition}
+In the following theorem, we explore if ZO-PSVRG+ (RandSGE) achieves a linear convergence rate when it enters a local landscape where the loss function satisfying the PL condition.
+\begin{theorem}\label{PL-Zoo-rand}
+Let Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo} hold, and  ZO gradient estimator \eqref{zo-grad-fo-rand} for mix gradient $\hat{v}_k$ is used in
+ Algorithm \ref{APGnonconvex-Algo} with stepsize $\eta \leq \min\{\frac{1}{8L}, \frac{\sqrt{\gamma b}}{12 m L \sqrt{d}}\}$ where $\gamma = 1-\frac{2\lambda\eta}{3} m-\frac{\lambda\eta}{3} > 0$. Then 
+\begin{align}
+\E[F(\tilde{x}^S) - {F}^*] & \leq   \left(1-\frac{\lambda\eta}{3}\right)^{Sm} \E[F(\tilde{x}^0) - {F}^*]\notag\\
+&  + \frac{6I(\mathcal{B} < n) \sigma ^2}{\lambda\mathcal{B}}+\frac{21 L^2 d^2 \mu^2}{2\lambda}\label{PL-eq-error-rand}
+\end{align}
+\end{theorem}
+
+\begin{corollary}\label{PL-Zo-Cor-rand}
+Suppose the final iteration point $\tilde{x}^S$ in Algorithm \ref{APGnonconvex-Algo} satisfies $\E[F(\tilde{x}^S) - F^*]\leq \epsilon$ under PL condition. Under Assumptions \ref{Lip-Zoo} and \ref{Var-Zoo}, we let batch size $\mathcal{B} = \min\{\frac{6\sigma^2}{\lambda\epsilon},n\}$ and the smoothing parameter $\mu \leq \frac{\sqrt{\lambda\epsilon}}{4 L d}$. The number of SZO calls is bounded by
+\[
+(S\mathcal{B}d+Smb) = O(\frac{s_n d}{\lambda\eta m}\log\frac{1}{\epsilon}+\frac{b }{\lambda\eta}\log\frac{1}{\epsilon})
+\]
+where $s_n = \min \{n,\frac{1}{\lambda \epsilon}\}$.
+The number of PO calls equals to the total number of iterations $T$ which is bounded by
+\[
+T = Sm = O(\frac{1}{\lambda\eta}\log\frac{1}{\epsilon})
+\]
+In particular, given the setting  $m=\sqrt{b}$ and $\eta = \frac{\sqrt{\gamma}}{12 L\sqrt{d}}$, the number of SZO calls  simplifies to 
+$(S\mathcal{B}d+Smb) = O(\frac{\mathcal{B}d\sqrt{d}}{\lambda\sqrt{\gamma} m}\log\frac{1}{\epsilon}+\frac{b\sqrt{d}}{\lambda\sqrt{\gamma}}\log\frac{1}{\epsilon})$.
+\end{corollary}
+
+\begin{remark}
+Analysis for ZO-SPIDER-Coord in \cite{ji2019improved} has no single-sample version for functions satisfying PL condition and the authors only provided a rate of convergence for large minibatch sizes with an involved parameter selection. In addition, it should be noted that by selecting  $b = O(d)$ in Theorem \ref{PL-Zoo-rand}, the stepsize $\eta$ reduces to $O(1)$ with $O(s_n d \log \frac{1}{\epsilon})$ SZO queries. 
+\end{remark}
+\input{experiments}
+\section{Conclusion}
+In this paper, we developed a novel analysis for two zeroth-order variance-reduced proximal algorithms named 
+ZO-PSVRG+ and ZO-PSVRG+ (RangSGE). We prove that ZO-PSVRG+ improves and generalizes the analysis for several well-known convergence
+results, e.g., ZO-ProxSVRG. Compared with ZO-SVRG-Coord-Rand \cite{ji2019improved}, our analysis allows single minibatch size and larger
+stepsizes while improving the function query complexity. Moreover, for nonconvex functions under Polyak-Łojasiewicz condition, we prove that ZO-PSVRG+
+obtains global linear convergence rate for a wide range of minibatch sizes without restart.  As a byproduct, our analysis provides the first step towards improving the query complexity of ZO methods for nonconvex optimization. Experimental results demonstrate the effectiveness of our novel approaches.

@@ -1,0 +1,22 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{introduction to the problem}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Background in research}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Reason to use zeroth\205order techniques}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Problem with existing methods}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Compare with other methods}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.5}{what we want to do}{section.2}% 7
+\BOOKMARK [1][-]{section.3}{Main Challenge}{}% 8
+\BOOKMARK [1][-]{section.4}{existing works}{}% 9
+\BOOKMARK [1][-]{section.5}{Main contributions}{}% 10
+\BOOKMARK [1][-]{section.6}{Related Works}{}% 11
+\BOOKMARK [2][-]{subsection.6.1}{Motivation at the end of related works}{section.6}% 12
+\BOOKMARK [2][-]{subsection.6.2}{Zeroth-order \(ZO\) gradient estimators}{section.6}% 13
+\BOOKMARK [2][-]{subsection.6.3}{Accelerated Proximal Gradient Method}{section.6}% 14
+\BOOKMARK [1][-]{section.7}{Accelerated Proximal Gradient Method}{}% 15
+\BOOKMARK [2][-]{subsection.7.1}{reason to avoid full gradient calculation}{section.7}% 16
+\BOOKMARK [1][-]{section.8}{Convergence Analysis}{}% 17
+\BOOKMARK [2][-]{subsection.8.1}{Gradient Mapping}{section.8}% 18
+\BOOKMARK [2][-]{subsection.8.2}{Convergence}{section.8}% 19
+\BOOKMARK [1][-]{section.9}{Convergence Under PL Condition}{}% 20
+\BOOKMARK [1][-]{section.10}{Strongly Convex with Momentum Acceleration}{}% 21
+\BOOKMARK [1][-]{section.11}{Appendix}{}% 22

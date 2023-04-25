@@ -1,0 +1,24 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{introduction to the problem}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Background in research}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Reason to use zeroth\205order techniques}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Problem with existing methods}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Compare with other methods}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.5}{what we want to do}{section.2}% 7
+\BOOKMARK [1][-]{section.3}{Main Challenge}{}% 8
+\BOOKMARK [1][-]{section.4}{existing works}{}% 9
+\BOOKMARK [1][-]{section.5}{Main contributions}{}% 10
+\BOOKMARK [1][-]{section.6}{Related Works}{}% 11
+\BOOKMARK [2][-]{subsection.6.1}{Motivation at the end of related works}{section.6}% 12
+\BOOKMARK [1][-]{section.7}{Accelerated Proximal Gradient Method}{}% 13
+\BOOKMARK [2][-]{subsection.7.1}{Zeroth-order \(ZO\) gradient estimators}{section.7}% 14
+\BOOKMARK [2][-]{subsection.7.2}{Accelerated Proximal Gradient Method}{section.7}% 15
+\BOOKMARK [2][-]{subsection.7.3}{reason to avoid full gradient calculation}{section.7}% 16
+\BOOKMARK [1][-]{section.8}{New Methods}{}% 17
+\BOOKMARK [1][-]{section.9}{ZO-ProxSVRG}{}% 18
+\BOOKMARK [1][-]{section.10}{Convergence Analysis}{}% 19
+\BOOKMARK [2][-]{subsection.10.1}{Gradient Mapping}{section.10}% 20
+\BOOKMARK [2][-]{subsection.10.2}{Convergence}{section.10}% 21
+\BOOKMARK [1][-]{section.11}{Convergence Under PL Condition}{}% 22
+\BOOKMARK [1][-]{section.12}{Strongly Convex with Momentum Acceleration}{}% 23
+\BOOKMARK [1][-]{section.13}{Appendix}{}% 24
