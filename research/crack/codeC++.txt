@@ -1,0 +1,436 @@
+//----------------------------------how to define a boolean string?
+how do you get the size of string.
+how convert array members to int?
+----------------------------------
+
+how do you compute the string length?
+how do you sort the string? which libraries?
+how do yoy parse the string?
+how do you check if the string charachters are not equal?
+how do you initialize an integer array of size 256 to zero?
+how do you parse the array and add th occurance of charachter?
+how do you parse the array and remove the occurance of that character?
+how do you know if the occurances are balanced?
+how do you hard code the strings?
+
+----------------------------------
+
+how do you create a table of keys int?
+
+how do you parse a string with charachter inside the string? for(char &c phrase) {}
+how do you pass that charachter to a function? getCharNumber(const char & c) {int val = (int) c;}
+how to recognize if the letter is lower cased? if (a <= val && val <= z){return val - a;}
+how to iterate through the keys in the hash table? for(auto count : table) {}
+how to check if a number is odd or not? if(count % 2 == 1) {}
+how to check if something happen for he second time? foundHappen = False; if( somthing) if(foundHappen) {return false;} {foundHappen = true;}
+-----------------------------------
+how do you parse a string from backward? for(j = len - 1; j>=0; j--){}
+how do you assign two incrementor to array? i, j 
+how do you check if the string is not equal to specific charachter? if(str[j] != ' ') { str[i--]  = str[j];}
+how do you write if and else block? if(condition){} else{}
+how can replace one element in the array and decrement the index? str[i--] = '%'
+-----------------------------------
+how to check if the array elements are odd or even? if(str[i]%2){//odd} else{//even}
+how code ccheck the condition in if else situation? if(){} else if() {}
+how to increment the index idx in the array? ++frequency[idx];
+how to toggle the bit representing the respective char? int bitvector = 0; bitVector = toggle(bitVector, id); 
+how to toggle? you need one masek and one if else statement. if((bitVector & mask) == 0) // do or else // do and with not mask 
+or and and bitwise operation? a |= b; a &= ~b; 
+how to check if a single bit is set? b & (b - 1) == 
+how to return true or false through or statement? return (statement a || statement b);
+-----------------------------------
+how to declare strings? string a;
+how to choose the string has higher length? a = s1.length() > s2.length() ? s1 : s2;
+how to check is the length diffrence is higher than one? if (abs(len1 - len2) > 1) return false;
+how to parse a string with two indexes one for str1 and one for str2? for(int i = 0, int j = 0; i < len 1 && j < len2; )
+how to check if two strings are not equal in the certain charachter? if(a[i] != b[j]) { i++ // check if it is the second time
+it happend.} else {i++, j++;}
+abs is inside cmath? #include <cmath>
+count how many charachters are following eahc other and are similar?  for( size_t = 1; i <= len; i++) if( sttr[i-1] == str[i])
+++count; 
+how  to concatenate strings? out += str[i-1]; 
+how to change a number to a string? out += std::to_string(count);
+how to initialize empty string? std::string out{""};
+be careful about the edges and add the last element? out += str[len-1]; out += to_string(count);
+how to get the string from the input? cin >> str;
+-----------------------------------
+how to pass a 2 dimensional array to a function? func(int **metrix, int size)
+how to transpose a matrix? you need for loop, one parsing rows and one parsing columns for( int i = 0; i < N; i++)
+{for( int j = i+1; j < N; j++){} }
+how to swap the value of two variables? std::swap(a, b);
+how reverse the order of matrix? we need a for loop which goes only to half of the array: for( int i = 0; i < N/2; i++)
+std::swap(a[i], a[N-i-1]);
+how to parse only rows of matrix and pass it to a func? for( int i =0; i < N; i++) {func( Matrix[i], N);}
+how do you parse the matrix layer by layer? for( int i = 0; i < N/2; i++) for( int j = i; j < N - i- 1; j++)
+how to assign the element of array to a temporary variable? temp = matrix[i][j];
+left -> top? matrix[i][j] = matrix[N - j - 1][i];
+bottom -> left? matrix[N - j - 1][i] = matrix[N - i - 1][N - j - 1]
+right -> bottom? matrix[N - i - 1][N - j - 1] = matrix[j][N - i - 1]
+top -> right? matrix[j][N - i - 1] = temp
+how to define a 2D matrix? int **matrix = new int*[N]; for( int i = 0; i < N; i++) matrix[i] = new int[N];}
+-----------------------------------
+how to check if the first row contains zero? parse with for loop and compare each element with zero 
+for( int i = 0; i < N; i++) if(Matrix[0][i] == 0){ ifItHasZero = true;}
+flag if certain column contains zero? I need two for loops, if I hit zero, then Matrix[0][j] = 0;
+nullify that row if it contains zero? single for loop
+nulify that columns contains zero? single for loop over first row, if it ocntains zero, nulify that column.
+how to nullify specific col or row? pass matrix with col number and size, single for loop. 
+void nullifycol(int **matrix, int M, int col) { for( int i = 0; i < M; i++) Matrix[i][col] = 0;}
+-----------------------------------
+how to concatenate two string? std::string concts1 = s1 + s2;
+check if S2 is a substring of S1? S1.find(S2) != std::string::npos
+-----------------------------------
+how to remove duplicates from alinked list? use a hash map, space coplexity and time complexity O(n)
+how to define nodes of linked list? struct Node {int data; Node *next = nullptr;};
+what is the null pointer? nullptr
+how we insert a node in a linked list? void insert( Node * & head, int data){ Node *newnode = new Node; newnode->data = data; newnode->next
+ = head; head = newnode;}
+how to print the list? while(head) { cout << head->data << " --> "; head = head->next;}
+parse a linked list? while(curr) { curr = curr->next;}
+how to check if the nodes are duplicate? runner->next = runner->next->next;
+how to define a hashmap? #include<unordered_map> std::unordered_map<int, int> node_map;
+how to map linked list data to a hashtable? node_map[head->data] = 1;
+how to check if the data exist in the hashmap? node_map.find(a) != node_map.end()0;
+how to add key to the hashtable? check if the key is inside the hashtable, if it is not insert it.
+how we could remove the nodes from linked list? keep the curr pointer in preve and parsing as long as data are duplicate. prev->next = curr;
+how to parse over duplicates? while(curr && node_map.find(curr->data) != node_map.end()){ curr = curr->next;}
+how to create a linked list of nodes? Node *head = nullptr; for ( int i=0; i < 10; ++i) {insert(head, random_range(1,7));}
+-----------------------------------
+how to define the constructor in struct? struct Node {int data; Node* next = nullptr; Node(int d): data {d }, next { nullptr} };
+if you want to change the orginal value when we pass to the function, then pass by reference. void insert( Node * & head) { }
+how to initialize a new node with data in hand? Node *newNode = new Node(data); newNode->next = head; head = newNode;}
+how to delete a linked list? parse a linked list, delete one by one.
+structure of recursive calls on nodes in linked list? node* recursive(node* head){ recursive(head->next);}
+base case of recursive calls on linked list? if (head == nullptr) return nullptr;
+if we want to increment the variable during recursive call? node* recursive(node* head, int &i){ recursive(head->next, i); i = i+1;}
+return something in the middle of the recursive calls? if (i == k) return head;  return node;
+how to declare a pointer of type node? Node *node;
+how to have two pointer with the distace of k? define two pointer. keep one at the head. then increment the sencond pointer, define a counter to keep 
+track of the number of elements we parse. take care of edge case.
+what we need? a for loop, incrementor, two pointer
+how to initialize the incrementor? int i = 0;
+-----------------------------------
+how to delete the next node? take it, point the next pointer of the node to the next of next node.
+how to get the next node? Node nextNode = node->next;
+how to delete the next node? delete nextNode.
+-----------------------------------
+start with first node and add very thing bigger or equal to x at tail or smaller value at head? while{curr} if( curr->data < x){} else{}}
+how to have einitial head and tail somewhere? if (head == nullptr) {} if(tail == nullptr) {}
+how to connect headlist to the tail list? head->next = tailInitial; tail->next = nullptr;
+----------------------------------
+how to check if the pointer is nullptr? if(node){}
+the format of recursive call: Node * recurs( node* list1, node* list2, int carry) {node* resultNode = new Node(value %10);
+resultNode->next = recurs( list1 ? list1->next : nullptr, list2 ? list2->next : nullptr, value// 10);}
+parse on two lists of different length while( list1 || list2) { if(list1) list1 = list1->next; if(list2) list2 = list2->next;}
+how to insert a new node for each addition? Node *tmp =  new Node(value);
+how to find the length of a node? int length(Node* head) {int len = 0; while(head) { len++; head = head->next;} return len;}
+how to reverse a linked list? while(head){ newHead = head->next; head->next = newHead; newHead = head; head = newNode; }
+how to define a stack of node* in c++? std:stack<node*> nodeStack;
+how to push the first half of linked list to stack? we need two pointer. one moves one by one and one moves
+twice as fast of the first one. 
+how to move two steps each time? ptr1 = ptr1->next->next; 
+how to push the pointer to the stack? nodeStack(ptr2); ptr2 = ptr2->next;
+how to check if the stack is empty? nodeStack.empty()
+how to get the top node in the stack? node* curr = nodeStack.top()
+how to pop a node from a stack? nodeStack.pop()
+how to recognize if the list is of odd length? if( ptr1 && ptr1->next == nullptr) {ptr2 = ptr2->next;}
+----------------------------------
+how to figure oout the bigger list and the smaller? node* ptr1 = (len1 >  len2 ) ? ptr1 : ptr2;
+move the difference between two? we need iterator to keep track of the difference. 
+when the intersect happen? while(ptr1 && ptr2) { if(ptr1 == ptr2) return ptr1; ptr1 = ptr1->next; ptr2 = ptr2->next;}
+----------------------------------
+how to detect cycle in a linked list? using fast and slow pointer
+how to move fast and slow pointers? fastPtr = fastPtr->next->next; slowPtr = slowPtr->next;
+how to parse linked list? while(slowPtr && fastPtr && fastPtr->next){}
+how to insert node to the end of the linked list? node* temp = head; while( temp->next != nullptr) {temp = temp->next;} temp->next = newNode;
+partition quicksort idea? node * partition = head->next; head = head->next; while(head) { if( p > head->val) {
+swap(head, partition); prevP = partition; partition = partition->next;
+}
+head = head->next;}
+----------------------------------
+how to define a class? class A {public: A(int data, A *next); private: int data; A *next; A *max;};
+how to declare the functions in .cpp? #include "A.h" A:A( int data, A *next) { this->data = data; this->next = next}
+how to include class A in class B? #include "A.h" class B {public: B(); private: };
+how to define the class Graph? class Graph {public: int v; //adjacency list, //constructor Graph(int v); void 
+addEdge(int x, int y); bool isRoute(int x, int y); };
+how to define a list in C++? vector<int> *adj; adj = new vector<int>[V]; adj[x].push_back(y);
+how to define a graph? consider a graph of several numbers which are connected.
+how to define a vector to see if I visit the nodes?
+how to do bridth-first search? we need a queue, a while loop to go through the queue, and for each node we pop form the queue 
+we need a for loop to go through the nodes that are adjacent to the node. for each node, we look if we have visited the node 
+before, if it is not visited we push to the queue.
+what is the list to visiting nodes? a vector of size the number of adjacencies. connected to each node, true of flase if the node has
+seen before, vector<bool> visited(V, flase);
+we need a queue to push the nodes queue<int> q; q.push(x)
+we need a queue while(!q.empty()){//get the top member in queue; //if it is y we are done //pop the queue //put the visited element
+as visited //get the size of the adjacency list linked to current memeber // do a for loop over all the nodes adjacent to the current
+node //push all the nodes which are not visited to the queue.
+ }
+{curr = q.top; if (curr = y) {return true;} q.pop(); visited[q] = true; size_n = adj[c].size(); for(int i=0; i < size_n; i++)
+{if(!visited[adj[c][i]]) q.push(adj[c][i]);}}
+----------------------------------
+how to implement each node in the tree? we define struct, which contains data, and left , right pointer. struct node{ int data, node* left; node* right;
+node* right; node(int x): data(x), left(nullptr), right(nullptr){}};
+----------------------------------
+how to create MinimalBST from an array? node* createMinimalBST( vector<int> arr) { if( arr.size() == 0){ return NULL;} retrun createMinimalBS(arr, 0, ass.size()-1);
+}
+
+Node *createMinimalBST(vector<int> arr, int low, int high){// get the middle of the array, make a node baseed on that, recurse on the array
+left and right.}
+if( low > high){return NULL;} int mid = int (low + high)/2; node* n = new node(arr[mid]); n->left = createMinimalBST(arr[mid], low, mid-1); 
+n->left = createMinimalBST(arr[mid], mid+1, high);
+how to define a vector from an array? int A[] = {1, 2, 3, 4, 5, 6, 7}; vector<int> arr (A, A + sizeof(A) / sizeof(A[0]) );
+----------------------------------
+how to check is s2 is a substring of s1? return (s1.find(s2) != string::npos);
+write inorder parsing as a string?/ it need to replace the null nodes with dummy  
+void inOrderString (treeNode* root, string s) { if(root == nullptr){ s += "X"; return;}
+s += root->data; inOrderString(root->left, s); inOrderString(root->right, s);
+}
+----------------------------------
+how to check if the tree is balanced? abs(leftHeight - rightHeight) <=1; definition of height: max(leftHeight, rightHeight
+) + 1; leftHeight = checkHeight(root->left); rightHeight = checkHeight(root->right); if a tree wants to be balanced
+all the nodes in the tree should be balanced. if at some point in the tree we realized it is not balanced we send 
+-1; 
+how to check if the node is null? if( root == nullptr) { return 0;} 
+what is the height for each node? return max( leftHeight, rightHeight)+1;
+----------------------------------
+how to find the  most left node in the tree? while(roor->left != nullptr){ root = root->left;}
+how to go to the parent of the node? node* parent = root->parent
+how to keep going up of the parent of the node? while (ancesor != nullptr && ancestor->right = child){
+child = ancestor; ancestor = child->parent;
+}
+----------------------------------
+how to define a linked list? vector<int> denom;
+the data structure to save the coind? stack. in each iteration pop the coin, see how many ways with 0, 1, ..., amout//curr
+//sum with zero current coin sum += ways( amount, denom);
+sum with 0, to full while( amount >= curr) { sum += ways( amount-curr, denom); amount = amount - curr;}
+----------------------------------
+how to print parantheses with specifies number of parantheses? printParantheseHelper(count, opened+1, closed, str + "(");
+printParantheseHelper(count, opened, closed+1, str + ")");
+[(+all string with open-1] + [)+all strings with close-1]
+when do we need to stop this routine? if(str.size() == 2 * count){ cout << str << endl; }
+----------------------------------
+how to defie a vector of size s? vector<int> dp( s+1, -1);
+how to divide a number by two using bit operations? int s = smaller >> 2;
+when we want to multiply a*b, there are two scenarios: a is even (s = 2 * (a/2)*b), a is odd 
+(2 * (a/2)*b + 1)
+how to define a hash table to reflect the multiplications? d[smaller] = side1 + side2;
+----------------------------------
+
+how to define a map in C++? map <char, int> m;
+we have a string of size n and we want to throw all the characters inside the string to the hashtable
+for (int i = 0; i < n; i++){ if( m.find(s[i]) != m.end())  m.find(s[i])->second++;// found   the key else m.insert(make_pair(s[i], 1));//if the key not found.}
+how to define a vector of strings? vector<string> str;
+if the size of a string is equal to n, then add it to the vector of string permutations. if( n==curr.length()) {str.push_back(curr); return;}
+how to iterate over a hashtable, add a character from the hashtable to string, decremenate the number corresponds to that character and
+add it to the string and when we are done, increase the number correspond to that character.
+for ( map<chare,int>::iterator i = m.begin(); i != m.end(); i++){
+   if(i->second !=0 ) chare c = i->first; string f = curr+c; i->second--; findPermutation(f,m,res,n); i->second++;
+}
+
+----------------------------------
+how to create strings without dups? every permutation can start with different charachter. the rmaining string is the string without that 
+charachter. we iterate over all possible charachters. for( int i =0; i < n; i++) { string first = curr + s.substr(i, 1);
+string rem = s.substr(0, i) + s.substr(i+1,n-i+1); findPermutations(rem,first,res);}
+how to send an string to a function with address? void findPermutations(vector<string>& res){ }
+----------------------------------
+number of ways going through n steps with 1, 2, 3 steps? if (n == 0) return 1; for (i = 0; i < n; i++)
+{ if( n - v[i] > 0)    sum = sum + countWays(n - v[i], v); }
+----------------------------------
+FROM THE OTHER GITHUB:
+
+merge two sorted array in array one. start to parse two arrays from back, then merge two arrays from the back of the array one.
+at the end if something remained from array two, throw it to array one.
+how to find the size of array 1: i1 = v1.size() - v2.size(); //size of array 2: i2 = v2.size(), //size of merged array: v1.size()
+how to parse the arrays from backwards? while( i1 > 0 && i2 > 0) {}
+how to merge those two arrays? if( v1[i1-1] > v2[i2-1] ){i--; i1--; v1[i] = v1[i1]} else{ i--; i2--; v1[i] = v2[i2]}
+what we should do at the end if i2 > 0? need a while loop to transfer from v2 to v1 while( i2 > 0){ --i; --i2; v1[i] = v2[i2];} 
+how to sort a vector in c++? std::vector<int> values; std::sort(values.begin(), values.end());
+how to merge sort two containers: std::merge(v1.begin(), v1.end(), v2.begin(), v2.end(), std::back_inserter(values));
+how to reszie a vector? v1.resize(v1.size()+v2.size())
+----------------------------------
+how to write a custom sorter? std::sort(strings.begin(), strings.end(), anagram_compare); //the ouput of anagramcompare is boolean
+bool anagramcompare( string s1, string s2){}
+how to sort a string? std::sort(s1.begin(), s1.end())
+how to send a vector by reference? how to print the vector?
+how to define a vector of strings? std::vector<std::string> original;
+----------------------------------
+how to do search in rotated binary array?
+how to long we should do the while loop? while(left != right) {}
+how we should conditioning on the while loop? if( v[left] <= v[middle] ){ if( x < v[left] || v[middle] < x) left = middle+1; else right = middle }
+ else { if( x > v[right] || x <= v[middle]) right = middle; else left = middle+1;}
+when we should stop searching and what to return?  return (v[left] == x) ? left : v.size();
+how to find the middle element? size_t middle = left + (right - left) / 2;
+----------------------------------
+sorted array of string to which empty string are inserted
+prefered way of searching? binary search
+when we should stop in the while loop? while( left!= right) {}
+how to find the middle element? size_t middle = left + (right - left)/2
+how to do conditioning? if( v[middle] == "") { if( v[left] < x ) left++ else break;} else { if( x > v[middle]) left = middle + 1; else right = middle;}
+what happened if we hit empty string?
+what is edge case? if( v.mepty()) { return v.size()+1;})
+how to find a substring in a string? auto it = std::find(strings.begin(), strings.end(), str); if(it != strings.end()) {}
+----------------------------------
+Given matrix A such that the elements in each row and column sorted in ascending orede, find the element x
+how to search for element x? start from i = 0, j = n-1;
+when to stop the iterations? while(true || A(i, j) == x) { if( A(i, j) > x){ if ( j==0 ) break; else j--;} else { if( i == n-1) i++ else break;} }
+how to do conditioning on while loop?
+how to implement pair in c++? std::pair<int, int> a; a = {m,n}
+how to implement the class matrix? class matrix{ public: matrix(const size_t m, const size_t n): m(m), n(n), values(m*n) private: size_t m; size_t n; vector<int> values;}
+how to implement the operator () to return values? int Operator() (const size_t i, const size_t j) const { assert( i < m && j < n); return values[i*m+n];}
+how to implement the operator () to return values? int & Operator() (const size_t i, const size_t j) {assert( i < m && j < n); return values[i*m+n];}
+how to return the number of rows? size_t num_row(){ return m;}
+----------------------------------
+ what is the tower with the most number of people
+each tme one of the people can be on the base; //doing for loop over all people
+if we include each person we should be careful not to violate the limits; //pass the limits in each function call
+tower highest_tower_1(const group& people, const int max_weight = std::numeric_limits<int>::max(), const int max_height = std::numeric_limits<int>::max())
+each time if we find a new higher tower, update the tower. //define a global higher tower and compare it with subtower in each function call
+tower highest; tower subtower = highest_tower_1(people_without_i, people[i].weight, people[i].height);
+if we found a new highest tower, update 'highest'; if (subtower.size() + 1 > highest.size()){ highest = subtower; 
+highest.push_front(people[i]); }
+what kind of data structure for each person is needed? struct person {int height; int weight;};
+which kind of data structure for all the group of people is needed? using group = std::vector<person>;
+which kind of data structure for tower is needed? using tower = deque<person>;
+how to create a group containing all people except i; group people_without_i; for (size_t j = 0; j < people.size(); ++j)
+ { if (i != j) { people_without_i.push_back(people[j]); } }
+----------------------------------
+second implementation
+order group of people besed on heights; sort(people.begin(), people.end(), comparator);
+parse the array; for each people i, for( size_t i=0; i < people.size(); i++) { higherFrom[i] = 1;}
+save the tower end up in i and collect all the people before that that can be included. 
+for( size_t j =0; j < i; j++){ if( people[i].height > people[j].height && people[i].weight > people[j].weight  &&
+ higherFrom[i] < higherFrom[j]+1) higherFrom[i] += 1; higherUnder[i] = j;}
+At the end extract the one with highest size. 
+size_t k =0; for(size_t i = 1; i < people.size(); i++) k = HigheFrom[i] > HighFrom[k] ? i : k;
+how to define a constant expression of large value? constexpr size_t N = std::numeric_limits<size_t>::max();
+vector<int> peopleAbove(people.size(), N);
+how to initialize a vector of size zero: tower people = {people[k]};
+how to push element to dequeu? highest.push_back(i);
+how to create the custom comparator?
+----------------------------------
+chapter 8
+list all subsets of a set
+we create all the subsets of size n-1 and copy the subsets and add the nth element to it.
+copy one vector to another vector std::move(A.begin(), B.end(), std::back_inserter(A));
+function format for recursive calls? subsets all_subsets_1(const std::vector<size_t>& values, const size_t i = 0){}
+edge case for recursive call? if( i = values.size()) return {{}};
+subsets sets = all_subsets_1(values, i + 1);
+go over each set obtained so far and generate a copy which also contains values[i]: for (std::vector<size_t>& s : __sets)
+{ s.push_back(values[i]); }
+go over each set obtained so far and generate a copy which also contains values[i] for (std::vector<size_t>& s : __sets)
+{ s.push_back(values[i]); }
+what is the data structure for subset? using subsets = vector<vector<size_t>>;
+initialisze wih the null subset: subsets s = {{}}
+perform a for loop over all the elements in the sets, and each time add i to each member in the set and copy in to original set
+
+move the found sets to the orignal set test.
+//copy: subset A = B; //add element i to each member of the set for (std::vector<size_t>& S : __sets) {  S.push_back(values[i]); }
+//copy the sets to the original set: std::move(__sets.begin(), __sets.end(), std::back_inserter(sets));
+----------------------------------
+compute all possible permutations of input string
+//base case
+//after the base case, function definition
+//go over each permutation of str[i+1..n) and generate copies of it with str[i] placed on every valid position;
+for (const std::string& s : sub_permutations) { for (size_t k = 0; k <= s.size(); ++k)
+        { permutations.emplace_back(s.substr(0, k) + str[i] + s.substr(k)); } }
+----------------------------------
+how to count the number of open and close parantheses in a string?
+for (const char c : str) { open += (c == '('); close += (c == ')'); }
+----------------------------------
+image presented as a two dimensional array, with each of them being painted with some color
+implementing the flood-fill algorithm for painting 
+how the function looks like? void __paint_fill_1(image& I, const size_t i, const size_t j, const color new_color, const color original_color)
+how to impelement the depth-first search? recursively; going through indeces (i+1, j), (i-1,j), (i, j+1), (i, j-1)
+e.g., if(i > 0) { paint_fill_1(I, i - 1, j, new_color, original_color);}
+how to check if (i, j) is within the image dimension? assert(i< I.width, j < I.heiht);
+check the color of each pixel and if it is not equal to original color, retrun other wise change it to new color. 
+if(I(i,j) != original_color) I(i,j) = new_color; 
+how to create a 2 dimensional vector of size and predefined initial value? vector< vector<int> > arr(200, vector<int>(20, -1)); 
+how to define a class with template T? template<typename T> 
+how to define () operator? T& operator(const size_t i, const size_t j) { return value[i][j];}
+how to define == operator for class A? bool operator==(const A& other) const { return (*this).values == other.values; }
+how to define a constructor for a class with a 2d array? A(size_t w, size_t h): width(w), height(h), vlaues(width, std::deque<T>(height, T{})) 
+vector<vector<int>> A(3, vector<int>(h));
+----------------------------------
+breadth-first search
+not recursive, iterative
+how to create a queue of pixels? struct pixel { size_t x; size_t y; }; std::queue<pixel> Q;
+we should iterate over queue until it becomes empty. while(!Q.empty()){}
+in each iteration we pop the top pixel in the queue and change the color: const pixel R = Q.front(); Q.pop(); I(R.x, R.y) = new_color;
+we need to track if the pixels have seen before. pixels<bool> explored(imag.width(), image.height());
+push the pixels around that pixel which have not seen before and have the original color to the queue.
+how to assign color from enum to the integer? color t = color(1);   int i = t;
+----------------------------------
+Determine all possible ways in which one can pay n cents using some predefined coins
+how to create predefined vector of coins?   vector<int> valid_coins = {1, 5, 10, 25};
+use recursive calls and in each call focus on one coin const int coin = valid_coins[coin_index];
+loop over all the posssibilities for that specific coin for (int k = 0; k * coin <= n; ++k) {}
+pass the remaining value to lower recursive calls std::vector<coin_sequence> __seqs = represent_cents(n - k * coin, coin_index + 1);
+add the coins to the sequences coming from lower calls for (coin_sequence& seq : __seqs)
+ { std::fill_n(std::back_inserter(seq), k, coin);  }
+copy the obtained sequences to the original sequence std::move(__seqs.begin(), __seqs.end(), std::back_inserter(seqs));
+----------------------------------
+Given a binary tree, determine if it is balanced
+how to create the node from tree? struct tree_node
+{    tree_node* left = nullptr; tree_node* right = nullptr; ~tree_node() {  delete left; delete right; } };
+how to compute the longest distance from root? return 1 + std::max(longest_path_length(root->left),
+longest_path_length(root->right));
+how to compute the shortest path from the root? return 1 + std::min(shortest_path_length(root->left),
+shortest_path_length(root->right));
+how to check if the tree is balanced?  return (longest_path_length(root) - shortest_path_length(root) <= 1);
+how to compute the number of nodes? return 1 + num_nodes(root->left) + num_nodes(root->right);
+what are the edge cases? if (root == nullptr){ return 0;}
+how o create a balanced binary tree of size n? 
+creat a vector of pointers to node_tree: std::vector<tree_node*> nodes = {new tree_node};
+iterate over n while(n > 0) {}
+ find the first node which has an empty left/right child;
+ auto it = std::find_if(nodes.begin(), nodes.end(), [](const tree_node* node) {
+return node->left == nullptr || node->right == nullptr; })
+ tree_node* node = *it;
+link the found node to the latest node in the vector 
+if (node->left == nullptr) { node->left = nodes.back();} else { node->right = nodes.back(); }
+return the front node in the vector: return nodes.front();
+----------------------------------
+create the class of directed graph. class directed_graph { std::vector<std::list<size_t> > adjacency_list_;
+void create_edge(const size_t u, const size_t v) { adjacency_list_[u].push_back(v);}
+const std::list<size_t>& adjacency_list(const size_t u) const
+    { return adjacency_list_[u]; }}; 
+Returns true if a path between nodes s and d exists
+push s to queue and polt the flag related to explored. queue<size_t> Q; unordered_set<size_t> explored;
+perform a while loop untile the Q becomes empty: while(!Q.empty()}{}
+pop the Q; u = Q.fron(); Q.pop().
+if we found d, we are done: if(u == d){ return true;}
+go over the nodes to which u is connected: for (const size_t v : G.adjacency_list(u))
+{  /* if we have not yet explored v */  if (explored.find(v) == explored.end())
+{  Q.push(v);  explored.insert(v);  } }
+----------------------------------
+perform depth first search to find a node between s and d 
+bool __has_path_dfs(const directed_graph& G, const size_t s, const size_t d, std::unordered_set<size_t>& explored)
+explored.insert(s);
+go over the nodes to which s is connected:  
+for (const size_t v : G.adjacency_list(s)) { }
+// if we hit d retrun true
+/* if v was not yet explored: if (explored.find(v) == explored.end())
+        { if (__has_path_dfs(G, v, d, explored) == true)  { return true;  }  }
+----------------------------------
+Construct a binary tree with minimal height from the values of a
+ sorted array.
+const bidirectional_iterator middle = begin + std::distance(begin, end) / 2;
+tree_node* node = new tree_node;
+node->key = *middle;
+node->left = build_min_height_tree(begin, middle);
+node->right = build_min_height_tree(middle + 1, end);
+----------------------------------
+Returns true if the tree is "ordered", false otherwise,
+root->key must be within [min_allowed, max_allowed]
+if (root->key < min_allowed || root->key > max_allowed)
+    { return false; }
+return is_ordered_tree(root->left, min_allowed, root->key) &&
+           is_ordered_tree(root->right, root->key, max_allowed);
+----------------------------------
+Returns the number of occurrences of a value in a binary tree
+return (root->key == x) + count(root->left, x) + count(root->right, x);
+----------------------------------
+
+ 
